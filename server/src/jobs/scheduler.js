@@ -1,7 +1,7 @@
-import { Booking } from '../models/Booking.js';
-import { Property } from '../models/Property.js';
-import { FollowUp } from '../models/FollowUp.js';
-import { AuditLog } from '../models/AuditLog.js';
+import Booking from '../models/Booking.js';
+import Property from '../models/Property.js';
+import FollowUp from '../models/FollowUp.js';
+import AuditLog from '../models/AuditLog.js';
 import { logger } from '../utils/logger.js';
 
 /**
