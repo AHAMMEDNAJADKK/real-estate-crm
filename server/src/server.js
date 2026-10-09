@@ -10,13 +10,34 @@ const startServer = async () => {
     await AuthService.seedInitialAdmin();
     startScheduledJobs();
 
-    const server = app.listen(config.port, () => {
+    const server = app.listen(config.port, '0.0.0.0', () => {
       console.log(`====================================================`);
       console.log(`  🏢 KODBRAND Real Estate CRM Server running!`);
       console.log(`  🚀 Port: ${config.port} | Mode: ${config.nodeEnv}`);
       console.log(`  🌐 Base API: http://localhost:${config.port}/api`);
       console.log(`====================================================`);
     });
+
+    const shutdown = (signal) => {
+      console.log(`\n[Server] Received ${signal}. Initiating graceful shutdown...`);
+      server.close(async () => {
+        console.log('[Server] HTTP server closed.');
+        try {
+          const { disconnectDB } = await import('./config/database.js');
+          await disconnectDB();
+        } catch (e) {
+          console.error('[Server] Error disconnecting DB:', e.message);
+        }
+        process.exit(0);
+      });
+      setTimeout(() => {
+        console.error('[Server] Forcefully terminating after timeout');
+        process.exit(1);
+      }, 10000).unref();
+    };
+
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
+    process.on('SIGINT', () => shutdown('SIGINT'));
 
     server.on('error', (err) => {
       if (err.code === 'EADDRINUSE') {

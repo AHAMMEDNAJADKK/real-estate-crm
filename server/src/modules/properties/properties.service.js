@@ -50,6 +50,18 @@ export class PropertiesService {
   }
 
   static async createProperty(data, user) {
+    const block = data.blockOrTower || 'Tower A';
+    const existing = await Property.findOne({
+      project: data.project,
+      blockOrTower: block,
+      unitNumber: data.unitNumber
+    });
+    if (existing) {
+      const err = new Error(`Unit ${data.unitNumber} in ${block} already exists for this project.`);
+      err.statusCode = 409;
+      throw err;
+    }
+
     const property = new Property(data);
     await property.save();
 

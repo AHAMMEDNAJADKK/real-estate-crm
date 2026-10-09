@@ -12,10 +12,14 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// CORS
+// CORS Configuration supporting Localhost, Vercel deployments, and custom domains
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || config.allowedOrigins.includes(origin) || config.allowedOrigins.includes('*')) {
+    if (!origin) return callback(null, true);
+    const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+    const isVercel = origin.endsWith('.vercel.app');
+    const isConfigured = config.allowedOrigins.includes(origin) || config.allowedOrigins.includes('*');
+    if (isLocalhost || isVercel || isConfigured) {
       callback(null, true);
     } else {
       callback(null, true);

@@ -9,6 +9,7 @@ router.use(authenticate);
 
 router.get('/', getSettings);
 router.patch('/', authorize('super_admin', 'admin'), updateSettings);
+router.put('/', authorize('super_admin', 'admin'), updateSettings);
 router.get('/audit-logs', authorize('super_admin', 'admin'), getAuditLogs);
 router.post('/upload', upload.single('file'), handleFileUpload);
 
