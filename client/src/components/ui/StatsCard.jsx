@@ -53,26 +53,26 @@ export const StatsCard = ({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl p-6 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 ${scheme.glow} ${className}`}
+      className={`relative overflow-hidden rounded-2xl p-6 bg-[#1E2B40] text-[#F8FAFC] border border-[#334155] shadow-sm hover:border-[#6D28D9]/50 transition-all duration-300 ${className}`}
     >
       <div className="flex items-start justify-between">
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wider uppercase">
+          <p className="text-xs font-semibold text-[#94A3B8] tracking-wider uppercase">
             {title}
           </p>
           {loading ? (
-            <div className="h-8 w-24 bg-slate-200 dark:bg-slate-800 rounded-lg animate-pulse" />
+            <div className="h-8 w-24 bg-[#243249] rounded-lg animate-pulse" />
           ) : (
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#F8FAFC] tracking-tight">
               {value}
             </h3>
           )}
           {(subtitle || trend) && (
-            <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-1.5 text-xs text-[#94A3B8]">
               {trend && (
                 <span
                   className={`font-semibold ${
-                    trend.positive ? 'text-emerald-600' : 'text-rose-600'
+                    trend.positive ? 'text-emerald-400' : 'text-rose-400'
                   }`}
                 >
                   {trend.positive ? '↑' : '↓'} {trend.value}

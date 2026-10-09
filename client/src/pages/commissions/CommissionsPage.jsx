@@ -73,8 +73,8 @@ export const CommissionsPage = () => {
       accessor: 'agent',
       render: (row) => (
         <div>
-          <span className="font-bold text-slate-900 block">{row.agent?.name}</span>
-          <span className="text-xs text-slate-500">{row.agent?.email} &bull; {row.agent?.role?.replace('_', ' ')}</span>
+          <span className="font-bold text-[#F8FAFC] block">{row.agent?.name}</span>
+          <span className="text-xs text-[#94A3B8]">{row.agent?.email} &bull; {row.agent?.role?.replace('_', ' ')}</span>
         </div>
       )
     },
@@ -83,23 +83,23 @@ export const CommissionsPage = () => {
       accessor: 'booking',
       render: (row) => (
         <div>
-          <span className="font-semibold text-slate-900 block">{row.booking?.bookingNumber}</span>
-          <span className="text-xs text-slate-500">Unit {row.booking?.property?.unitNumber}</span>
+          <span className="font-semibold text-[#F8FAFC] block">{row.booking?.bookingNumber}</span>
+          <span className="text-xs text-[#94A3B8]">Unit {row.booking?.property?.unitNumber}</span>
         </div>
       )
     },
     {
       header: 'Sale Value',
       accessor: 'saleValue',
-      render: (row) => <span className="text-xs font-semibold text-slate-800">{formatCurrency(row.saleValue)}</span>
+      render: (row) => <span className="text-xs font-semibold text-[#F8FAFC]">{formatCurrency(row.saleValue)}</span>
     },
     {
       header: 'Commission Amount',
       accessor: 'commissionAmount',
       render: (row) => (
         <div>
-          <span className="font-extrabold text-[#442d82] text-sm block">{formatCurrency(row.commissionAmount)}</span>
-          <span className="text-[10px] text-slate-400 font-semibold">{row.rate}% {row.commissionType}</span>
+          <span className="font-extrabold text-emerald-400 text-sm block">{formatCurrency(row.commissionAmount)}</span>
+          <span className="text-[10px] text-[#94A3B8] font-semibold">{row.rate}% {row.commissionType}</span>
         </div>
       )
     },
@@ -144,17 +144,17 @@ export const CommissionsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Commission & Brokerage Management</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Track sales executive incentives, external broker fees, approvals, and payout records</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Commission & Brokerage Management</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Track sales executive incentives, external broker fees, approvals, and payout records</p>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 bg-white p-4 rounded-2xl border border-slate-200/80">
-        <span className="text-xs font-semibold text-slate-500 uppercase">Status Filter:</span>
+      <div className="flex items-center gap-3 bg-[#1E2B40] p-4 rounded-2xl border border-[#334155]">
+        <span className="text-xs font-semibold text-[#94A3B8] uppercase">Status Filter:</span>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none"
+          className="text-xs bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#6D28D9]"
         >
           <option value="">All Commissions</option>
           <option value="Pending">Pending Approval</option>
@@ -183,7 +183,7 @@ export const CommissionsPage = () => {
         >
           <form onSubmit={handleDisburse} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">
                 Bank Payout Reference / UTR Number *
               </label>
               <input
@@ -192,13 +192,13 @@ export const CommissionsPage = () => {
                 value={paymentRef}
                 onChange={(e) => setPaymentRef(e.target.value)}
                 placeholder="e.g. UTR84729103"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[#94A3B8]">
               Confirming this payout will record an official Brokerage Expense in the Accounts Ledger.
             </p>
-            <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
               <Button variant="secondary" type="button" onClick={() => setSelectedCommission(null)}>
                 Cancel
               </Button>

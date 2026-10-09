@@ -95,8 +95,8 @@ export const SiteVisitsPage = () => {
       accessor: 'project',
       render: (row) => (
         <div>
-          <span className="font-semibold text-slate-900 block">{row.project?.name || 'Project'}</span>
-          <span className="text-xs text-slate-500">
+          <span className="font-semibold text-[#F8FAFC] block">{row.project?.name || 'Project'}</span>
+          <span className="text-xs text-[#94A3B8]">
             {row.lead?.leadName || row.customer?.name || 'Client'} &bull; {row.lead?.phone || row.customer?.phone}
           </span>
         </div>
@@ -107,11 +107,11 @@ export const SiteVisitsPage = () => {
       accessor: 'visitDate',
       render: (row) => (
         <div>
-          <span className="text-xs font-semibold text-slate-800 block">
+          <span className="text-xs font-semibold text-[#F8FAFC] block">
             {new Date(row.visitDate).toLocaleDateString()}
           </span>
-          <span className="text-xs text-slate-500 flex items-center gap-1">
-            <Clock className="w-3 h-3 text-slate-400" /> {row.visitTime}
+          <span className="text-xs text-[#94A3B8] flex items-center gap-1">
+            <Clock className="w-3 h-3 text-[#64748B]" /> {row.visitTime}
           </span>
         </div>
       )
@@ -121,14 +121,14 @@ export const SiteVisitsPage = () => {
       accessor: 'pickupRequired',
       render: (row) => (
         <div>
-          <span className="text-xs text-slate-700 flex items-center gap-1">
+          <span className="text-xs text-[#F8FAFC] flex items-center gap-1">
             {row.pickupRequired ? (
-              <span className="text-amber-600 font-semibold flex items-center gap-1"><Car className="w-3.5 h-3.5" /> Pickup Required</span>
+              <span className="text-amber-400 font-semibold flex items-center gap-1"><Car className="w-3.5 h-3.5" /> Pickup Required</span>
             ) : (
-              <span className="text-slate-400">Direct Arrival</span>
+              <span className="text-[#94A3B8]">Direct Arrival</span>
             )}
           </span>
-          <span className="text-[11px] text-slate-500 block">{row.visitorsCount} Visitors</span>
+          <span className="text-[11px] text-[#94A3B8] block">{row.visitorsCount} Visitors</span>
         </div>
       )
     },
@@ -147,7 +147,7 @@ export const SiteVisitsPage = () => {
       accessor: 'assignedExecutive',
       render: (row) => (
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-700">{row.assignedExecutive?.name || 'Staff'}</span>
+          <span className="text-xs text-[#F8FAFC]">{row.assignedExecutive?.name || 'Staff'}</span>
           <Button
             size="sm"
             variant="secondary"
@@ -173,8 +173,8 @@ export const SiteVisitsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Property Site Visits & Tours</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Manage on-site property walkthroughs, pickup arrangements, and customer feedback</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Property Site Visits & Tours</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Manage on-site property walkthroughs, pickup arrangements, and customer feedback</p>
         </div>
         <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
           Schedule Site Visit
@@ -202,12 +202,12 @@ export const SiteVisitsPage = () => {
       >
         <form onSubmit={handleCreateVisit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Select Project *</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Select Project *</label>
             <select
               required
               value={form.project}
               onChange={(e) => setForm({ ...form, project: e.target.value })}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
             >
               <option value="">Select Project</option>
               {projects.map(p => (
@@ -218,12 +218,12 @@ export const SiteVisitsPage = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Select Lead *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Select Lead *</label>
               <select
                 required
                 value={form.lead}
                 onChange={(e) => setForm({ ...form, lead: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               >
                 <option value="">Select Lead</option>
                 {leads.map(l => (
@@ -233,12 +233,12 @@ export const SiteVisitsPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Assigned Executive *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Assigned Executive *</label>
               <select
                 required
                 value={form.assignedExecutive}
                 onChange={(e) => setForm({ ...form, assignedExecutive: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               >
                 <option value="">Select Executive</option>
                 {employees.map(emp => (
@@ -248,24 +248,24 @@ export const SiteVisitsPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Visit Date *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Visit Date *</label>
               <input
                 type="date"
                 required
                 value={form.visitDate}
                 onChange={(e) => setForm({ ...form, visitDate: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Time</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Time</label>
               <input
                 type="text"
                 value={form.visitTime}
                 onChange={(e) => setForm({ ...form, visitTime: e.target.value })}
                 placeholder="02:00 PM"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               />
             </div>
           </div>
@@ -276,27 +276,27 @@ export const SiteVisitsPage = () => {
               id="pickupRequired"
               checked={form.pickupRequired}
               onChange={(e) => setForm({ ...form, pickupRequired: e.target.checked })}
-              className="rounded text-[#442d82]"
+              className="rounded accent-[#6D28D9]"
             />
-            <label htmlFor="pickupRequired" className="text-xs font-semibold text-slate-700">
+            <label htmlFor="pickupRequired" className="text-xs font-semibold text-[#F8FAFC]">
               Customer cab / vehicle pickup required
             </label>
           </div>
 
           {form.pickupRequired && (
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Pickup Address</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Pickup Address</label>
               <input
                 type="text"
                 value={form.pickupLocation}
                 onChange={(e) => setForm({ ...form, pickupLocation: e.target.value })}
                 placeholder="Hotel / Residential address"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               />
             </div>
           )}
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
@@ -318,11 +318,11 @@ export const SiteVisitsPage = () => {
           <form onSubmit={handleSaveFeedback} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Visit Status</label>
+                <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Visit Status</label>
                 <select
                   value={feedbackForm.status}
                   onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                  className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
                 >
                   {['Scheduled', 'Completed', 'Cancelled', 'Rescheduled', 'No Show'].map(s => (
                     <option key={s} value={s}>{s}</option>
@@ -331,11 +331,11 @@ export const SiteVisitsPage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Customer Interest Rating</label>
+                <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Customer Interest Rating</label>
                 <select
                   value={feedbackForm.interestRating}
                   onChange={(e) => setFeedbackForm({ ...feedbackForm, interestRating: e.target.value })}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                  className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
                 >
                   {['Very High', 'High', 'Moderate', 'Low', 'Not Interested'].map(r => (
                     <option key={r} value={r}>{r}</option>
@@ -345,28 +345,28 @@ export const SiteVisitsPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Feedback Notes</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Feedback Notes</label>
               <textarea
                 rows="3"
                 value={feedbackForm.feedback}
                 onChange={(e) => setFeedbackForm({ ...feedbackForm, feedback: e.target.value })}
                 placeholder="Liked master bedroom and terrace, requested discount on Tower B..."
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Next Action Plan</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Next Action Plan</label>
               <input
                 type="text"
                 value={feedbackForm.nextActionPlan}
                 onChange={(e) => setFeedbackForm({ ...feedbackForm, nextActionPlan: e.target.value })}
                 placeholder="e.g. Issue formal quotation by Monday morning"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               />
             </div>
 
-            <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
               <Button variant="secondary" type="button" onClick={() => setIsFeedbackOpen(false)}>
                 Cancel
               </Button>

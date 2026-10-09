@@ -112,8 +112,8 @@ export const BookingsPage = () => {
       accessor: 'bookingNumber',
       render: (row) => (
         <div>
-          <span className="font-bold text-slate-900 block">{row.bookingNumber}</span>
-          <span className="text-[11px] text-slate-400">
+          <span className="font-bold text-[#F8FAFC] block">{row.bookingNumber}</span>
+          <span className="text-[11px] text-[#94A3B8]">
             {new Date(row.createdAt).toLocaleDateString()}
           </span>
         </div>
@@ -124,8 +124,8 @@ export const BookingsPage = () => {
       accessor: 'customer',
       render: (row) => (
         <div>
-          <span className="font-semibold text-slate-900 block">{row.customer?.name}</span>
-          <span className="text-xs text-slate-500">
+          <span className="font-semibold text-[#F8FAFC] block">{row.customer?.name}</span>
+          <span className="text-xs text-[#94A3B8]">
             {row.project?.name} &bull; Unit {row.property?.unitNumber}
           </span>
         </div>
@@ -136,11 +136,11 @@ export const BookingsPage = () => {
       accessor: 'finalAgreedPrice',
       render: (row) => (
         <div>
-          <span className="font-extrabold text-slate-900 text-sm block">
+          <span className="font-extrabold text-[#F8FAFC] text-sm block">
             {formatCurrency(row.finalAgreedPrice)}
           </span>
-          <span className="text-xs text-slate-500">
-            Paid: <span className="text-emerald-600 font-semibold">{formatCurrency(row.totalPaidAmount)}</span> | Due: <span className="text-rose-600 font-semibold">{formatCurrency(row.outstandingBalance)}</span>
+          <span className="text-xs text-[#94A3B8]">
+            Paid: <span className="text-emerald-400 font-semibold">{formatCurrency(row.totalPaidAmount)}</span> | Due: <span className="text-rose-400 font-semibold">{formatCurrency(row.outstandingBalance)}</span>
           </span>
         </div>
       )
@@ -179,8 +179,8 @@ export const BookingsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Property Bookings & Reservations</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Manage unit locks, confirmation approvals, discount permissions, and milestone plans</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Property Bookings & Reservations</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Manage unit locks, confirmation approvals, discount permissions, and milestone plans</p>
         </div>
         <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
           Create Reservation
@@ -208,12 +208,12 @@ export const BookingsPage = () => {
       >
         <form onSubmit={handleCreateReservation} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Select Customer *</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Select Customer *</label>
             <select
               required
               value={form.customerId}
               onChange={(e) => setForm({ ...form, customerId: e.target.value })}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             >
               <option value="">Select Buyer</option>
               {customers.map(c => (
@@ -223,12 +223,12 @@ export const BookingsPage = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Select Available Unit *</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Select Available Unit *</label>
             <select
               required
               value={form.propertyId}
               onChange={(e) => setForm({ ...form, propertyId: e.target.value })}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             >
               <option value="">Choose Available Unit</option>
               {properties.map(p => (
@@ -241,47 +241,47 @@ export const BookingsPage = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Discount (₹)</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Discount (₹)</label>
               <input
                 type="number"
                 value={form.discountAmount}
                 onChange={(e) => setForm({ ...form, discountAmount: Number(e.target.value) })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Token Advance (₹)</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Token Advance (₹)</label>
               <input
                 type="number"
                 value={form.tokenAmount}
                 onChange={(e) => setForm({ ...form, tokenAmount: Number(e.target.value) })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Reservation Lock (Hours)</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Reservation Lock (Hours)</label>
             <input
               type="number"
               value={form.reservationHours}
               onChange={(e) => setForm({ ...form, reservationHours: Number(e.target.value) })}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Remarks</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Remarks</label>
             <textarea
               rows="2"
               value={form.remarks}
               onChange={(e) => setForm({ ...form, remarks: e.target.value })}
               placeholder="Special payment terms or approval notes..."
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
@@ -302,17 +302,17 @@ export const BookingsPage = () => {
           maxWidth="max-w-2xl"
         >
           <div className="space-y-4">
-            <div className="border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100 text-xs">
+            <div className="border border-[#334155] rounded-xl overflow-hidden divide-y divide-[#334155] bg-[#243249] text-xs">
               {schedule.installments?.map((inst, i) => (
                 <div key={i} className="p-3 flex items-center justify-between">
                   <div>
-                    <span className="font-bold text-slate-900 block">{inst.milestoneName}</span>
-                    <span className="text-slate-500">
+                    <span className="font-bold text-[#F8FAFC] block">{inst.milestoneName}</span>
+                    <span className="text-[#94A3B8]">
                       Due: {new Date(inst.dueDate).toLocaleDateString()} &bull; {inst.percentage}% of sale value
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="font-extrabold text-slate-900 block">{formatCurrency(inst.amountDue)}</span>
+                    <span className="font-extrabold text-[#F8FAFC] block">{formatCurrency(inst.amountDue)}</span>
                     <Badge>{inst.status}</Badge>
                   </div>
                 </div>

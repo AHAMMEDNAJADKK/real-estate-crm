@@ -191,7 +191,7 @@ export const LeadsPage = () => {
         <select
           value={row.status}
           onChange={(e) => handleStatusChange(row._id, e.target.value)}
-          className="text-xs font-semibold rounded-lg border border-slate-200 px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-[#442d82]"
+          className="text-xs font-semibold rounded-lg border border-[#334155] px-2 py-1 bg-[#243249] text-[#F8FAFC] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
         >
           {['New', 'Contacted', 'Follow Up', 'Interested', 'Qualified', 'Converted', 'Lost'].map(s => (
             <option key={s} value={s}>{s}</option>
@@ -206,7 +206,7 @@ export const LeadsPage = () => {
         <select
           value={row.assignedTo?._id || ''}
           onChange={(e) => handleAssign(row._id, e.target.value)}
-          className="text-xs rounded-lg border border-slate-200 px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-[#442d82]"
+          className="text-xs rounded-lg border border-[#334155] px-2 py-1 bg-[#243249] text-[#F8FAFC] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
         >
           <option value="">Select Staff</option>
           {employees.map(emp => (
@@ -236,10 +236,10 @@ export const LeadsPage = () => {
   return (
     <div className="space-y-6">
       {/* Header bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#334155]">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Lead Pipeline & Enquiries</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Capture, qualify, assign, and track real estate prospects</p>
+          <h1 className="text-2xl font-black text-[#F8FAFC] tracking-tight">Lead Pipeline & Enquiries</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Capture, qualify, assign, and track real estate prospects</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" icon={Download} onClick={handleExport}>
@@ -252,12 +252,12 @@ export const LeadsPage = () => {
       </div>
 
       {/* Filter Row */}
-      <div className="flex items-center gap-3 flex-wrap bg-white p-4 rounded-2xl border border-slate-200/80">
-        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Filters:</div>
+      <div className="flex items-center gap-3 flex-wrap bg-[#1E2B40] p-4 rounded-2xl border border-[#334155]">
+        <div className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">Filters:</div>
         <select
           value={tempFilter}
           onChange={(e) => setTempFilter(e.target.value)}
-          className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#442d82]"
+          className="text-xs bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
         >
           <option value="">All Temperatures</option>
           {['Hot', 'Warm', 'Cold', 'RNT', 'SwitchedOff', 'Call Back'].map(t => (
@@ -268,7 +268,7 @@ export const LeadsPage = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#442d82]"
+          className="text-xs bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
         >
           <option value="">All Statuses</option>
           {['New', 'Contacted', 'Follow Up', 'Interested', 'Qualified', 'Converted', 'Lost'].map(s => (
@@ -304,53 +304,53 @@ export const LeadsPage = () => {
         <form onSubmit={handleCreateLead} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Customer Name *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1.5">Customer Name *</label>
               <input
                 type="text"
                 required
                 value={formData.leadName}
                 onChange={(e) => setFormData({ ...formData, leadName: e.target.value })}
                 placeholder="Full Name"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl placeholder-[#64748B] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Phone Number *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1.5">Phone Number *</label>
               <input
                 type="text"
                 required
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="10-digit mobile"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl placeholder-[#64748B] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1.5">Email Address</label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="email@domain.com"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl placeholder-[#64748B] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City / Location</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1.5">City / Location</label>
               <input
                 type="text"
                 value={formData.city}
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 placeholder="e.g. Bangalore, Whitefield"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl placeholder-[#64748B] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Lead Source</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1.5">Lead Source</label>
               <select
                 value={formData.source}
                 onChange={(e) => setFormData({ ...formData, source: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
               >
                 {['Meta Ads', 'Google Ads', 'Website', 'Walk-in', 'Broker Network', 'Referral', 'Cold Call'].map(src => (
                   <option key={src} value={src}>{src}</option>
@@ -358,11 +358,11 @@ export const LeadsPage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Temperature Rating</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1.5">Temperature Rating</label>
               <select
                 value={formData.temperature}
                 onChange={(e) => setFormData({ ...formData, temperature: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
               >
                 {['Hot', 'Warm', 'Cold', 'RNT', 'SwitchedOff', 'Call Back'].map(temp => (
                   <option key={temp} value={temp}>{temp}</option>
@@ -370,37 +370,37 @@ export const LeadsPage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Min Budget (₹)</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1.5">Min Budget (₹)</label>
               <input
                 type="number"
                 value={formData.budgetMin}
                 onChange={(e) => setFormData({ ...formData, budgetMin: e.target.value })}
                 placeholder="e.g. 5000000"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl placeholder-[#64748B] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Max Budget (₹)</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1.5">Max Budget (₹)</label>
               <input
                 type="number"
                 value={formData.budgetMax}
                 onChange={(e) => setFormData({ ...formData, budgetMax: e.target.value })}
                 placeholder="e.g. 10000000"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl placeholder-[#64748B] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
               />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Initial Remarks / Notes</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1.5">Initial Remarks / Notes</label>
             <textarea
               rows="3"
               value={formData.remarks}
               onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
               placeholder="Requirement summary, preferred floor, financing needs..."
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl placeholder-[#64748B] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
             />
           </div>
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsAddOpen(false)}>
               Cancel
             </Button>
@@ -420,41 +420,41 @@ export const LeadsPage = () => {
           subtitle={`Captured on ${new Date(selectedLead.createdAt).toLocaleDateString()}`}
         >
           <div className="space-y-4 text-sm">
-            <div className="grid grid-cols-2 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+            <div className="grid grid-cols-2 gap-3 bg-[#243249] p-4 rounded-xl border border-[#334155]">
               <div>
-                <span className="text-xs text-slate-400 block">Phone:</span>
-                <span className="font-semibold text-slate-800">{selectedLead.phone}</span>
+                <span className="text-xs text-[#94A3B8] block">Phone:</span>
+                <span className="font-semibold text-[#F8FAFC]">{selectedLead.phone}</span>
               </div>
               <div>
-                <span className="text-xs text-slate-400 block">Email:</span>
-                <span className="font-semibold text-slate-800">{selectedLead.email || 'N/A'}</span>
+                <span className="text-xs text-[#94A3B8] block">Email:</span>
+                <span className="font-semibold text-[#F8FAFC]">{selectedLead.email || 'N/A'}</span>
               </div>
               <div>
-                <span className="text-xs text-slate-400 block">Temperature:</span>
+                <span className="text-xs text-[#94A3B8] block">Temperature:</span>
                 <Badge>{selectedLead.temperature}</Badge>
               </div>
               <div>
-                <span className="text-xs text-slate-400 block">Status:</span>
+                <span className="text-xs text-[#94A3B8] block">Status:</span>
                 <Badge>{selectedLead.status}</Badge>
               </div>
               <div>
-                <span className="text-xs text-slate-400 block">Source:</span>
-                <span className="font-medium text-slate-700">{selectedLead.source}</span>
+                <span className="text-xs text-[#94A3B8] block">Source:</span>
+                <span className="font-medium text-[#F8FAFC]">{selectedLead.source}</span>
               </div>
               <div>
-                <span className="text-xs text-slate-400 block">Budget:</span>
-                <span className="font-medium text-slate-700">₹{selectedLead.budgetMin} - ₹{selectedLead.budgetMax}</span>
+                <span className="text-xs text-[#94A3B8] block">Budget:</span>
+                <span className="font-medium text-[#F8FAFC]">₹{selectedLead.budgetMin} - ₹{selectedLead.budgetMax}</span>
               </div>
             </div>
             {selectedLead.remarks && (
               <div>
-                <span className="text-xs font-bold text-slate-700 block mb-1">Remarks:</span>
-                <p className="bg-slate-50 p-3 rounded-xl text-slate-600 text-xs border border-slate-200/60">
+                <span className="text-xs font-bold text-[#94A3B8] block mb-1">Remarks:</span>
+                <p className="bg-[#243249] p-3 rounded-xl text-[#F8FAFC] text-xs border border-[#334155]">
                   {selectedLead.remarks}
                 </p>
               </div>
             )}
-            <div className="flex justify-end pt-3 border-t border-slate-100">
+            <div className="flex justify-end pt-3 border-t border-[#334155]">
               <Button onClick={() => setIsDetailOpen(false)}>
                 Close
               </Button>

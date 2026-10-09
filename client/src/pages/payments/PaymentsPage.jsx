@@ -106,8 +106,8 @@ export const PaymentsPage = () => {
       accessor: 'paymentNumber',
       render: (row) => (
         <div>
-          <span className="font-bold text-slate-900 block">{row.paymentNumber}</span>
-          <span className="text-xs text-[#442d82] font-semibold">{row.receiptNumber || 'No receipt'}</span>
+          <span className="font-bold text-[#F8FAFC] block">{row.paymentNumber}</span>
+          <span className="text-xs text-purple-300 font-semibold">{row.receiptNumber || 'No receipt'}</span>
         </div>
       )
     },
@@ -116,8 +116,8 @@ export const PaymentsPage = () => {
       accessor: 'booking',
       render: (row) => (
         <div>
-          <span className="font-semibold text-slate-900 block">{row.booking?.bookingNumber}</span>
-          <span className="text-xs text-slate-500">{row.customer?.name} ({row.customer?.phone})</span>
+          <span className="font-semibold text-[#F8FAFC] block">{row.booking?.bookingNumber}</span>
+          <span className="text-xs text-[#94A3B8]">{row.customer?.name} ({row.customer?.phone})</span>
         </div>
       )
     },
@@ -125,7 +125,7 @@ export const PaymentsPage = () => {
       header: 'Amount Collected',
       accessor: 'amount',
       render: (row) => (
-        <span className="font-extrabold text-slate-900 text-sm">
+        <span className="font-extrabold text-[#F8FAFC] text-sm">
           {formatCurrency(row.amount)}
         </span>
       )
@@ -135,8 +135,8 @@ export const PaymentsPage = () => {
       accessor: 'paymentMethod',
       render: (row) => (
         <div>
-          <span className="text-xs font-medium text-slate-800 block">{row.paymentMethod}</span>
-          <span className="text-[11px] text-slate-500 font-mono">{row.transactionReference || 'N/A'}</span>
+          <span className="text-xs font-medium text-[#F8FAFC] block">{row.paymentMethod}</span>
+          <span className="text-[11px] text-[#94A3B8] font-mono">{row.transactionReference || 'N/A'}</span>
         </div>
       )
     },
@@ -175,8 +175,8 @@ export const PaymentsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Payments, Collections & Receipts</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Collect milestone installments, issue official payment receipts, and manage refunds</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Payments, Collections & Receipts</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Collect milestone installments, issue official payment receipts, and manage refunds</p>
         </div>
         <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
           Record Payment
@@ -204,12 +204,12 @@ export const PaymentsPage = () => {
       >
         <form onSubmit={handleRecordPayment} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Select Booking *</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Select Booking *</label>
             <select
               required
               value={form.bookingId}
               onChange={(e) => setForm({ ...form, bookingId: e.target.value })}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             >
               <option value="">Select Booking</option>
               {bookings.map(b => (
@@ -222,7 +222,7 @@ export const PaymentsPage = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Payment Amount (₹) *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Payment Amount (₹) *</label>
               <input
                 type="number"
                 required
@@ -230,16 +230,16 @@ export const PaymentsPage = () => {
                 value={form.amount}
                 onChange={(e) => setForm({ ...form, amount: e.target.value })}
                 placeholder="Amount"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Payment Method</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Payment Method</label>
               <select
                 value={form.paymentMethod}
                 onChange={(e) => setForm({ ...form, paymentMethod: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 {['Bank Transfer (NEFT/RTGS)', 'Cheque', 'UPI', 'Credit Card', 'Cash', 'Demand Draft'].map(m => (
                   <option key={m} value={m}>{m}</option>
@@ -249,28 +249,28 @@ export const PaymentsPage = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Bank Reference / UTR Number</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Bank Reference / UTR Number</label>
             <input
               type="text"
               value={form.transactionReference}
               onChange={(e) => setForm({ ...form, transactionReference: e.target.value })}
               placeholder="e.g. UTR1289384729"
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Payment Notes</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Payment Notes</label>
             <textarea
               rows="2"
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               placeholder="Installment 1 payment notes..."
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
@@ -290,43 +290,43 @@ export const PaymentsPage = () => {
           subtitle="Official Real Estate Payment Acknowledgement"
           maxWidth="max-w-xl"
         >
-          <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-4 text-xs">
-            <div className="flex justify-between items-start border-b border-slate-200 pb-3">
+          <div className="p-6 bg-[#1E2B40] border border-[#334155] rounded-2xl space-y-4 text-xs">
+            <div className="flex justify-between items-start border-b border-[#334155] pb-3">
               <div>
-                <h3 className="font-extrabold text-base text-slate-900">KODBRAND REALTY</h3>
-                <p className="text-slate-500">Bangalore Headquarters</p>
+                <h3 className="font-extrabold text-base text-[#F8FAFC]">KODBRAND REALTY</h3>
+                <p className="text-[#94A3B8]">Bangalore Headquarters</p>
               </div>
               <div className="text-right">
-                <span className="font-bold text-slate-700">Receipt No:</span>
-                <span className="font-mono text-[#442d82] block">{receiptData.receiptNumber}</span>
-                <span className="text-slate-400">{new Date(receiptData.issuedDate).toLocaleDateString()}</span>
+                <span className="font-bold text-[#F8FAFC]">Receipt No:</span>
+                <span className="font-mono text-purple-300 block">{receiptData.receiptNumber}</span>
+                <span className="text-[#94A3B8]">{new Date(receiptData.issuedDate).toLocaleDateString()}</span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <span className="text-slate-400 block">Received From:</span>
-                <span className="font-bold text-slate-800 text-sm">{receiptData.customer?.name}</span>
-                <span className="text-slate-500 block">{receiptData.customer?.phone}</span>
+                <span className="text-[#94A3B8] block">Received From:</span>
+                <span className="font-bold text-[#F8FAFC] text-sm">{receiptData.customer?.name}</span>
+                <span className="text-[#94A3B8] block">{receiptData.customer?.phone}</span>
               </div>
               <div className="text-right">
-                <span className="text-slate-400 block">Booking Reference:</span>
-                <span className="font-bold text-slate-800">{receiptData.booking?.bookingNumber}</span>
+                <span className="text-[#94A3B8] block">Booking Reference:</span>
+                <span className="font-bold text-[#F8FAFC]">{receiptData.booking?.bookingNumber}</span>
               </div>
             </div>
 
-            <div className="p-4 bg-white rounded-xl border border-slate-200 flex items-center justify-between">
-              <span className="font-bold text-slate-700 text-sm">Total Amount Paid</span>
-              <span className="font-extrabold text-lg text-emerald-600">
+            <div className="p-4 bg-[#243249] rounded-xl border border-[#334155] flex items-center justify-between">
+              <span className="font-bold text-[#F8FAFC] text-sm">Total Amount Paid</span>
+              <span className="font-extrabold text-lg text-emerald-400">
                 {formatCurrency(receiptData.amount)}
               </span>
             </div>
 
-            <p className="text-slate-500 italic text-center">
+            <p className="text-[#94A3B8] italic text-center">
               "{receiptData.remarks || 'Thank you for your business. This is an electronically generated payment receipt.'}"
             </p>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-200">
+            <div className="flex justify-end gap-2 pt-2 border-t border-[#334155]">
               <Button size="sm" variant="secondary" icon={Printer} onClick={() => window.print()}>
                 Print Receipt
               </Button>
@@ -348,28 +348,28 @@ export const PaymentsPage = () => {
         >
           <form onSubmit={handleProcessRefund} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Refund Amount (₹) *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Refund Amount (₹) *</label>
               <input
                 type="number"
                 required
                 max={selectedPayment.amount}
                 value={refundForm.refundAmount}
                 onChange={(e) => setRefundForm({ ...refundForm, refundAmount: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Reason for Refund *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Reason for Refund *</label>
               <textarea
                 required
                 rows="3"
                 value={refundForm.reason}
                 onChange={(e) => setRefundForm({ ...refundForm, reason: e.target.value })}
                 placeholder="Booking adjustment, loan rejection, cancellation refund..."
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
-            <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
               <Button variant="secondary" type="button" onClick={() => setIsRefundOpen(false)}>
                 Cancel
               </Button>

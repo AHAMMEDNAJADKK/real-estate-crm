@@ -81,8 +81,8 @@ export const PropertiesPage = () => {
       accessor: 'unitNumber',
       render: (row) => (
         <div>
-          <span className="font-bold text-slate-900 block">{row.unitNumber}</span>
-          <span className="text-xs text-slate-500">{row.blockOrTower} &bull; Floor {row.floor}</span>
+          <span className="font-bold text-[#F8FAFC] block">{row.unitNumber}</span>
+          <span className="text-xs text-[#94A3B8]">{row.blockOrTower} &bull; Floor {row.floor}</span>
         </div>
       )
     },
@@ -91,8 +91,8 @@ export const PropertiesPage = () => {
       accessor: 'project',
       render: (row) => (
         <div>
-          <span className="text-xs font-semibold text-slate-800 block">{row.project?.name || 'Development'}</span>
-          <span className="text-[10px] text-slate-400">{row.project?.code}</span>
+          <span className="text-xs font-semibold text-[#F8FAFC] block">{row.project?.name || 'Development'}</span>
+          <span className="text-[10px] text-[#64748B]">{row.project?.code}</span>
         </div>
       )
     },
@@ -101,8 +101,8 @@ export const PropertiesPage = () => {
       accessor: 'propertyType',
       render: (row) => (
         <div>
-          <span className="text-xs font-medium text-slate-800 block">{row.propertyType}</span>
-          <span className="text-xs text-slate-500">{row.superBuiltUpAreaSqFt} sq.ft ({row.facing} Facing)</span>
+          <span className="text-xs font-medium text-[#F8FAFC] block">{row.propertyType}</span>
+          <span className="text-xs text-[#94A3B8]">{row.superBuiltUpAreaSqFt} sq.ft ({row.facing} Facing)</span>
         </div>
       )
     },
@@ -110,7 +110,7 @@ export const PropertiesPage = () => {
       header: 'Listed Price',
       accessor: 'listedPrice',
       render: (row) => (
-        <span className="font-extrabold text-slate-900 text-sm">
+        <span className="font-extrabold text-[#F8FAFC] text-sm">
           {formatCurrency(row.listedPrice)}
         </span>
       )
@@ -126,20 +126,20 @@ export const PropertiesPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Property Units & Inventory Catalogue</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Track real-time unit availability, area metrics, and pricing safeguards</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Property Units & Inventory Catalogue</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Track real-time unit availability, area metrics, and pricing safeguards</p>
         </div>
         <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
           Add Unit
         </Button>
       </div>
 
-      <div className="flex items-center gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 flex-wrap">
-        <span className="text-xs font-semibold text-slate-500 uppercase">Filters:</span>
+      <div className="flex items-center gap-3 bg-[#1E2B40] p-4 rounded-2xl border border-[#334155] flex-wrap">
+        <span className="text-xs font-semibold text-[#94A3B8] uppercase">Filters:</span>
         <select
           value={projectFilter}
           onChange={(e) => setProjectFilter(e.target.value)}
-          className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none"
+          className="text-xs bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#6D28D9]"
         >
           <option value="">All Projects</option>
           {projects.map(p => (
@@ -150,7 +150,7 @@ export const PropertiesPage = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none"
+          className="text-xs bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#6D28D9]"
         >
           <option value="">All Availability Statuses</option>
           {['Available', 'Reserved', 'Booked', 'Sold', 'On Hold'].map(s => (
@@ -179,12 +179,12 @@ export const PropertiesPage = () => {
       >
         <form onSubmit={handleCreateProperty} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Select Project *</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Select Project *</label>
             <select
               required
               value={form.project}
               onChange={(e) => setForm({ ...form, project: e.target.value })}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             >
               <option value="">Choose Project</option>
               {projects.map(p => (
@@ -195,44 +195,44 @@ export const PropertiesPage = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Unit Number *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Unit Number *</label>
               <input
                 type="text"
                 required
                 value={form.unitNumber}
                 onChange={(e) => setForm({ ...form, unitNumber: e.target.value })}
                 placeholder="e.g. 402 or B-12"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Tower / Block</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Tower / Block</label>
               <input
                 type="text"
                 value={form.blockOrTower}
                 onChange={(e) => setForm({ ...form, blockOrTower: e.target.value })}
                 placeholder="Tower A"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Floor</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Floor</label>
               <input
                 type="number"
                 value={form.floor}
                 onChange={(e) => setForm({ ...form, floor: Number(e.target.value) })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Property Type</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Property Type</label>
               <select
                 value={form.propertyType}
                 onChange={(e) => setForm({ ...form, propertyType: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 {['1BHK', '2BHK', '3BHK', '4BHK', 'Penthouse', 'Villa', 'Commercial', 'Plot'].map(t => (
                   <option key={t} value={t}>{t}</option>
@@ -241,29 +241,29 @@ export const PropertiesPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Super Area (Sq.Ft) *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Super Area (Sq.Ft) *</label>
               <input
                 type="number"
                 required
                 value={form.superBuiltUpAreaSqFt}
                 onChange={(e) => setForm({ ...form, superBuiltUpAreaSqFt: Number(e.target.value) })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Listed Price (₹) *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Listed Price (₹) *</label>
               <input
                 type="number"
                 required
                 value={form.listedPrice}
                 onChange={(e) => setForm({ ...form, listedPrice: Number(e.target.value) })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

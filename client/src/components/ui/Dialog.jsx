@@ -30,24 +30,24 @@ export const Dialog = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#0F172A]/75 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog Content */}
       <div
-        className={`relative w-full ${maxWidth} bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800 overflow-hidden transform transition-all z-10 my-8 ${className}`}
+        className={`relative w-full ${maxWidth} bg-[#1E2B40] text-[#F8FAFC] rounded-3xl shadow-2xl border border-[#334155] overflow-hidden transform transition-all z-10 my-8 ${className}`}
       >
         {(title || subtitle) && (
-          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-between px-6 py-5 border-b border-[#334155]">
             <div>
               {title && (
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                <h3 className="text-lg font-bold text-[#F8FAFC] tracking-tight">
                   {title}
                 </h3>
               )}
               {subtitle && (
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className="text-xs text-[#94A3B8] mt-0.5">
                   {subtitle}
                 </p>
               )}
@@ -55,7 +55,7 @@ export const Dialog = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer"
+              className="p-2 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] rounded-full transition-colors cursor-pointer"
             >
               <X size={18} />
             </button>

@@ -100,7 +100,7 @@ export const CallLoggerModal = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-[#94A3B8] mb-1.5">
             Call Remarks & Next Action
           </label>
           <textarea
@@ -108,11 +108,11 @@ export const CallLoggerModal = ({
             value={remarks}
             onChange={(e) => setRemarks(e.target.value)}
             placeholder="Key discussion points, budget updates, preferred unit details..."
-            className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#442d82]/50 focus:border-[#442d82]"
+            className="w-full rounded-xl border border-[#334155] bg-[#243249] px-3.5 py-2.5 text-sm text-[#F8FAFC] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#334155]">
           <Button variant="outline" onClick={onClose} disabled={loading}>
             Cancel
           </Button>

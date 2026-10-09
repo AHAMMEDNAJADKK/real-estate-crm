@@ -93,8 +93,8 @@ export const OpportunitiesPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Sales Pipeline & Kanban Deals</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Track opportunities through qualification, negotiation, and contract closure</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Sales Pipeline & Kanban Deals</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Track opportunities through qualification, negotiation, and contract closure</p>
         </div>
         <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
           New Opportunity
@@ -108,43 +108,43 @@ export const OpportunitiesPage = () => {
           const stageTotal = stageDeals.reduce((sum, d) => sum + (d.expectedRevenue || 0), 0);
 
           return (
-            <div key={stage} className="min-w-[280px] max-w-[280px] bg-slate-100/80 rounded-2xl p-3 border border-slate-200/60 flex flex-col">
-              <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200">
+            <div key={stage} className="min-w-[280px] max-w-[280px] bg-[#1E2B40] rounded-2xl p-3 border border-[#334155] flex flex-col">
+              <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#334155]">
                 <div>
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">{stage}</h3>
-                  <span className="text-[11px] text-slate-500">{formatCurrency(stageTotal)}</span>
+                  <h3 className="text-xs font-bold text-[#F8FAFC] uppercase tracking-wider">{stage}</h3>
+                  <span className="text-[11px] text-[#94A3B8]">{formatCurrency(stageTotal)}</span>
                 </div>
-                <span className="w-5 h-5 rounded-full bg-white border border-slate-300 text-[10px] font-bold text-slate-700 flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full bg-[#243249] border border-[#334155] text-[10px] font-bold text-purple-300 flex items-center justify-center">
                   {stageDeals.length}
                 </span>
               </div>
 
               <div className="flex-1 space-y-3 overflow-y-auto max-h-[600px] pr-1">
                 {stageDeals.length === 0 ? (
-                  <p className="text-[11px] text-slate-400 text-center py-8">No deals in this stage</p>
+                  <p className="text-[11px] text-[#64748B] text-center py-8">No deals in this stage</p>
                 ) : (
                   stageDeals.map((deal) => (
                     <div
                       key={deal._id}
-                      className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-sm transition-all text-xs space-y-2"
+                      className="bg-[#243249] p-3.5 rounded-xl border border-[#334155] hover:border-[#6D28D9]/50 shadow-2xs hover:shadow-sm transition-all text-xs space-y-2"
                     >
-                      <div className="font-bold text-slate-900 text-sm">{deal.title}</div>
-                      <div className="text-slate-600 flex items-center gap-1 font-medium">
-                        <User className="w-3 h-3 text-slate-400" /> {deal.customer?.name}
+                      <div className="font-bold text-[#F8FAFC] text-sm">{deal.title}</div>
+                      <div className="text-[#94A3B8] flex items-center gap-1 font-medium">
+                        <User className="w-3 h-3 text-[#64748B]" /> {deal.customer?.name}
                       </div>
-                      <div className="font-extrabold text-[#442d82] text-sm">
+                      <div className="font-extrabold text-purple-300 text-sm">
                         {formatCurrency(deal.expectedRevenue)}
                       </div>
-                      <div className="text-[11px] text-slate-500 truncate">
+                      <div className="text-[11px] text-[#64748B] truncate">
                         {deal.project?.name || 'Development deal'}
                       </div>
 
                       {/* Stage Progression Selector */}
-                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1">
+                      <div className="pt-2 border-t border-[#334155] flex items-center justify-between gap-1">
                         <select
                           value={deal.stage}
                           onChange={(e) => handleStageMove(deal._id, e.target.value)}
-                          className="w-full text-[10px] font-semibold bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 focus:outline-none"
+                          className="w-full text-[10px] font-semibold bg-[#1E2B40] border border-[#334155] text-[#F8FAFC] rounded-lg px-2 py-1 focus:outline-none focus:border-[#6D28D9]"
                         >
                           {STAGES.map((s) => (
                             <option key={s} value={s}>{s}</option>
@@ -169,25 +169,25 @@ export const OpportunitiesPage = () => {
       >
         <form onSubmit={handleCreateOpportunity} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Deal Title *</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Deal Title *</label>
             <input
               type="text"
               required
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="e.g. Skyline 3BHK Deal - Vikram"
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Select Customer *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Select Customer *</label>
               <select
                 required
                 value={form.customer}
                 onChange={(e) => setForm({ ...form, customer: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 <option value="">Select Customer</option>
                 {customers.map(c => (
@@ -197,11 +197,11 @@ export const OpportunitiesPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Project</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Project</label>
               <select
                 value={form.project}
                 onChange={(e) => setForm({ ...form, project: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 <option value="">Select Project</option>
                 {projects.map(p => (
@@ -211,21 +211,21 @@ export const OpportunitiesPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Expected Revenue (₹)</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Expected Revenue (₹)</label>
               <input
                 type="number"
                 value={form.expectedRevenue}
                 onChange={(e) => setForm({ ...form, expectedRevenue: Number(e.target.value) })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Initial Pipeline Stage</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Initial Pipeline Stage</label>
               <select
                 value={form.stage}
                 onChange={(e) => setForm({ ...form, stage: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 {STAGES.map(s => (
                   <option key={s} value={s}>{s}</option>
@@ -234,7 +234,7 @@ export const OpportunitiesPage = () => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

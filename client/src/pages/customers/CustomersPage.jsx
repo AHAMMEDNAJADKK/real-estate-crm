@@ -85,9 +85,9 @@ export const CustomersPage = () => {
       accessor: 'name',
       render: (row) => (
         <div>
-          <span className="font-bold text-slate-900 block">{row.name}</span>
-          <span className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
-            <Phone className="w-3 h-3 text-slate-400" /> {row.phone}
+          <span className="font-bold text-[#F8FAFC] block">{row.name}</span>
+          <span className="text-xs text-[#94A3B8] flex items-center gap-1.5 mt-0.5">
+            <Phone className="w-3 h-3 text-[#64748B]" /> {row.phone}
             {row.email && <span>&bull; {row.email}</span>}
           </span>
         </div>
@@ -107,7 +107,7 @@ export const CustomersPage = () => {
       header: 'Preferences',
       accessor: 'preferences',
       render: (row) => (
-        <span className="text-xs text-slate-600">
+        <span className="text-xs text-[#94A3B8]">
           {row.preferences?.propertyType || 'Apartment'} ({row.preferences?.preferredLocation || 'Any'})
         </span>
       )
@@ -115,7 +115,7 @@ export const CustomersPage = () => {
     {
       header: 'Assigned Agent',
       accessor: 'assignedAgent',
-      render: (row) => <span className="text-xs text-slate-700">{row.assignedAgent?.name || 'Staff'}</span>
+      render: (row) => <span className="text-xs text-[#F8FAFC]">{row.assignedAgent?.name || 'Staff'}</span>
     },
     {
       header: '360° View',
@@ -132,8 +132,8 @@ export const CustomersPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Customer 360° Profiles & Directory</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Comprehensive view linking enquiries, interactions, property visits, and bookings</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Customer 360° Profiles & Directory</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Comprehensive view linking enquiries, interactions, property visits, and bookings</p>
         </div>
         <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
           Add Customer
@@ -172,36 +172,36 @@ export const CustomersPage = () => {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Full Legal Name"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Phone Number *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Phone Number *</label>
               <input
                 type="text"
                 required
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="Mobile Number"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Email Address</label>
               <input
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Email"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Customer Type</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Customer Type</label>
               <select
                 value={form.customerType}
                 onChange={(e) => setForm({ ...form, customerType: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 {['Buyer', 'Investor', 'Broker', 'Tenant'].map(t => (
                   <option key={t} value={t}>{t}</option>
@@ -209,27 +209,27 @@ export const CustomersPage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">PAN Card Number</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">PAN Card Number</label>
               <input
                 type="text"
                 value={form.panNumber}
                 onChange={(e) => setForm({ ...form, panNumber: e.target.value.toUpperCase() })}
                 placeholder="e.g. ABCDE1234F"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Preferred Location</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Preferred Location</label>
               <input
                 type="text"
                 value={form.preferences.preferredLocation}
                 onChange={(e) => setForm({ ...form, preferences: { ...form.preferences, preferredLocation: e.target.value } })}
                 placeholder="Location"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
           </div>
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
@@ -249,39 +249,39 @@ export const CustomersPage = () => {
         maxWidth="max-w-3xl"
       >
         {profileLoading ? (
-          <div className="py-12 text-center"><span className="text-sm text-slate-500">Loading 360 data...</span></div>
+          <div className="py-12 text-center"><span className="text-sm text-[#94A3B8]">Loading 360 data...</span></div>
         ) : profile360 ? (
           <div className="space-y-6 text-sm">
             {/* Header Bio */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#243249] p-4 rounded-2xl border border-[#334155]">
               <div>
-                <span className="text-xs text-slate-400 block">Phone</span>
-                <span className="font-bold text-slate-900">{profile360.customer?.phone}</span>
+                <span className="text-xs text-[#94A3B8] block">Phone</span>
+                <span className="font-bold text-[#F8FAFC]">{profile360.customer?.phone}</span>
               </div>
               <div>
-                <span className="text-xs text-slate-400 block">Email</span>
-                <span className="font-bold text-slate-900">{profile360.customer?.email || 'N/A'}</span>
+                <span className="text-xs text-[#94A3B8] block">Email</span>
+                <span className="font-bold text-[#F8FAFC]">{profile360.customer?.email || 'N/A'}</span>
               </div>
               <div>
-                <span className="text-xs text-slate-400 block">Customer Type</span>
+                <span className="text-xs text-[#94A3B8] block">Customer Type</span>
                 <Badge variant="primary">{profile360.customer?.customerType}</Badge>
               </div>
               <div>
-                <span className="text-xs text-slate-400 block">PAN Number</span>
-                <span className="font-mono text-xs font-semibold text-slate-700">{profile360.customer?.panNumber || 'Pending'}</span>
+                <span className="text-xs text-[#94A3B8] block">PAN Number</span>
+                <span className="font-mono text-xs font-semibold text-[#F8FAFC]">{profile360.customer?.panNumber || 'Pending'}</span>
               </div>
             </div>
 
             {/* Interaction Summary Tabs */}
             <div className="space-y-4">
               <div>
-                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-[#442d82]" /> Linked Enquiries & Leads ({profile360.interactions?.leads?.length || 0})
+                <h4 className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-purple-400" /> Linked Enquiries & Leads ({profile360.interactions?.leads?.length || 0})
                 </h4>
-                <div className="bg-white border border-slate-200 rounded-xl divide-y divide-slate-100 max-h-36 overflow-y-auto">
+                <div className="bg-[#243249] border border-[#334155] rounded-xl divide-y divide-[#334155] max-h-36 overflow-y-auto">
                   {profile360.interactions?.leads?.map(l => (
                     <div key={l._id} className="p-2.5 flex items-center justify-between text-xs">
-                      <span className="font-semibold text-slate-800">{l.source} &bull; {l.preferredPropertyType}</span>
+                      <span className="font-semibold text-[#F8FAFC]">{l.source} &bull; {l.preferredPropertyType}</span>
                       <Badge>{l.temperature}</Badge>
                     </div>
                   ))}
@@ -289,19 +289,19 @@ export const CustomersPage = () => {
               </div>
 
               <div>
-                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <FileText className="w-4 h-4 text-emerald-600" /> Bookings & Contracts ({profile360.interactions?.bookings?.length || 0})
+                <h4 className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <FileText className="w-4 h-4 text-emerald-400" /> Bookings & Contracts ({profile360.interactions?.bookings?.length || 0})
                 </h4>
-                <div className="bg-white border border-slate-200 rounded-xl divide-y divide-slate-100 max-h-36 overflow-y-auto">
+                <div className="bg-[#243249] border border-[#334155] rounded-xl divide-y divide-[#334155] max-h-36 overflow-y-auto">
                   {profile360.interactions?.bookings?.map(b => (
                     <div key={b._id} className="p-2.5 flex items-center justify-between text-xs">
                       <div>
-                        <span className="font-bold text-slate-900 block">{b.bookingNumber}</span>
-                        <span className="text-slate-500">{b.project?.name} &bull; Unit {b.property?.unitNumber}</span>
+                        <span className="font-bold text-[#F8FAFC] block">{b.bookingNumber}</span>
+                        <span className="text-[#94A3B8]">{b.project?.name} &bull; Unit {b.property?.unitNumber}</span>
                       </div>
                       <div className="text-right">
                         <Badge>{b.status}</Badge>
-                        <span className="text-slate-600 font-semibold block mt-1">₹{b.finalAgreedPrice?.toLocaleString()}</span>
+                        <span className="text-emerald-400 font-semibold block mt-1">₹{b.finalAgreedPrice?.toLocaleString()}</span>
                       </div>
                     </div>
                   ))}
@@ -309,7 +309,7 @@ export const CustomersPage = () => {
               </div>
             </div>
 
-            <div className="flex justify-end pt-3 border-t border-slate-100">
+            <div className="flex justify-end pt-3 border-t border-[#334155]">
               <Button onClick={() => setIs360Open(false)}>
                 Close Profile
               </Button>

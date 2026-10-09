@@ -69,8 +69,8 @@ export const ProjectsPage = () => {
       accessor: 'name',
       render: (row) => (
         <div>
-          <span className="font-semibold text-slate-900 block">{row.name}</span>
-          <span className="text-xs text-[#442d82] font-bold tracking-wider">{row.code}</span>
+          <span className="font-semibold text-[#F8FAFC] block">{row.name}</span>
+          <span className="text-xs text-purple-300 font-bold tracking-wider">{row.code}</span>
         </div>
       )
     },
@@ -78,8 +78,8 @@ export const ProjectsPage = () => {
       header: 'Location',
       accessor: 'location',
       render: (row) => (
-        <span className="text-xs text-slate-600 flex items-center gap-1">
-          <MapPin className="w-3 h-3 text-slate-400" /> {row.location?.locality ? `${row.location.locality}, ` : ''}{row.location?.city}
+        <span className="text-xs text-[#94A3B8] flex items-center gap-1">
+          <MapPin className="w-3 h-3 text-[#64748B]" /> {row.location?.locality ? `${row.location.locality}, ` : ''}{row.location?.city}
         </span>
       )
     },
@@ -92,8 +92,8 @@ export const ProjectsPage = () => {
       header: 'Units (Available / Total)',
       accessor: 'totalUnits',
       render: (row) => (
-        <span className="text-xs font-semibold text-slate-800">
-          <span className="text-emerald-600 font-bold">{row.availableUnits || 0}</span> / {row.totalUnits || 0} units
+        <span className="text-xs font-semibold text-[#F8FAFC]">
+          <span className="text-emerald-400 font-bold">{row.availableUnits || 0}</span> / {row.totalUnits || 0} units
         </span>
       )
     },
@@ -105,7 +105,7 @@ export const ProjectsPage = () => {
     {
       header: 'RERA Number',
       accessor: 'reraNumber',
-      render: (row) => <span className="text-xs text-slate-500 font-mono">{row.reraNumber || 'PRM/KA/RERA/...'}</span>
+      render: (row) => <span className="text-xs text-[#94A3B8] font-mono">{row.reraNumber || 'PRM/KA/RERA/...'}</span>
     }
   ];
 
@@ -113,8 +113,8 @@ export const ProjectsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Real Estate Developments & Projects</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Manage master properties, layout configurations, and unit inventories</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Real Estate Developments & Projects</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Manage master properties, layout configurations, and unit inventories</p>
         </div>
         <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
           New Project
@@ -143,42 +143,42 @@ export const ProjectsPage = () => {
         <form onSubmit={handleCreateProject} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Project Name *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Project Name *</label>
               <input
                 type="text"
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="e.g. Prestige Lakeview"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Project Code *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Project Code *</label>
               <input
                 type="text"
                 required
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="e.g. PLV-01"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Developer / Builder</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Developer / Builder</label>
               <input
                 type="text"
                 value={form.developer}
                 onChange={(e) => setForm({ ...form, developer: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Project Type</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Project Type</label>
               <select
                 value={form.projectType}
                 onChange={(e) => setForm({ ...form, projectType: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 {['Residential', 'Commercial', 'Mixed Use', 'Villa Community', 'Plotted Development'].map(t => (
                   <option key={t} value={t}>{t}</option>
@@ -186,36 +186,36 @@ export const ProjectsPage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">City</label>
               <input
                 type="text"
                 value={form.location.city}
                 onChange={(e) => setForm({ ...form, location: { ...form.location, city: e.target.value } })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Locality</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Locality</label>
               <input
                 type="text"
                 value={form.location.locality}
                 onChange={(e) => setForm({ ...form, location: { ...form.location, locality: e.target.value } })}
                 placeholder="e.g. Whitefield"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">RERA Registration Number</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">RERA Registration Number</label>
             <input
               type="text"
               value={form.reraNumber}
               onChange={(e) => setForm({ ...form, reraNumber: e.target.value })}
               placeholder="e.g. PRM/KA/RERA/1251/446/PR/200123/003200"
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             />
           </div>
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

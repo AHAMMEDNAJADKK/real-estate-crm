@@ -21,14 +21,19 @@ import {
 
 export const NAV_SECTIONS = [
   {
-    title: 'CRM & Operations',
+    title: 'OVERVIEW',
     items: [
       {
         title: 'Dashboard',
         path: '/',
         icon: LayoutDashboard,
         roles: ['super_admin', 'admin', 'sales_manager', 'telecaller', 'sales_executive', 'property_manager', 'accountant']
-      },
+      }
+    ]
+  },
+  {
+    title: 'CRM OPERATIONS',
+    items: [
       {
         title: 'Lead Management',
         path: '/leads',
@@ -62,7 +67,7 @@ export const NAV_SECTIONS = [
     ]
   },
   {
-    title: 'Inventory & Deals',
+    title: 'INVENTORY & DEALS',
     items: [
       {
         title: 'Projects',
@@ -97,42 +102,42 @@ export const NAV_SECTIONS = [
     ]
   },
   {
-    title: 'Finance & Ledger',
+    title: 'FINANCE',
     items: [
       {
-        title: 'Payments & Receipts',
+        title: 'Payments',
         path: '/payments',
         icon: CreditCard,
         roles: ['super_admin', 'admin', 'accountant', 'sales_manager']
+      },
+      {
+        title: 'Accounts',
+        path: '/accounts',
+        icon: Receipt,
+        roles: ['super_admin', 'admin', 'accountant']
       },
       {
         title: 'Commissions',
         path: '/commissions',
         icon: BadgePercent,
         roles: ['super_admin', 'admin', 'sales_manager', 'accountant', 'sales_executive']
-      },
-      {
-        title: 'Accounts & Finance',
-        path: '/accounts',
-        icon: Receipt,
-        roles: ['super_admin', 'admin', 'accountant']
       }
     ]
   },
   {
-    title: 'System & Admin',
+    title: 'MANAGEMENT',
     items: [
+      {
+        title: 'Employees & Teams',
+        path: '/employees',
+        icon: UserCog,
+        roles: ['super_admin', 'admin', 'sales_manager']
+      },
       {
         title: 'Reports & Analytics',
         path: '/reports',
         icon: BarChart3,
         roles: ['super_admin', 'admin', 'sales_manager', 'accountant']
-      },
-      {
-        title: 'Employee Directory',
-        path: '/employees',
-        icon: UserCog,
-        roles: ['super_admin', 'admin', 'sales_manager']
       },
       {
         title: 'Notifications',
@@ -141,7 +146,7 @@ export const NAV_SECTIONS = [
         roles: ['super_admin', 'admin', 'sales_manager', 'telecaller', 'sales_executive', 'property_manager', 'accountant']
       },
       {
-        title: 'Settings & Audit',
+        title: 'Settings',
         path: '/settings',
         icon: Settings,
         roles: ['super_admin', 'admin']
@@ -150,5 +155,4 @@ export const NAV_SECTIONS = [
   }
 ];
 
-// Flattened list for flat lookups and backward compatibility
 export const NAV_ITEMS = NAV_SECTIONS.flatMap((sec) => sec.items);

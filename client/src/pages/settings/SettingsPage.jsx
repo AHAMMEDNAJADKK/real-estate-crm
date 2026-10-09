@@ -75,7 +75,7 @@ export const SettingsPage = () => {
       header: 'Timestamp',
       accessor: 'createdAt',
       render: (row) => (
-        <span className="text-xs text-slate-500 font-mono">
+        <span className="text-xs text-[#94A3B8] font-mono">
           {new Date(row.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'medium' })}
         </span>
       )
@@ -85,8 +85,8 @@ export const SettingsPage = () => {
       accessor: 'user',
       render: (row) => (
         <div>
-          <span className="font-semibold text-slate-800 text-xs block">{row.user?.name || 'System / Auto'}</span>
-          <span className="text-[11px] text-slate-400 capitalize">{row.user?.role?.replace('_', ' ') || 'Process'}</span>
+          <span className="font-semibold text-[#F8FAFC] text-xs block">{row.user?.name || 'System / Auto'}</span>
+          <span className="text-[11px] text-[#94A3B8] capitalize">{row.user?.role?.replace('_', ' ') || 'Process'}</span>
         </div>
       )
     },
@@ -98,13 +98,13 @@ export const SettingsPage = () => {
     {
       header: 'Target Entity',
       accessor: 'entity',
-      render: (row) => <span className="font-medium text-slate-700 text-xs">{row.entity}</span>
+      render: (row) => <span className="font-medium text-[#F8FAFC] text-xs">{row.entity}</span>
     },
     {
       header: 'Audit Metadata Details',
       accessor: 'details',
       render: (row) => (
-        <pre className="text-[10px] bg-slate-50 p-1.5 rounded-lg border border-slate-200 text-slate-600 max-w-sm overflow-x-auto">
+        <pre className="text-[10px] bg-[#182437] p-1.5 rounded-lg border border-[#334155] text-[#94A3B8] max-w-sm overflow-x-auto">
           {JSON.stringify(row.details || {}, null, 1)}
         </pre>
       )
@@ -115,17 +115,19 @@ export const SettingsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Settings, RBAC Matrix & Audit Logs</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Enterprise company configurations, permission guards, and traceable audit trails</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Settings, RBAC Matrix & Audit Logs</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Enterprise company configurations, permission guards, and traceable audit trails</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+      <div className="flex items-center gap-2 border-b border-[#334155] pb-2">
         <button
           onClick={() => setActiveTab('config')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'config' ? 'bg-[#442d82] text-white shadow-xs' : 'bg-white text-slate-600 border border-slate-200'
+            activeTab === 'config'
+              ? 'bg-[#6D28D9] text-white shadow-xs'
+              : 'bg-[#243249] text-[#94A3B8] border border-[#334155] hover:bg-[#1E2B40] hover:text-[#F8FAFC]'
           }`}
         >
           <Settings className="w-4 h-4" /> Company & Parameters
@@ -134,7 +136,9 @@ export const SettingsPage = () => {
         <button
           onClick={() => setActiveTab('rbac')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'rbac' ? 'bg-[#442d82] text-white shadow-xs' : 'bg-white text-slate-600 border border-slate-200'
+            activeTab === 'rbac'
+              ? 'bg-[#6D28D9] text-white shadow-xs'
+              : 'bg-[#243249] text-[#94A3B8] border border-[#334155] hover:bg-[#1E2B40] hover:text-[#F8FAFC]'
           }`}
         >
           <Shield className="w-4 h-4" /> Role Permission Matrix
@@ -143,7 +147,9 @@ export const SettingsPage = () => {
         <button
           onClick={() => setActiveTab('audit')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'audit' ? 'bg-[#442d82] text-white shadow-xs' : 'bg-white text-slate-600 border border-slate-200'
+            activeTab === 'audit'
+              ? 'bg-[#6D28D9] text-white shadow-xs'
+              : 'bg-[#243249] text-[#94A3B8] border border-[#334155] hover:bg-[#1E2B40] hover:text-[#F8FAFC]'
           }`}
         >
           <History className="w-4 h-4" /> System Audit Trail
@@ -155,44 +161,44 @@ export const SettingsPage = () => {
           <Card title="Company Information & Financial Rules">
             <form onSubmit={handleSaveSettings} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Company / Entity Name</label>
+                <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Company / Entity Name</label>
                 <input
                   type="text"
                   value={settings.companyName}
                   onChange={(e) => setSettings({ ...settings, companyName: e.target.value })}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                  className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Currency Code</label>
+                  <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Currency Code</label>
                   <input
                     type="text"
                     value={settings.currency}
                     onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                    className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Standard Commission %</label>
+                  <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Standard Commission %</label>
                   <input
                     type="number"
                     step="0.1"
                     value={settings.standardCommissionPercentage}
                     onChange={(e) => setSettings({ ...settings, standardCommissionPercentage: Number(e.target.value) })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                    className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Default Unit Lock (Hours)</label>
+                <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Default Unit Lock (Hours)</label>
                 <input
                   type="number"
                   value={settings.reservationExpiryHours}
                   onChange={(e) => setSettings({ ...settings, reservationExpiryHours: Number(e.target.value) })}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                  className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
                 />
               </div>
 
@@ -206,15 +212,15 @@ export const SettingsPage = () => {
 
           <Card title="Document & Photo Uploads Storage">
             <form onSubmit={handleUploadTest} className="space-y-4">
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-[#94A3B8]">
                 Test the secure backend upload gateway for property blueprints, floor plans, and scanned receipts.
               </p>
-              <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center">
-                <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+              <div className="border-2 border-dashed border-[#334155] bg-[#182437]/50 rounded-2xl p-6 text-center">
+                <Upload className="w-8 h-8 text-[#64748B] mx-auto mb-2" />
                 <input
                   type="file"
                   onChange={(e) => setUploadFile(e.target.files[0])}
-                  className="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#442d82] file:text-white hover:file:bg-[#35216b]"
+                  className="text-xs text-[#94A3B8] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#6D28D9] file:text-white hover:file:bg-[#5B21B6]"
                 />
               </div>
               <Button type="submit" isLoading={uploading} disabled={!uploadFile}>
@@ -230,7 +236,7 @@ export const SettingsPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-semibold uppercase">
+                <tr className="border-b border-[#334155] bg-[#182437] text-[#94A3B8] font-semibold uppercase">
                   <th className="py-3 px-4">System Role</th>
                   <th className="py-3 px-4">Leads & Calls</th>
                   <th className="py-3 px-4">Properties & Inventory</th>
@@ -239,7 +245,7 @@ export const SettingsPage = () => {
                   <th className="py-3 px-4">Ledger & Audit Trail</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#334155]">
                 {[
                   { role: 'Super Admin', l: 'Full', p: 'Full', c: 'Full', py: 'Full', lg: 'Full' },
                   { role: 'Admin', l: 'Full', p: 'Full', c: 'Full', py: 'Full', lg: 'Full' },
@@ -249,8 +255,8 @@ export const SettingsPage = () => {
                   { role: 'Property Manager', l: 'No Access', p: 'Add & Manage', c: 'No Access', py: 'No Access', lg: 'No Access' },
                   { role: 'Accountant', l: 'View Converted', p: 'View', c: 'No Access', py: 'Record, Verify, Refund', lg: 'Ledger Reconcile' }
                 ].map((r, i) => (
-                  <tr key={i} className="hover:bg-slate-50">
-                    <td className="py-3 px-4 font-bold text-slate-900">{r.role}</td>
+                  <tr key={i} className="hover:bg-[#243249]/60 transition-colors">
+                    <td className="py-3 px-4 font-bold text-[#F8FAFC]">{r.role}</td>
                     <td className="py-3 px-4"><Badge>{r.l}</Badge></td>
                     <td className="py-3 px-4"><Badge>{r.p}</Badge></td>
                     <td className="py-3 px-4"><Badge>{r.c}</Badge></td>

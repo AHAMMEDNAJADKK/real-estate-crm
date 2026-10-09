@@ -33,23 +33,23 @@ export const LeadDrawer = ({
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#0F172A]/75 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-xl bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-800 flex flex-col">
+        <div className="w-screen max-w-xl bg-[#1E2B40] text-[#F8FAFC] shadow-2xl border-l border-[#334155] flex flex-col">
           {/* Header */}
-          <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div className="p-6 border-b border-[#334155] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#442d82]/10 text-[#442d82] dark:text-purple-300 flex items-center justify-center font-bold text-lg">
+              <div className="w-12 h-12 rounded-2xl bg-[#4C2A8A]/30 text-purple-300 border border-[#6D28D9]/30 flex items-center justify-center font-bold text-lg">
                 {(lead.name || lead.leadName || 'L').slice(0, 2).toUpperCase()}
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-[#F8FAFC]">
                   {lead.name || lead.leadName}
                 </h3>
-                <p className="text-xs text-slate-500 font-mono">
+                <p className="text-xs text-[#94A3B8] font-mono">
                   {lead.leadNumber || 'ID: ' + lead._id?.slice(-6)}
                 </p>
               </div>
@@ -59,7 +59,7 @@ export const LeadDrawer = ({
               <StatusBadge status={lead.temperature} />
               <button
                 onClick={onClose}
-                className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer"
+                className="p-2 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] rounded-full transition-colors cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -67,7 +67,7 @@ export const LeadDrawer = ({
           </div>
 
           {/* Quick Action Toolbar */}
-          <div className="px-6 py-3.5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+          <div className="px-6 py-3.5 bg-[#243249] border-b border-[#334155] flex items-center justify-between gap-3">
             <Button
               variant="primary"
               size="sm"
@@ -76,7 +76,7 @@ export const LeadDrawer = ({
             >
               Log Call
             </Button>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
+            <div className="flex items-center gap-2 text-xs text-[#94A3B8]">
               <Badge variant="default">{lead.status || 'New'}</Badge>
               <Badge variant="accent">{lead.source || 'Direct'}</Badge>
             </div>
@@ -85,37 +85,37 @@ export const LeadDrawer = ({
           {/* Scrollable Content */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {/* Contact Details */}
-            <div className="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 space-y-3">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+            <div className="bg-[#243249] p-4 rounded-2xl border border-[#334155] space-y-3">
+              <h4 className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
                 Contact Information
               </h4>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="flex items-center gap-2 text-slate-700 dark:text-slate-200">
-                  <Phone size={16} className="text-slate-400" />
+                <div className="flex items-center gap-2 text-[#F8FAFC]">
+                  <Phone size={16} className="text-[#64748B]" />
                   <span className="font-semibold">{lead.phone || '—'}</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-700 dark:text-slate-200 truncate">
-                  <Mail size={16} className="text-slate-400" />
+                <div className="flex items-center gap-2 text-[#F8FAFC] truncate">
+                  <Mail size={16} className="text-[#64748B]" />
                   <span className="truncate">{lead.email || '—'}</span>
                 </div>
               </div>
             </div>
 
             {/* Property Interest & Budget */}
-            <div className="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 space-y-3">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+            <div className="bg-[#243249] p-4 rounded-2xl border border-[#334155] space-y-3">
+              <h4 className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
                 Interest & Budget
               </h4>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <span className="text-xs text-slate-400 block">Target Budget</span>
-                  <span className="font-bold text-slate-900 dark:text-white">
+                  <span className="text-xs text-[#94A3B8] block">Target Budget</span>
+                  <span className="font-bold text-[#F8FAFC]">
                     {formatCurrency(lead.budget)}
                   </span>
                 </div>
                 <div>
-                  <span className="text-xs text-slate-400 block">Unit Preference</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">
+                  <span className="text-xs text-[#94A3B8] block">Unit Preference</span>
+                  <span className="font-semibold text-[#F8FAFC]">
                     {lead.preferredPropertyType || 'Any'}
                   </span>
                 </div>
@@ -124,15 +124,15 @@ export const LeadDrawer = ({
 
             {/* Assignment & Notes */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <h4 className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
                 Assignment Details
               </h4>
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm">
+              <div className="flex items-center justify-between p-3.5 rounded-xl border border-[#334155] bg-[#243249] text-sm">
                 <div className="flex items-center gap-2">
-                  <User size={16} className="text-slate-400" />
-                  <span className="text-slate-600 dark:text-slate-400">Assigned Executive:</span>
+                  <User size={16} className="text-[#64748B]" />
+                  <span className="text-[#94A3B8]">Assigned Executive:</span>
                 </div>
-                <span className="font-semibold text-slate-900 dark:text-white">
+                <span className="font-semibold text-[#F8FAFC]">
                   {lead.assignedTo?.name || 'Unassigned'}
                 </span>
               </div>
@@ -141,10 +141,10 @@ export const LeadDrawer = ({
             {/* Notes */}
             {lead.notes && (
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <h4 className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
                   Remarks & Notes
                 </h4>
-                <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/30 text-sm text-slate-700 dark:text-slate-300">
+                <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-900/30 text-sm text-amber-200">
                   {lead.notes}
                 </div>
               </div>
@@ -152,8 +152,8 @@ export const LeadDrawer = ({
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-            <p className="text-xs text-slate-400 text-center">
+          <div className="p-6 border-t border-[#334155] bg-[#1E2B40]">
+            <p className="text-xs text-[#94A3B8] text-center">
               Created on {formatDate(lead.createdAt, true)}
             </p>
           </div>

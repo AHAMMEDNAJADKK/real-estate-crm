@@ -7,13 +7,13 @@ export const Badge = ({
   className = ''
 }) => {
   const variants = {
-    default: 'bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
-    primary: 'bg-[#442d82]/10 text-[#442d82] border-[#442d82]/20 dark:bg-[#442d82]/30 dark:text-purple-300 dark:border-[#442d82]/40',
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800',
-    warning: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800',
-    danger: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800',
-    accent: 'bg-[#b7d333]/20 text-slate-900 border-[#b7d333]/40 dark:bg-[#b7d333]/30 dark:text-[#b7d333] dark:border-[#b7d333]/40',
-    info: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800'
+    default: 'bg-[#243249] text-[#94A3B8] border-[#334155]',
+    primary: 'bg-[#4C2A8A]/40 text-purple-300 border-[#6D28D9]/40',
+    success: 'bg-emerald-950/40 text-emerald-400 border-emerald-800/60',
+    warning: 'bg-amber-950/40 text-amber-400 border-amber-800/60',
+    danger: 'bg-rose-950/40 text-rose-400 border-rose-800/60',
+    accent: 'bg-[#84CC16]/20 text-[#84CC16] border-[#84CC16]/40',
+    info: 'bg-sky-950/40 text-sky-400 border-sky-800/60'
   };
 
   const sizes = {

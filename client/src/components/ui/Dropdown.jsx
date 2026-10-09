@@ -26,7 +26,7 @@ export const Dropdown = ({
         {trigger || (
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-[#243249] border border-[#334155] text-[#F8FAFC] hover:bg-[#1E2B40]"
           >
             Options <ChevronDown size={14} />
           </button>
@@ -35,7 +35,7 @@ export const Dropdown = ({
 
       {isOpen && (
         <div
-          className={`absolute z-50 mt-2 w-48 rounded-2xl bg-white dark:bg-slate-900 shadow-xl border border-slate-200/80 dark:border-slate-800 py-1.5 transform transition-all ${
+          className={`absolute z-50 mt-2 w-48 rounded-2xl bg-[#1E2B40] text-[#F8FAFC] shadow-xl border border-[#334155] py-1.5 transform transition-all ${
             align === 'right' ? 'right-0' : 'left-0'
           }`}
         >
@@ -44,7 +44,7 @@ export const Dropdown = ({
               return (
                 <div
                   key={index}
-                  className="my-1 border-t border-slate-100 dark:border-slate-800"
+                  className="my-1 border-t border-[#334155]"
                 />
               );
             }
@@ -59,8 +59,8 @@ export const Dropdown = ({
                 disabled={item.disabled}
                 className={`w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-left transition-colors cursor-pointer ${
                   item.danger
-                    ? 'text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30'
-                    : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                    ? 'text-rose-400 hover:bg-rose-950/40'
+                    : 'text-[#F8FAFC] hover:bg-[#243249]'
                 } ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {item.icon && <item.icon size={15} />}

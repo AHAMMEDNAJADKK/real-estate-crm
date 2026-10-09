@@ -5,34 +5,37 @@ export const Button = ({
   variant = 'primary',
   size = 'md',
   isLoading = false,
+  loading = false,
   disabled = false,
   className = '',
   icon: Icon,
   ...props
 }) => {
-  const base = 'inline-flex items-center justify-center font-medium transition-all rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const isBusy = isLoading || loading;
+  const base = 'inline-flex items-center justify-center font-semibold transition-all rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-1';
 
   const variants = {
-    primary: 'bg-[#442d82] text-white hover:bg-[#35216b] focus:ring-[#442d82] shadow-sm',
-    accent: 'bg-[#b7d333] text-slate-900 hover:bg-[#a2bd26] focus:ring-[#b7d333] font-semibold shadow-sm',
-    secondary: 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 focus:ring-slate-300 shadow-xs',
-    danger: 'bg-rose-600 text-white hover:bg-rose-700 focus:ring-rose-500 shadow-sm',
-    ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:ring-slate-200'
+    primary: 'bg-[#6D28D9] text-white hover:bg-[#5B21B6] focus:ring-[#6D28D9]/50 shadow-md shadow-[#6D28D9]/25 active:scale-[0.98]',
+    accent: 'bg-[#84CC16] text-slate-900 hover:bg-[#65A30D] focus:ring-[#84CC16]/50 font-bold shadow-md shadow-[#84CC16]/20',
+    secondary: 'bg-[#243249] text-[#F8FAFC] border border-[#334155] hover:bg-[#334155] hover:border-[#475569] focus:ring-[#6D28D9]/30',
+    outline: 'border border-[#334155] text-[#F8FAFC] hover:bg-[#243249] focus:ring-[#6D28D9]/30',
+    danger: 'bg-[#EF4444] text-white hover:bg-[#DC2626] focus:ring-[#EF4444]/50 shadow-md shadow-[#EF4444]/20',
+    ghost: 'text-[#94A3B8] hover:bg-[#243249] hover:text-[#F8FAFC]'
   };
 
   const sizes = {
     sm: 'text-xs px-3 py-1.5 gap-1.5',
-    md: 'text-sm px-4 py-2 gap-2',
-    lg: 'text-base px-5 py-2.5 gap-2.5'
+    md: 'text-xs sm:text-sm px-4 py-2 gap-2',
+    lg: 'text-sm sm:text-base px-5 py-2.5 gap-2.5'
   };
 
   return (
     <button
-      disabled={disabled || isLoading}
+      disabled={disabled || isBusy}
       className={`${base} ${variants[variant] || variants.primary} ${sizes[size] || sizes.md} ${className}`}
       {...props}
     >
-      {isLoading ? (
+      {isBusy ? (
         <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
       ) : Icon ? (
         <Icon className="w-4 h-4 flex-shrink-0" />

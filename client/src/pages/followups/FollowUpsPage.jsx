@@ -67,8 +67,8 @@ export const FollowUpsPage = () => {
       accessor: 'lead',
       render: (row) => (
         <div>
-          <span className="font-semibold text-slate-900 block">{row.lead?.leadName}</span>
-          <span className="text-xs text-slate-500">{row.lead?.phone}</span>
+          <span className="font-semibold text-[#F8FAFC] block">{row.lead?.leadName}</span>
+          <span className="text-xs text-[#94A3B8]">{row.lead?.phone}</span>
         </div>
       )
     },
@@ -78,7 +78,7 @@ export const FollowUpsPage = () => {
       render: (row) => {
         const isOverdue = new Date(row.scheduledDate) < new Date() && row.status === 'Pending';
         return (
-          <span className={`text-xs font-medium flex items-center gap-1.5 ${isOverdue ? 'text-rose-600 font-bold' : 'text-slate-700'}`}>
+          <span className={`text-xs font-medium flex items-center gap-1.5 ${isOverdue ? 'text-rose-400 font-bold' : 'text-[#F8FAFC]'}`}>
             {isOverdue && <AlertCircle className="w-3.5 h-3.5" />}
             {new Date(row.scheduledDate).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
           </span>
@@ -133,17 +133,17 @@ export const FollowUpsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Customer Follow-up Scheduler</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Manage scheduled reminders, overdue calls, and interaction plans</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Customer Follow-up Scheduler</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Manage scheduled reminders, overdue calls, and interaction plans</p>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 flex-wrap">
-        <span className="text-xs font-semibold text-slate-500 uppercase">Filters:</span>
+      <div className="flex items-center gap-3 bg-[#1E2B40] p-4 rounded-2xl border border-[#334155] flex-wrap">
+        <span className="text-xs font-semibold text-[#94A3B8] uppercase">Filters:</span>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none"
+          className="text-xs bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#6D28D9]"
         >
           <option value="">All Statuses</option>
           <option value="Pending">Pending</option>
@@ -153,8 +153,8 @@ export const FollowUpsPage = () => {
           onClick={() => setOverdueFilter(!overdueFilter)}
           className={`text-xs px-3 py-1.5 rounded-xl border font-medium transition-colors ${
             overdueFilter
-              ? 'bg-rose-50 border-rose-300 text-rose-700'
-              : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+              ? 'bg-rose-950/40 border-rose-800 text-rose-400'
+              : 'bg-[#243249] border-[#334155] text-[#94A3B8] hover:text-[#F8FAFC]'
           }`}
         >
           {overdueFilter ? 'Showing Overdue Only' : 'Show Overdue'}
@@ -181,17 +181,17 @@ export const FollowUpsPage = () => {
         >
           <form onSubmit={handleMarkComplete} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Follow-up Outcome Notes *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Follow-up Outcome Notes *</label>
               <textarea
                 required
                 rows="3"
                 value={outcomeNotes}
                 onChange={(e) => setOutcomeNotes(e.target.value)}
                 placeholder="Discussed floor options, customer visiting site this weekend..."
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
-            <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
               <Button variant="secondary" type="button" onClick={() => setSelectedFollowUp(null)}>
                 Cancel
               </Button>

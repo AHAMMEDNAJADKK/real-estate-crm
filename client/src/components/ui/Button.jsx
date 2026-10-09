@@ -15,12 +15,12 @@ export const Button = ({
   const baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
 
   const variants = {
-    primary: 'bg-[#442d82] text-white hover:bg-[#342266] focus:ring-[#442d82]/50 shadow-sm active:scale-[0.98]',
-    secondary: 'bg-slate-100 text-slate-700 hover:bg-slate-200 focus:ring-slate-400 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700',
-    accent: 'bg-[#b7d333] text-slate-900 font-semibold hover:bg-[#a5bf2b] focus:ring-[#b7d333]/50 shadow-sm',
-    outline: 'border border-slate-300 text-slate-700 hover:bg-slate-50 focus:ring-slate-300 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800',
-    danger: 'bg-rose-600 text-white hover:bg-rose-700 focus:ring-rose-500 shadow-sm',
-    ghost: 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+    primary: 'bg-[#6D28D9] text-white hover:bg-[#5B21B6] focus:ring-[#6D28D9]/50 shadow-md shadow-[#6D28D9]/25 active:scale-[0.98]',
+    secondary: 'bg-[#243249] text-[#F8FAFC] border border-[#334155] hover:bg-[#334155] hover:border-[#475569] focus:ring-[#6D28D9]/30',
+    accent: 'bg-[#84CC16] text-slate-900 font-bold hover:bg-[#65A30D] focus:ring-[#84CC16]/50 shadow-md shadow-[#84CC16]/20',
+    outline: 'border border-[#334155] text-[#F8FAFC] hover:bg-[#243249] focus:ring-[#6D28D9]/30',
+    danger: 'bg-[#EF4444] text-white hover:bg-[#DC2626] focus:ring-[#EF4444]/50 shadow-sm',
+    ghost: 'text-[#94A3B8] hover:bg-[#243249] hover:text-[#F8FAFC]'
   };
 
   const sizes = {

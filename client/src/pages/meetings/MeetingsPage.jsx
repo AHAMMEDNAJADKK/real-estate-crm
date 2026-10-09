@@ -89,8 +89,8 @@ export const MeetingsPage = () => {
       accessor: 'title',
       render: (row) => (
         <div>
-          <span className="font-semibold text-slate-900 block">{row.title}</span>
-          <span className="text-xs text-slate-500">
+          <span className="font-semibold text-[#F8FAFC] block">{row.title}</span>
+          <span className="text-xs text-[#94A3B8]">
             {row.lead?.leadName || row.customer?.name || 'Prospective Client'} &bull; {row.lead?.phone || row.customer?.phone}
           </span>
         </div>
@@ -101,11 +101,11 @@ export const MeetingsPage = () => {
       accessor: 'scheduledDate',
       render: (row) => (
         <div>
-          <span className="text-xs font-semibold text-slate-800 block">
+          <span className="text-xs font-semibold text-[#F8FAFC] block">
             {new Date(row.scheduledDate).toLocaleDateString()}
           </span>
-          <span className="text-xs text-slate-500 flex items-center gap-1">
-            <Clock className="w-3 h-3 text-slate-400" /> {row.time}
+          <span className="text-xs text-[#94A3B8] flex items-center gap-1">
+            <Clock className="w-3 h-3 text-[#64748B]" /> {row.time}
           </span>
         </div>
       )
@@ -115,11 +115,11 @@ export const MeetingsPage = () => {
       accessor: 'meetingType',
       render: (row) => (
         <div>
-          <span className="text-xs font-medium text-slate-800 flex items-center gap-1">
-            {row.meetingType.includes('Online') ? <Video className="w-3 h-3 text-blue-500" /> : <MapPin className="w-3 h-3 text-slate-400" />}
+          <span className="text-xs font-medium text-[#F8FAFC] flex items-center gap-1">
+            {row.meetingType.includes('Online') ? <Video className="w-3 h-3 text-purple-400" /> : <MapPin className="w-3 h-3 text-[#64748B]" />}
             {row.meetingType}
           </span>
-          <span className="text-[11px] text-slate-500 block truncate max-w-xs">{row.location}</span>
+          <span className="text-[11px] text-[#94A3B8] block truncate max-w-xs">{row.location}</span>
         </div>
       )
     },
@@ -130,7 +130,7 @@ export const MeetingsPage = () => {
         <select
           value={row.status}
           onChange={(e) => handleStatusUpdate(row._id, e.target.value)}
-          className="text-xs rounded-lg border border-slate-200 px-2 py-1 bg-white focus:outline-none"
+          className="text-xs rounded-lg border border-[#334155] px-2 py-1 bg-[#243249] text-[#F8FAFC] focus:outline-none focus:border-[#6D28D9]"
         >
           {['Scheduled', 'Completed', 'Cancelled', 'Rescheduled'].map(s => (
             <option key={s} value={s}>{s}</option>
@@ -141,7 +141,7 @@ export const MeetingsPage = () => {
     {
       header: 'Assigned Agent',
       accessor: 'assignedEmployee',
-      render: (row) => <span className="text-xs text-slate-700">{row.assignedEmployee?.name || 'Staff'}</span>
+      render: (row) => <span className="text-xs text-[#F8FAFC]">{row.assignedEmployee?.name || 'Staff'}</span>
     }
   ];
 
@@ -149,8 +149,8 @@ export const MeetingsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Client Consultation & Meetings</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Schedule and record office discussions, zoom calls, and negotiation sessions</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Client Consultation & Meetings</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Schedule and record office discussions, zoom calls, and negotiation sessions</p>
         </div>
         <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
           Schedule Meeting
@@ -177,24 +177,24 @@ export const MeetingsPage = () => {
       >
         <form onSubmit={handleCreateMeeting} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Meeting Title *</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Meeting Title *</label>
             <input
               type="text"
               required
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="e.g. Skyline 3BHK Price Discussion"
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Select Lead</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Select Lead</label>
               <select
                 value={form.lead}
                 onChange={(e) => setForm({ ...form, lead: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 <option value="">Select Existing Lead</option>
                 {leads.map(l => (
@@ -204,11 +204,11 @@ export const MeetingsPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Meeting Type</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Meeting Type</label>
               <select
                 value={form.meetingType}
                 onChange={(e) => setForm({ ...form, meetingType: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 {['Office Meeting', 'Online (Google Meet/Zoom)', 'Client Location', 'Site Discussion'].map(t => (
                   <option key={t} value={t}>{t}</option>
@@ -217,45 +217,45 @@ export const MeetingsPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Scheduled Date *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Scheduled Date *</label>
               <input
                 type="date"
                 required
                 value={form.scheduledDate}
                 onChange={(e) => setForm({ ...form, scheduledDate: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Time</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Time</label>
               <input
                 type="text"
                 value={form.time}
                 onChange={(e) => setForm({ ...form, time: e.target.value })}
                 placeholder="11:00 AM"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Location / Meeting Link</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Location / Meeting Link</label>
             <input
               type="text"
               value={form.location}
               onChange={(e) => setForm({ ...form, location: e.target.value })}
               placeholder="e.g. Boardroom 2 or Google Meet URL"
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Assigned Executive</label>
+            <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Assigned Executive</label>
             <select
               value={form.assignedEmployee}
               onChange={(e) => setForm({ ...form, assignedEmployee: e.target.value })}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+              className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
             >
               <option value="">Select Executive</option>
               {employees.map(emp => (
@@ -264,7 +264,7 @@ export const MeetingsPage = () => {
             </select>
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

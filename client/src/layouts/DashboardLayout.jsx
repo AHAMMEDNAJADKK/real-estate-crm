@@ -11,7 +11,7 @@ export const DashboardLayout = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#182437] text-white">
         <Spinner size="lg" />
       </div>
     );
@@ -22,16 +22,21 @@ export const DashboardLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-[#182437] text-[#F8FAFC] flex">
+      {/* Sidebar with dark navy #1E2B40 background */}
       <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+
+      {/* Main Content Area */}
       <div
         className={`flex-1 flex flex-col transition-all duration-300 min-w-0 ${
           isCollapsed ? 'ml-20' : 'ml-64'
         }`}
       >
         <Header isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
-        <main className="flex-1 p-6 overflow-x-hidden">
-          <Outlet />
+        <main className="flex-1 p-6 lg:p-8 overflow-x-hidden min-w-0 bg-[#182437]">
+          <div className="max-w-7xl mx-auto space-y-6">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

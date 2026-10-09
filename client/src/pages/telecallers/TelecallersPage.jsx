@@ -87,8 +87,8 @@ export const TelecallersPage = () => {
       accessor: 'lead',
       render: (row) => (
         <div>
-          <span className="font-semibold text-slate-900 block">{row.lead?.leadName || 'Lead'}</span>
-          <span className="text-xs text-slate-500">{row.lead?.phone || 'N/A'}</span>
+          <span className="font-semibold text-[#F8FAFC] block">{row.lead?.leadName || 'Lead'}</span>
+          <span className="text-xs text-[#94A3B8]">{row.lead?.phone || 'N/A'}</span>
         </div>
       )
     },
@@ -106,21 +106,21 @@ export const TelecallersPage = () => {
       header: 'Duration',
       accessor: 'callDurationSeconds',
       render: (row) => (
-        <span className="text-xs text-slate-600 flex items-center gap-1">
-          <Clock className="w-3 h-3 text-slate-400" /> {Math.floor((row.callDurationSeconds || 0) / 60)}m {(row.callDurationSeconds || 0) % 60}s
+        <span className="text-xs text-[#94A3B8] flex items-center gap-1">
+          <Clock className="w-3 h-3 text-[#64748B]" /> {Math.floor((row.callDurationSeconds || 0) / 60)}m {(row.callDurationSeconds || 0) % 60}s
         </span>
       )
     },
     {
       header: 'Telecaller',
       accessor: 'telecaller',
-      render: (row) => <span className="text-xs font-medium text-slate-700">{row.telecaller?.name || 'Staff'}</span>
+      render: (row) => <span className="text-xs font-medium text-[#F8FAFC]">{row.telecaller?.name || 'Staff'}</span>
     },
     {
       header: 'Notes & Follow-up',
       accessor: 'notes',
       render: (row) => (
-        <div className="max-w-xs truncate text-xs text-slate-600">
+        <div className="max-w-xs truncate text-xs text-[#94A3B8]">
           {row.notes || 'No call notes recorded'}
         </div>
       )
@@ -129,7 +129,7 @@ export const TelecallersPage = () => {
       header: 'Call Date & Time',
       accessor: 'createdAt',
       render: (row) => (
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-[#94A3B8]">
           {new Date(row.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
         </span>
       )
@@ -140,8 +140,8 @@ export const TelecallersPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Telecaller Workspace & Calling Desk</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Dial through assigned leads, log call outcomes, and set next reminders</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Telecaller Workspace & Calling Desk</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Dial through assigned leads, log call outcomes, and set next reminders</p>
         </div>
       </div>
 
@@ -154,14 +154,14 @@ export const TelecallersPage = () => {
         >
           <div className="space-y-3 max-h-60 overflow-y-auto">
             {queue.pendingFollowUps.length === 0 ? (
-              <p className="text-xs text-slate-500 text-center py-6">No scheduled follow-ups pending right now</p>
+              <p className="text-xs text-[#94A3B8] text-center py-6">No scheduled follow-ups pending right now</p>
             ) : (
               queue.pendingFollowUps.map((fu) => (
-                <div key={fu._id} className="p-3 bg-amber-50/50 border border-amber-200/60 rounded-xl flex items-center justify-between">
+                <div key={fu._id} className="p-3 bg-[#243249]/60 border border-amber-500/30 rounded-xl flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-slate-900 block">{fu.lead?.leadName}</span>
-                    <span className="text-xs text-slate-500 flex items-center gap-1">
-                      <PhoneCall className="w-3 h-3" /> {fu.lead?.phone}
+                    <span className="text-xs font-bold text-[#F8FAFC] block">{fu.lead?.leadName}</span>
+                    <span className="text-xs text-[#94A3B8] flex items-center gap-1">
+                      <PhoneCall className="w-3 h-3 text-[#64748B]" /> {fu.lead?.phone}
                     </span>
                   </div>
                   <Button
@@ -185,13 +185,13 @@ export const TelecallersPage = () => {
         >
           <div className="space-y-3 max-h-60 overflow-y-auto">
             {queue.freshLeads.length === 0 ? (
-              <p className="text-xs text-slate-500 text-center py-6">All assigned fresh leads have been contacted</p>
+              <p className="text-xs text-[#94A3B8] text-center py-6">All assigned fresh leads have been contacted</p>
             ) : (
               queue.freshLeads.map((ld) => (
-                <div key={ld._id} className="p-3 bg-indigo-50/40 border border-indigo-200/60 rounded-xl flex items-center justify-between">
+                <div key={ld._id} className="p-3 bg-[#243249]/60 border border-purple-500/30 rounded-xl flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-slate-900 block">{ld.leadName}</span>
-                    <span className="text-xs text-slate-500">{ld.phone} &bull; {ld.source}</span>
+                    <span className="text-xs font-bold text-[#F8FAFC] block">{ld.leadName}</span>
+                    <span className="text-xs text-[#94A3B8]">{ld.phone} &bull; {ld.source}</span>
                   </div>
                   <Button
                     size="sm"
@@ -228,12 +228,12 @@ export const TelecallersPage = () => {
         >
           <form onSubmit={handleSaveCallLog} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Call Outcome *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Call Outcome *</label>
               <select
                 required
                 value={logForm.callOutcome}
                 onChange={(e) => setLogForm({ ...logForm, callOutcome: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               >
                 {['Connected', 'Interested', 'Not Interested', 'Busy', 'RNT', 'Switched Off', 'Call Back', 'Wrong Number'].map(o => (
                   <option key={o} value={o}>{o}</option>
@@ -242,12 +242,12 @@ export const TelecallersPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Temperature Rating *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Temperature Rating *</label>
               <select
                 required
                 value={logForm.temperature}
                 onChange={(e) => setLogForm({ ...logForm, temperature: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               >
                 {['Hot', 'Warm', 'Cold', 'RNT', 'SwitchedOff', 'Call Back'].map(t => (
                   <option key={t} value={t}>{t}</option>
@@ -256,38 +256,38 @@ export const TelecallersPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Call Duration (Seconds)</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Call Duration (Seconds)</label>
               <input
                 type="number"
                 min="0"
                 value={logForm.callDurationSeconds}
                 onChange={(e) => setLogForm({ ...logForm, callDurationSeconds: Number(e.target.value) })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Schedule Next Follow-Up (Optional)</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Schedule Next Follow-Up (Optional)</label>
               <input
                 type="datetime-local"
                 value={logForm.nextFollowUpDate}
                 onChange={(e) => setLogForm({ ...logForm, nextFollowUpDate: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Call Notes / Discussion Summary</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Call Notes / Discussion Summary</label>
               <textarea
                 rows="3"
                 value={logForm.notes}
                 onChange={(e) => setLogForm({ ...logForm, notes: e.target.value })}
                 placeholder="Client requested brochure, scheduled site visit for Saturday..."
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]"
               />
             </div>
 
-            <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
               <Button variant="secondary" type="button" onClick={() => setIsLogOpen(false)}>
                 Cancel
               </Button>

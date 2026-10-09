@@ -77,8 +77,8 @@ export const EmployeesPage = () => {
       accessor: 'name',
       render: (row) => (
         <div>
-          <span className="font-bold text-slate-900 block">{row.name}</span>
-          <span className="text-xs text-[#442d82] font-semibold capitalize">{row.role?.replace('_', ' ')}</span>
+          <span className="font-bold text-[#F8FAFC] block">{row.name}</span>
+          <span className="text-xs text-purple-300 font-semibold capitalize">{row.role?.replace('_', ' ')}</span>
         </div>
       )
     },
@@ -87,8 +87,8 @@ export const EmployeesPage = () => {
       accessor: 'email',
       render: (row) => (
         <div>
-          <span className="text-xs text-slate-700 flex items-center gap-1"><Mail className="w-3 h-3 text-slate-400" /> {row.email}</span>
-          <span className="text-xs text-slate-500 flex items-center gap-1 mt-0.5"><Phone className="w-3 h-3 text-slate-400" /> {row.phone}</span>
+          <span className="text-xs text-[#F8FAFC] flex items-center gap-1"><Mail className="w-3 h-3 text-[#64748B]" /> {row.email}</span>
+          <span className="text-xs text-[#94A3B8] flex items-center gap-1 mt-0.5"><Phone className="w-3 h-3 text-[#64748B]" /> {row.phone}</span>
         </div>
       )
     },
@@ -117,8 +117,8 @@ export const EmployeesPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Staff & Team Management</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Manage employee roles, system permissions, and operational workloads</p>
+          <h1 className="text-xl font-bold text-[#F8FAFC]">Staff & Team Management</h1>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Manage employee roles, system permissions, and operational workloads</p>
         </div>
         <Button icon={Plus} onClick={() => setIsAddOpen(true)}>
           Onboard Employee
@@ -150,59 +150,59 @@ export const EmployeesPage = () => {
         <form onSubmit={handleCreateUser} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Full Name *</label>
               <input
                 type="text"
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Employee Name"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Email *</label>
               <input
                 type="email"
                 required
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="name@kodbrand.com"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Phone Number *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Phone Number *</label>
               <input
                 type="text"
                 required
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="Mobile Number"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Initial Password *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Initial Password *</label>
               <input
                 type="password"
                 required
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Minimum 6 characters"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">System Role *</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">System Role *</label>
               <select
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 {[
                   { id: 'super_admin', label: 'Super Admin' },
@@ -219,18 +219,18 @@ export const EmployeesPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Department</label>
+              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Department</label>
               <input
                 type="text"
                 value={form.department}
                 onChange={(e) => setForm({ ...form, department: e.target.value })}
                 placeholder="e.g. Sales, Telecalling, Finance"
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#442d82]"
+                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsAddOpen(false)}>
               Cancel
             </Button>
