@@ -2,11 +2,13 @@ import app from './app.js';
 import { connectDB } from './config/database.js';
 import { config } from './config/environment.js';
 import { AuthService } from './modules/auth/auth.service.js';
+import { startScheduledJobs } from './jobs/scheduler.js';
 
 const startServer = async () => {
   try {
     await connectDB();
     await AuthService.seedInitialAdmin();
+    startScheduledJobs();
 
     const server = app.listen(config.port, () => {
       console.log(`====================================================`);
