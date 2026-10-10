@@ -47,7 +47,9 @@ router.use('/reports', reportRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/settings', settingsRoutes);
 
-// Direct top-level aliases requested in Prompt Section 5
+// Direct top-level aliases requested in Prompt & PDF specification
+router.use('/leads-telecaller', telecallerRoutes);
+router.use('/performance-dashboard', dashboardRoutes);
 router.get('/call-logs', authenticate, getCallLogs);
 router.post('/call-logs', authenticate, validateRequest(['leadId', 'callOutcome']), recordCallLog);
 router.get('/follow-ups', authenticate, getFollowUps);

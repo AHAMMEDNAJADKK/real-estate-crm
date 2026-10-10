@@ -52,6 +52,7 @@ const paymentScheduleSchema = new mongoose.Schema({
   toJSON: {
     transform: (doc, ret) => {
       ret.id = ret._id.toString();
+      ret.milestones = ret.installments;
       delete ret.__v;
       return ret;
     }

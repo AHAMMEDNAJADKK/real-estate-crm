@@ -147,6 +147,9 @@ export class LeadsService {
               preferredLocation: lead.preferredLocation
             }
           });
+        } else {
+          cust.originatingLead = lead._id;
+          await cust.save();
         }
         lead.customer = cust._id;
       }

@@ -25,7 +25,7 @@ router.get('/export', authorize('super_admin', 'admin', 'sales_manager'), export
 
 router.get('/:id', getLeadById);
 router.patch('/:id', updateLead);
-router.patch('/:id/assignment', authorize('super_admin', 'admin', 'sales_manager'), assignLead);
+router.patch(['/:id/assignment', '/:id/assign'], authorize('super_admin', 'admin', 'sales_manager'), assignLead);
 router.patch('/:id/status', updateLeadStatus);
 router.get('/:id/history', getLeadHistory);
 

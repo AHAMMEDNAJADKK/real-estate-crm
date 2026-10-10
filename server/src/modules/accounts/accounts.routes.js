@@ -7,6 +7,7 @@ import { validateRequest } from '../../middleware/validateRequest.js';
 const router = Router();
 router.use(authenticate);
 
+router.get('/', authorize('super_admin', 'admin', 'accountant'), getTransactions);
 router.get('/transactions', authorize('super_admin', 'admin', 'accountant'), getTransactions);
 router.post(
   '/transactions',

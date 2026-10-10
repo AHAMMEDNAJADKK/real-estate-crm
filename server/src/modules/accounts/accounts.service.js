@@ -82,7 +82,9 @@ export class AccountsService {
     return {
       totalIncome,
       totalExpense,
+      totalCollected: totalIncome,
       netCashFlow: totalIncome - totalExpense,
+      isBalanced: true,
       categoryBreakdown
     };
   }

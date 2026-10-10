@@ -21,7 +21,7 @@ router.post(
   validateRequest(['bookingId', 'amount']),
   recordPayment
 );
-router.get('/:id/receipt', getReceipt);
+router.get(['/:id/receipt', '/receipt/:id'], getReceipt);
 router.post('/:id/verify', authorize('super_admin', 'admin', 'accountant'), verifyPayment);
 router.post(
   '/:id/refund',
@@ -29,6 +29,6 @@ router.post(
   validateRequest(['refundAmount', 'reason']),
   refundPayment
 );
-router.get('/booking/:id/schedule', getPaymentSchedule);
+router.get(['/booking/:id/schedule', '/schedule/:id'], getPaymentSchedule);
 
 export default router;

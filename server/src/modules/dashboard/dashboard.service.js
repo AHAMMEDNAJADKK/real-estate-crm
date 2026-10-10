@@ -123,6 +123,8 @@ export class DashboardService {
     });
 
     return {
+      totalCollections,
+      totalCollected: totalCollections,
       leads: {
         total: totalLeads,
         new: newLeads,
