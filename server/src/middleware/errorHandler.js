@@ -1,8 +1,16 @@
 import { logger } from '../utils/logger.js';
 import { sendError } from '../utils/response.js';
+import { isOriginAllowed } from '../config/environment.js';
 
 export const errorHandler = (err, req, res, next) => {
   logger.error(err.message, { stack: err.stack, path: req.originalUrl, method: req.method });
+
+  const origin = req.headers?.origin;
+  if (origin && isOriginAllowed(origin) && !res.getHeader('Access-Control-Allow-Origin')) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Vary', 'Origin');
+  }
 
   // Handle Mongoose duplicate key error (11000)
   if (err.code === 11000) {

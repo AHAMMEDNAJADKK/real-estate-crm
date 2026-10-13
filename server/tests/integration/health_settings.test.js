@@ -71,14 +71,55 @@ test('Integration Tests: System Health, Environment & Company Settings', async (
     const prevOrigins = process.env.ALLOWED_ORIGINS;
     try {
       process.env.NODE_ENV = 'production';
-      process.env.ALLOWED_ORIGINS = 'https://kodbrand-realestate-crm.vercel.app';
+      process.env.ALLOWED_ORIGINS = 'https://real-estate-crm-three-black.vercel.app, https://kodbrand-realestate-crm.vercel.app';
 
+      // 1. Health GET from allowed production origin
       const allowedRes = await request(app)
         .get('/api/health')
-        .set('Origin', 'https://kodbrand-realestate-crm.vercel.app');
+        .set('Origin', 'https://real-estate-crm-three-black.vercel.app');
       assert.equal(allowedRes.status, 200);
-      assert.equal(allowedRes.headers['access-control-allow-origin'], 'https://kodbrand-realestate-crm.vercel.app');
+      assert.equal(allowedRes.headers['access-control-allow-origin'], 'https://real-estate-crm-three-black.vercel.app');
+      assert.equal(allowedRes.headers['access-control-allow-credentials'], 'true');
 
+      // 2. Preflight OPTIONS request to /api/auth/login from live Vercel frontend
+      const preflightRes = await request(app)
+        .options('/api/auth/login')
+        .set('Origin', 'https://real-estate-crm-three-black.vercel.app')
+        .set('Access-Control-Request-Method', 'POST')
+        .set('Access-Control-Request-Headers', 'Content-Type, Authorization');
+      assert.equal(preflightRes.status, 204);
+      assert.equal(preflightRes.headers['access-control-allow-origin'], 'https://real-estate-crm-three-black.vercel.app');
+      assert.equal(preflightRes.headers['access-control-allow-credentials'], 'true');
+      assert.ok(preflightRes.headers['access-control-allow-methods'].includes('POST'));
+      assert.ok(preflightRes.headers['access-control-allow-headers'].toLowerCase().includes('content-type'));
+
+      // 3. Actual POST /api/auth/login request from live Vercel frontend
+      const loginCorsRes = await request(app)
+        .post('/api/auth/login')
+        .set('Origin', 'https://real-estate-crm-three-black.vercel.app')
+        .send({ email: 'settings_admin@kodbrand.com', password: 'Password@123' });
+      assert.equal(loginCorsRes.status, 200);
+      assert.equal(loginCorsRes.headers['access-control-allow-origin'], 'https://real-estate-crm-three-black.vercel.app');
+      assert.equal(loginCorsRes.headers['access-control-allow-credentials'], 'true');
+
+      // 4. Failed login request (401) still preserves CORS headers for allowed origin
+      const failedLoginCorsRes = await request(app)
+        .post('/api/auth/login')
+        .set('Origin', 'https://real-estate-crm-three-black.vercel.app')
+        .send({ email: 'settings_admin@kodbrand.com', password: 'WrongPassword@999' });
+      assert.equal(failedLoginCorsRes.status, 401);
+      assert.equal(failedLoginCorsRes.headers['access-control-allow-origin'], 'https://real-estate-crm-three-black.vercel.app');
+      assert.equal(failedLoginCorsRes.headers['access-control-allow-credentials'], 'true');
+
+      // 5. Preflight OPTIONS request from unauthorized origin is rejected without CORS header
+      const blockedPreflightRes = await request(app)
+        .options('/api/auth/login')
+        .set('Origin', 'https://malicious-attacker.vercel.app')
+        .set('Access-Control-Request-Method', 'POST');
+      assert.equal(blockedPreflightRes.status, 403);
+      assert.equal(blockedPreflightRes.headers['access-control-allow-origin'], undefined);
+
+      // 6. Request from unauthorized origin is rejected with 403
       const blockedRes = await request(app)
         .get('/api/health')
         .set('Origin', 'https://malicious-attacker.vercel.app');

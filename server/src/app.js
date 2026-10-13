@@ -6,65 +6,39 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import apiRoutes from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import { config } from './config/environment.js';
+import { config, isOriginAllowed } from './config/environment.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
-const isOriginAllowed = (origin) => {
-  if (!origin) return true;
-
-  const normalizedOrigin = origin.trim().replace(/\/+$/, '');
-  const isProd = config.nodeEnv === 'production';
-  const configuredOrigins = config.allowedOrigins;
-
-  for (const allowed of configuredOrigins) {
-    if (!allowed) continue;
-    if (!isProd && allowed === '*') return true;
-    if (allowed === normalizedOrigin) return true;
-
-    // Support intentional preview domain pattern only when explicitly configured (e.g. https://my-app-*.vercel.app)
-    if (allowed.includes('*') && allowed !== '*') {
-      const regexPattern =
-        '^' +
-        allowed
-          .split('*')
-          .map((segment) => segment.replace(/[.+?^${}()|[\]\\]/g, '\\$&'))
-          .join('[a-zA-Z0-9-]+') +
-        '$';
-      if (new RegExp(regexPattern, 'i').test(normalizedOrigin)) {
-        return true;
-      }
+export const corsOptions = {
+  origin: (origin, callback) => {
+    if (isOriginAllowed(origin)) {
+      return callback(null, true);
     }
-  }
-
-  if (!isProd) {
-    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalizedOrigin)) {
-      return true;
-    }
-  }
-
-  return false;
+    const corsError = new Error('Origin not allowed by CORS policy');
+    corsError.statusCode = 403;
+    return callback(corsError);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Cache-Control',
+    'Pragma'
+  ],
+  optionsSuccessStatus: 204
 };
 
-// CORS Configuration supporting configured local origins in development and strict origins in production
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (isOriginAllowed(origin)) {
-        return callback(null, true);
-      }
-      const corsError = new Error('Origin not allowed by CORS policy');
-      corsError.statusCode = 403;
-      return callback(corsError);
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
-  })
-);
+// CORS middleware executing before routes, authentication middleware, and error handlers
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Parsers
 app.use(express.json({ limit: '25mb' }));

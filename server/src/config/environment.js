@@ -29,6 +29,49 @@ const DEFAULT_DEV_ORIGINS = [
   'http://127.0.0.1:5174'
 ];
 
+export const DEFAULT_PROD_ORIGINS = [
+  'https://real-estate-crm-three-black.vercel.app'
+];
+
+export const isOriginAllowed = (
+  origin,
+  { nodeEnv = config.nodeEnv, allowedOrigins = config.allowedOrigins } = {}
+) => {
+  if (!origin) return true;
+
+  const normalizedOrigin = String(origin).trim().replace(/\/+$/, '').toLowerCase();
+  const isProd = nodeEnv === 'production';
+
+  for (const allowed of allowedOrigins) {
+    if (!allowed) continue;
+    const normalizedAllowed = String(allowed).trim().replace(/\/+$/, '').toLowerCase();
+    if (!isProd && normalizedAllowed === '*') return true;
+    if (normalizedAllowed === normalizedOrigin) return true;
+
+    // Support intentional preview domain pattern only when explicitly configured (e.g. https://my-app-*.vercel.app)
+    if (normalizedAllowed.includes('*') && normalizedAllowed !== '*') {
+      const regexPattern =
+        '^' +
+        normalizedAllowed
+          .split('*')
+          .map((segment) => segment.replace(/[.+?^${}()|[\]\\]/g, '\\$&'))
+          .join('[a-zA-Z0-9-]+') +
+        '$';
+      if (new RegExp(regexPattern, 'i').test(normalizedOrigin)) {
+        return true;
+      }
+    }
+  }
+
+  if (!isProd) {
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalizedOrigin)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export const isRenderRuntime = () =>
   Boolean(
     process.env.RENDER === 'true' ||
@@ -167,15 +210,18 @@ export const config = {
 
     const isProd = this.nodeEnv === 'production';
 
-    if (rawParts.trim()) {
-      const parsed = rawParts
-        .split(',')
-        .map((o) => stripWrappingQuotes(o).replace(/\/+$/, ''))
-        .filter((o) => Boolean(o) && (!isProd || o !== '*'));
-      return [...new Set(parsed)];
+    const parsed = rawParts
+      .split(',')
+      .map((o) => stripWrappingQuotes(o).replace(/\/+$/, ''))
+      .filter((o) => Boolean(o) && (!isProd || o !== '*'));
+
+    if (isProd) {
+      return [...new Set([...parsed, ...DEFAULT_PROD_ORIGINS])];
     }
 
-    return isProd ? [] : [...DEFAULT_DEV_ORIGINS];
+    return parsed.length > 0
+      ? [...new Set([...parsed, ...DEFAULT_DEV_ORIGINS, ...DEFAULT_PROD_ORIGINS])]
+      : [...DEFAULT_DEV_ORIGINS, ...DEFAULT_PROD_ORIGINS];
   }
 };
 
