@@ -12,6 +12,9 @@ dotenv.config({ override: false });
 const WEAK_PRODUCTION_JWT_SECRETS = new Set([
   'your_super_secret_jwt_key_here_change_in_production',
   'kodbrand_enterprise_crm_jwt_super_secret_key_2026_realestate',
+  'super_secret_jwt_key_kodbrand_enterprise_2026',
+  'superadmin@111',
+  'Password@123',
   'changeme',
   'secret',
   'jwt_secret'
@@ -98,9 +101,14 @@ export const validateJwtSecret = (
   }
 
   if (isProdOrRender) {
-    if (secret.length < 32 || WEAK_PRODUCTION_JWT_SECRETS.has(secret)) {
+    if (WEAK_PRODUCTION_JWT_SECRETS.has(secret)) {
       throw new Error(
-        'A strong, unique JWT_SECRET (minimum 32 characters) is required in production.'
+        'A strong, unique JWT_SECRET (minimum 32 characters) is required in production. Do not use default placeholder secrets or account passwords; configure a unique cryptographically random secret in Render Environment Variables.'
+      );
+    }
+    if (secret.length < 32) {
+      throw new Error(
+        `A strong, unique JWT_SECRET (minimum 32 characters) is required in production (current length: ${secret.length}).`
       );
     }
   }

@@ -30,7 +30,6 @@ const startServer = async () => {
     validateEnvironment();
     await connectDB();
     await AuthService.seedInitialAdmin();
-    startScheduledJobs();
 
     let retriedPort = false;
 
@@ -41,6 +40,12 @@ const startServer = async () => {
         console.log(`  🚀 Port: ${config.port} | Mode: ${config.nodeEnv}`);
         console.log(`  🌐 Base API: http://localhost:${config.port}/api`);
         console.log(`====================================================`);
+
+        try {
+          startScheduledJobs();
+        } catch (schedulerError) {
+          console.error('[Scheduler] Non-fatal background job initialization error:', schedulerError.message);
+        }
       });
 
       const shutdown = (signal) => {
