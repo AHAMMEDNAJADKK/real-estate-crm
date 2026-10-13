@@ -1,8 +1,19 @@
 import axios from 'axios';
 
 const normalizeApiBaseUrl = (rawUrl) => {
-  const trimmed = (rawUrl || '/api').trim().replace(/\/+$/, '');
+  const trimmed = (rawUrl || '/api').trim().replace(/^["']+|["']+$/g, '').replace(/\/+$/, '');
   if (!trimmed || trimmed === '/api') return '/api';
+
+  const isLocalTarget = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(trimmed);
+  const isRemoteBrowserHost =
+    typeof window !== 'undefined' &&
+    window.location?.hostname &&
+    !/^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
+
+  if (isLocalTarget && (import.meta.env.PROD || isRemoteBrowserHost)) {
+    return '/api';
+  }
+
   if (/\/api(\/v\d+)?$/i.test(trimmed)) return trimmed;
   return `${trimmed}/api`;
 };

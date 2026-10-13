@@ -5,9 +5,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Explicitly load server/.env based on file location without overriding existing environment variables (e.g. Render)
+// Load local .env files without overriding platform-injected environment variables (e.g. Render)
 dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: false });
-// Also load from current working directory as fallback without overriding existing environment variables
 dotenv.config({ override: false });
 
 const WEAK_PRODUCTION_JWT_SECRETS = new Set([
@@ -19,23 +18,42 @@ const WEAK_PRODUCTION_JWT_SECRETS = new Set([
 ]);
 
 const DEFAULT_DEV_ORIGINS = [
+  'http://localhost:3000',
   'http://localhost:5173',
   'http://localhost:5174',
+  'http://127.0.0.1:3000',
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5174'
 ];
 
-export const isLocalhostMongoUri = (uri = '') =>
-  /^mongodb(?:\+srv)?:\/\/(?:[^@]+@)?(?:localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(?::\d+)?(?:\/|$)/i.test(
-    String(uri).trim()
+export const isRenderRuntime = () =>
+  Boolean(
+    process.env.RENDER === 'true' ||
+      process.env.RENDER_SERVICE_ID ||
+      process.env.RENDER_EXTERNAL_URL
   );
 
-export const validateMongoUri = (rawUri, { nodeEnv = config.nodeEnv } = {}) => {
-  const uri = typeof rawUri === 'string' ? rawUri.trim() : '';
+const stripWrappingQuotes = (val = '') =>
+  String(val)
+    .trim()
+    .replace(/^["']+|["']+$/g, '')
+    .trim();
+
+export const isLocalhostMongoUri = (uri = '') =>
+  /^mongodb(?:\+srv)?:\/\/(?:[^@]+@)?(?:localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(?::\d+)?(?:\/|$)/i.test(
+    stripWrappingQuotes(uri)
+  );
+
+export const validateMongoUri = (
+  rawUri,
+  { nodeEnv = config.nodeEnv, isRender = isRenderRuntime() } = {}
+) => {
+  const uri = typeof rawUri === 'string' ? stripWrappingQuotes(rawUri) : '';
+  const isProdOrRender = nodeEnv === 'production' || isRender;
 
   if (!uri) {
     throw new Error(
-      'MongoDB connection URI is missing. Set MONGODB_URI in server/.env for development or in Render environment variables for production.'
+      'MongoDB connection URI is missing. Set MONGODB_URI (your MongoDB Atlas connection string) in Render Environment Variables for production or in server/.env for local development.'
     );
   }
 
@@ -47,7 +65,7 @@ export const validateMongoUri = (rawUri, { nodeEnv = config.nodeEnv } = {}) => {
 
   if (/<username>|<password>|<cluster>|<db_password>/i.test(uri)) {
     throw new Error(
-      'MONGODB_URI contains unconfigured placeholder values. Replace placeholders with valid MongoDB credentials.'
+      'MONGODB_URI contains unconfigured placeholder values. Replace placeholders with valid MongoDB Atlas credentials.'
     );
   }
 
@@ -57,28 +75,32 @@ export const validateMongoUri = (rawUri, { nodeEnv = config.nodeEnv } = {}) => {
     );
   }
 
-  if (nodeEnv === 'production' && isLocalhostMongoUri(uri)) {
+  if (isProdOrRender && isLocalhostMongoUri(uri)) {
     throw new Error(
-      'Localhost MongoDB URI is not allowed when NODE_ENV=production. Configure a valid MongoDB Atlas MONGODB_URI.'
+      'Localhost MongoDB URI is not allowed in production or on Render (127.0.0.1 / localhost). Configure a valid MongoDB Atlas MONGODB_URI (mongodb+srv://...) in your Render Dashboard Environment Variables.'
     );
   }
 
   return uri;
 };
 
-export const validateJwtSecret = (rawSecret = config.jwtSecret, { nodeEnv = config.nodeEnv } = {}) => {
-  const secret = typeof rawSecret === 'string' ? rawSecret.trim() : '';
+export const validateJwtSecret = (
+  rawSecret = config.jwtSecret,
+  { nodeEnv = config.nodeEnv, isRender = isRenderRuntime() } = {}
+) => {
+  const secret = typeof rawSecret === 'string' ? stripWrappingQuotes(rawSecret) : '';
+  const isProdOrRender = nodeEnv === 'production' || isRender;
 
   if (!secret) {
     throw new Error(
-      'JWT_SECRET is missing. Configure a strong JWT_SECRET in your environment variables.'
+      'JWT_SECRET is missing. Configure a strong JWT_SECRET (minimum 32 characters) in your environment variables.'
     );
   }
 
-  if (nodeEnv === 'production') {
+  if (isProdOrRender) {
     if (secret.length < 32 || WEAK_PRODUCTION_JWT_SECRETS.has(secret)) {
       throw new Error(
-        'A strong, unique JWT_SECRET (minimum 32 characters) is required when NODE_ENV=production.'
+        'A strong, unique JWT_SECRET (minimum 32 characters) is required in production.'
       );
     }
   }
@@ -88,48 +110,65 @@ export const validateJwtSecret = (rawSecret = config.jwtSecret, { nodeEnv = conf
 
 export const validateEnvironment = () => {
   const nodeEnv = config.nodeEnv;
-  validateMongoUri(config.mongoUri, { nodeEnv });
-  validateJwtSecret(config.jwtSecret, { nodeEnv });
+  const isRender = isRenderRuntime();
+  validateMongoUri(config.mongoUri, { nodeEnv, isRender });
+  validateJwtSecret(config.jwtSecret, { nodeEnv, isRender });
 };
 
 export const config = {
   get port() {
-    return process.env.PORT || 5000;
+    return Number(process.env.PORT) || 5000;
   },
   get nodeEnv() {
-    return (process.env.NODE_ENV || 'development').trim();
+    const rawEnv = stripWrappingQuotes(process.env.NODE_ENV || '');
+    if (rawEnv === 'test') return 'test';
+    if (isRenderRuntime()) return 'production';
+    return rawEnv || 'development';
   },
   get mongoUri() {
-    const uri =
-      process.env.MONGODB_URI !== undefined
-        ? process.env.MONGODB_URI
-        : process.env.MONGO_URI;
-    return (uri || '').trim();
+    const candidates = [
+      process.env.MONGODB_URI,
+      process.env.MONGO_URI,
+      process.env.MONGODB_URL,
+      process.env.MONGO_URL,
+      process.env.DATABASE_URL
+    ];
+    const found = candidates.find((v) => v !== undefined && String(v).trim() !== '');
+    return found !== undefined ? stripWrappingQuotes(found) : '';
   },
   get jwtSecret() {
-    const secret = (process.env.JWT_SECRET || '').trim();
+    const secret = stripWrappingQuotes(process.env.JWT_SECRET || '');
     if (secret) return secret;
-    if ((process.env.NODE_ENV || 'development').trim() === 'test') {
+    if (this.nodeEnv === 'test') {
       return 'test_only_jwt_secret_key_for_automated_tests_32chars';
     }
     return '';
   },
   get jwtExpiresIn() {
-    return (process.env.JWT_EXPIRES_IN || '7d').trim();
+    return stripWrappingQuotes(process.env.JWT_EXPIRES_IN || '7d') || '7d';
   },
   get allowedOrigins() {
-    const raw = (process.env.ALLOWED_ORIGINS || process.env.CORS_ORIGIN || '').trim();
-    const isProd = (process.env.NODE_ENV || 'development').trim() === 'production';
+    const rawParts = [
+      process.env.ALLOWED_ORIGINS,
+      process.env.CORS_ORIGIN,
+      process.env.CLIENT_URL,
+      process.env.FRONTEND_URL
+    ]
+      .filter(Boolean)
+      .join(',');
 
-    if (raw) {
-      const parsed = raw
+    const isProd = this.nodeEnv === 'production';
+
+    if (rawParts.trim()) {
+      const parsed = rawParts
         .split(',')
-        .map((o) => o.trim().replace(/\/+$/, ''))
+        .map((o) => stripWrappingQuotes(o).replace(/\/+$/, ''))
         .filter((o) => Boolean(o) && (!isProd || o !== '*'));
-      return parsed;
+      return [...new Set(parsed)];
     }
 
     return isProd ? [] : [...DEFAULT_DEV_ORIGINS];
   }
 };
+
 
