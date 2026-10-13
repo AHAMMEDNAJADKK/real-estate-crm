@@ -1,11 +1,12 @@
 import app from './app.js';
-import { connectDB } from './config/database.js';
-import { config } from './config/environment.js';
+import { connectDB, disconnectDB } from './config/database.js';
+import { config, validateEnvironment } from './config/environment.js';
 import { AuthService } from './modules/auth/auth.service.js';
-import { startScheduledJobs } from './jobs/scheduler.js';
+import { startScheduledJobs, stopScheduledJobs } from './jobs/scheduler.js';
 
 const startServer = async () => {
   try {
+    validateEnvironment();
     await connectDB();
     await AuthService.seedInitialAdmin();
     startScheduledJobs();
@@ -20,10 +21,10 @@ const startServer = async () => {
 
     const shutdown = (signal) => {
       console.log(`\n[Server] Received ${signal}. Initiating graceful shutdown...`);
+      stopScheduledJobs();
       server.close(async () => {
         console.log('[Server] HTTP server closed.');
         try {
-          const { disconnectDB } = await import('./config/database.js');
           await disconnectDB();
         } catch (e) {
           console.error('[Server] Error disconnecting DB:', e.message);
@@ -58,3 +59,4 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 export default app;
+

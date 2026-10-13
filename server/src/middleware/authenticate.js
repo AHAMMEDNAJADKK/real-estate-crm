@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import { config } from '../config/environment.js';
+import { config, validateJwtSecret } from '../config/environment.js';
 import { sendError } from '../utils/response.js';
 
 export const authenticate = async (req, res, next) => {
@@ -17,8 +17,10 @@ export const authenticate = async (req, res, next) => {
       return sendError(res, 'Authentication required. No token provided.', 401);
     }
 
-    const decoded = jwt.verify(token, config.jwtSecret);
+    const secret = validateJwtSecret(config.jwtSecret, { nodeEnv: config.nodeEnv });
+    const decoded = jwt.verify(token, secret);
     const user = await User.findById(decoded.id);
+
 
     if (!user) {
       return sendError(res, 'Invalid token. User not found.', 401);

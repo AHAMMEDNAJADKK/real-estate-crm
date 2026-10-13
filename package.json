@@ -2,12 +2,16 @@
   "name": "kodbrand-realestate-crm",
   "version": "1.0.0",
   "description": "KODBRAND Enterprise ERP — Real Estate CRM & Sales Management Monorepo",
+  "main": "server/server.js",
   "scripts": {
-    "start": "npm --prefix server start",
+    "start": "node server/server.js",
     "start:server": "npm --prefix server start",
     "server": "npm --prefix server run dev",
+    "dev:server": "npm --prefix server run dev",
     "client": "npm --prefix client run dev",
+    "dev:client": "npm --prefix client run dev",
     "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "install:all": "npm --prefix server install && npm --prefix client install",
     "build:client": "npm --prefix client run build",
     "test:server": "npm --prefix server test",
     "test": "npm --prefix server test"

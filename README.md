@@ -100,17 +100,37 @@ Verify `server/.env` and `client/.env`:
 ```env
 # server/.env
 PORT=5000
+NODE_ENV=development
 MONGODB_URI=mongodb://127.0.0.1:27017/realestate_crm
-JWT_SECRET=super_secret_jwt_key_kodbrand_enterprise_2026
-CORS_ORIGIN=http://localhost:5173
+JWT_SECRET=your_super_secret_jwt_key_here_change_in_production
+JWT_EXPIRES_IN=7d
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173
 
 # client/.env
 VITE_API_URL=http://localhost:5000/api
 ```
 
 ### 3. Run Development Servers
-Start both backend (port 5000) and frontend (port 5173):
+Because this repository is a monorepo (`server/` for backend, `client/` for frontend), run the backend from `server/` or using root npm scripts:
+
+**Start Backend from `server/` directory:**
 ```bash
+cd server
+npm start          # Runs: node server.js
+# or for hot-reload development:
+npm run dev        # Runs: nodemon server.js
+```
+
+**Start Backend from repository root:**
+```bash
+npm start          # Runs: npm --prefix server start
+# or directly with Node:
+node server/server.js
+```
+
+**Start Frontend (`client/` on port 5173):**
+```bash
+cd client
 npm run dev
 ```
 
@@ -131,12 +151,10 @@ npm test
 ```
 
 ### Test Results Summary:
-- **Unit Tests (`tests/unit/models.test.js`)**: 4/4 Passed
-- **Integration Tests (`tests/integration/auth_rbac.test.js`)**: 6/6 Passed
-- **Integration Tests (`tests/integration/leads_telecaller.test.js`)**: 5/5 Passed
-- **Workflow Tests (`tests/workflows/booking_safeguards.test.js`)**: 6/6 Passed
-- **Workflow Tests (`tests/workflows/payments_accounts.test.js`)**: 4/4 Passed
-- **Total**: **25/25 Tests Passing (0 Failures)**
+- **Unit Tests (`tests/unit/models.test.js`)**: Passed
+- **Integration Tests (`tests/integration/*.test.js`)**: Passed
+- **Workflow & E2E Tests (`tests/workflows/*.test.js`)**: Passed
+- **Total**: **9 Suites, 70/70 Tests Passing (0 Failures)**
 
 ---
 
@@ -149,7 +167,7 @@ npm run build
 
 # Start production server
 cd ../server
-NODE_ENV=production node src/server.js
+NODE_ENV=production node server.js
 ```
 
 ---

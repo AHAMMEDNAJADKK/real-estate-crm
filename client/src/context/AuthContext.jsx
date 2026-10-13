@@ -56,14 +56,29 @@ export const AuthProvider = ({ children }) => {
     window.location.href = '/login';
   };
 
+  const isSuperAdmin = Boolean(
+    user && (user.role === 'superadmin' || user.role === 'super_admin')
+  );
+
   const hasRole = (...allowedRoles) => {
     if (!user) return false;
-    if (user.role === 'super_admin') return true;
+    if (user.role === 'superadmin' || user.role === 'super_admin') return true;
     return allowedRoles.includes(user.role);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, loading, login, logout, hasRole }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isAuthenticated: !!token,
+        isSuperAdmin,
+        loading,
+        login,
+        logout,
+        hasRole
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

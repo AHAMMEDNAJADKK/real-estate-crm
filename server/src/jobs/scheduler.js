@@ -65,24 +65,39 @@ export const checkOverdueFollowUps = async () => {
   }
 };
 
+let schedulerInterval = null;
+
 /**
  * Initializes recurring background sweeps
  */
 export const startScheduledJobs = () => {
+  if (schedulerInterval) {
+    clearInterval(schedulerInterval);
+  }
+
   // Run on startup
   checkExpiredReservations();
   checkOverdueFollowUps();
 
   // Run every 10 minutes (600,000 ms)
-  const interval = setInterval(() => {
+  schedulerInterval = setInterval(() => {
     checkExpiredReservations();
     checkOverdueFollowUps();
   }, 10 * 60 * 1000);
 
   // Unref interval so it does not block graceful process termination
-  if (interval.unref) {
-    interval.unref();
+  if (schedulerInterval.unref) {
+    schedulerInterval.unref();
   }
 
   logger.info('[Scheduler] Background jobs initialized for reservation expiry and follow-up tracking.');
+  return schedulerInterval;
 };
+
+export const stopScheduledJobs = () => {
+  if (schedulerInterval) {
+    clearInterval(schedulerInterval);
+    schedulerInterval = null;
+  }
+};
+

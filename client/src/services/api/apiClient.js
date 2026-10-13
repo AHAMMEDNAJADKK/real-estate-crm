@@ -1,6 +1,21 @@
 import axios from 'axios';
 
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+const normalizeApiBaseUrl = (rawUrl) => {
+  const trimmed = (rawUrl || '/api').trim().replace(/\/+$/, '');
+  if (!trimmed || trimmed === '/api') return '/api';
+  if (/\/api(\/v\d+)?$/i.test(trimmed)) return trimmed;
+  return `${trimmed}/api`;
+};
+
+export const API_BASE = normalizeApiBaseUrl(import.meta.env.VITE_API_URL);
+export const BACKEND_ORIGIN = API_BASE.replace(/\/api(\/v\d+)?$/i, '');
+
+export const resolveUploadUrl = (fileUrl) => {
+  if (!fileUrl) return '';
+  if (/^https?:\/\//i.test(fileUrl)) return fileUrl;
+  const normalizedPath = fileUrl.startsWith('/') ? fileUrl : `/${fileUrl}`;
+  return BACKEND_ORIGIN ? `${BACKEND_ORIGIN}${normalizedPath}` : normalizedPath;
+};
 
 const apiClient = axios.create({
   baseURL: API_BASE,
@@ -8,6 +23,7 @@ const apiClient = axios.create({
     'Content-Type': 'application/json'
   }
 });
+
 
 apiClient.interceptors.request.use(
   (config) => {

@@ -39,6 +39,11 @@ export class EmployeesService {
   }
 
   static async createUser(data, adminUser) {
+    const isCallerSuperAdmin = ['superadmin', 'super_admin'].includes(adminUser?.role);
+    if (['superadmin', 'super_admin'].includes(data.role) && !isCallerSuperAdmin) {
+      throw new Error('Only a Super Admin can assign the Super Admin role');
+    }
+
     const existing = await User.findOne({ email: data.email.toLowerCase().trim() });
     if (existing) throw new Error('A user with this email address already exists');
 
@@ -59,6 +64,15 @@ export class EmployeesService {
   static async updateUser(id, data, adminUser) {
     const user = await User.findById(id);
     if (!user) throw new Error('User not found');
+
+    const isCallerSuperAdmin = ['superadmin', 'super_admin'].includes(adminUser?.role);
+    if (
+      (['superadmin', 'super_admin'].includes(user.role) ||
+        ['superadmin', 'super_admin'].includes(data.role)) &&
+      !isCallerSuperAdmin
+    ) {
+      throw new Error('Only a Super Admin can modify or assign a Super Admin account');
+    }
 
     if (data.email && data.email !== user.email) {
       const existing = await User.findOne({ email: data.email.toLowerCase().trim() });
