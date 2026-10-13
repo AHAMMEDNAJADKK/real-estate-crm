@@ -1,10 +1,14 @@
 node_modules/
 .env
-.env.local
+.env.*
+!.env.example
 *.log
 uploads/
+.mongodb-data/
 dist/
 dist-*/
 .DS_Store
 Thumbs.db
 coverage/
+
+

@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { Building2, Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Building2, Lock, Mail, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
 import Button from '../../components/common/Button';
 
 export const Login = () => {
-  const [email, setEmail] = useState('admin@kodbrand.com');
-  const [password, setPassword] = useState('Password@123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
@@ -16,17 +17,26 @@ export const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     if (!email || !password) {
-      toast.error('Please enter both email and password');
+      const msg = 'Please enter both email and password';
+      setErrorMessage(msg);
+      toast.error(msg);
       return;
     }
     setLoading(true);
     try {
-      await login(email, password);
+      const loggedInUser = await login(email.trim(), password);
       toast.success('Authentication successful! Welcome to KODBRAND CRM.');
-      navigate('/');
+      if (loggedInUser?.role === 'superadmin' || loggedInUser?.role === 'super_admin') {
+        navigate('/super-admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
-      toast.error(err.message || 'Login failed. Please check credentials.');
+      const msg = err.message || 'Login failed. Please check credentials.';
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -44,6 +54,16 @@ export const Login = () => {
           <p className="text-xs text-[#94A3B8] mt-2">Sign in to access leads, properties, and sales pipeline</p>
         </div>
 
+        {errorMessage && (
+          <div
+            role="alert"
+            className="mb-4 p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs flex items-start gap-2"
+          >
+            <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-[#94A3B8] uppercase tracking-wider mb-1.5">
@@ -55,8 +75,11 @@ export const Login = () => {
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@kodbrand.com"
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errorMessage) setErrorMessage('');
+                }}
+                placeholder="Enter your email address"
                 className="w-full pl-10 pr-4 py-2.5 bg-[#243249] border border-[#334155] rounded-xl text-sm text-[#F8FAFC] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#6D28D9] focus:border-transparent transition-all"
               />
             </div>
@@ -72,7 +95,10 @@ export const Login = () => {
                 type="password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errorMessage) setErrorMessage('');
+                }}
                 placeholder="••••••••••••"
                 className="w-full pl-10 pr-4 py-2.5 bg-[#243249] border border-[#334155] rounded-xl text-sm text-[#F8FAFC] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#6D28D9] focus:border-transparent transition-all"
               />

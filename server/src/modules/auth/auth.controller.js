@@ -1,16 +1,26 @@
+import mongoose from 'mongoose';
 import { AuthService } from './auth.service.js';
 import { sendSuccess, sendError } from '../../utils/response.js';
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    if (mongoose.connection.readyState !== 1) {
+      return sendError(
+        res,
+        'Database connection is currently unavailable. Please try again shortly.',
+        503
+      );
+    }
+
+    const { email, password } = req.body || {};
     const ip = req.ip || req.headers['x-forwarded-for'] || '';
     const userAgent = req.headers['user-agent'] || '';
 
     const result = await AuthService.login(email, password, ip, userAgent);
     return sendSuccess(res, 'Login successful', result);
   } catch (error) {
-    return sendError(res, error.message, 401);
+    const statusCode = error.statusCode || (error.name?.includes('Mongo') ? 503 : 500);
+    return sendError(res, error.message || 'Authentication failed due to a server error', statusCode);
   }
 };
 

@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export const USER_ROLES = [
+  'superadmin',
   'super_admin',
   'admin',
   'sales_manager',

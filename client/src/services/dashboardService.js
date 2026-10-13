@@ -43,3 +43,12 @@ export const settingService = {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
 };
+
+export const superAdminService = {
+  getOverview: () => apiClient.get('/super-admin/overview'),
+  getUsers: (params) => apiClient.get('/super-admin/users', { params }),
+  createUser: (data) => apiClient.post('/super-admin/users', data),
+  updateUser: (id, data) => apiClient.patch(`/super-admin/users/${id}`, data),
+  deleteUser: (id) => apiClient.delete(`/super-admin/users/${id}`),
+  getAuditLogs: (params) => apiClient.get('/super-admin/audit-logs', { params })
+};

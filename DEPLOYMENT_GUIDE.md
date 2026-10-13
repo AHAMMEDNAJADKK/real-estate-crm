@@ -36,7 +36,7 @@ This guide provides step-by-step instructions for deploying the **KODBRAND Enter
                               v
 +-------------------------------------------------------------+
 |                 MONGODB ATLAS (Database)                    |
-|  - Database Name: edtech_crm                                |
+|  - Database Name: realestate_crm                                |
 |  - Replica Set with TLS/SSL encryption                      |
 +-------------------------------------------------------------+
 ```
@@ -54,9 +54,9 @@ This guide provides step-by-step instructions for deploying the **KODBRAND Enter
    - Add `0.0.0.0/0` (Allow Access from Anywhere) to permit Render dynamic IP instances to connect.
 4. **Retrieve Connection String:**
    - Click **Connect** > **Drivers** (Node.js).
-   - Format the connection URI to target the designated database `edtech_crm`:
+   - Format the connection URI to target the designated database `realestate_crm`:
    ```text
-   mongodb+srv://<USERNAME>:<PASSWORD>@<CLUSTER>.mongodb.net/edtech_crm?retryWrites=true&w=majority
+   mongodb+srv://<USERNAME>:<PASSWORD>@<CLUSTER>.mongodb.net/realestate_crm?retryWrites=true&w=majority
    ```
 
 ---
@@ -91,7 +91,7 @@ A ready-to-deploy `render.yaml` file is included in the repository root:
 |---------------|----------|------------------------------|-------------|
 | `NODE_ENV` | Yes | `production` | Enables production optimizations |
 | `PORT` | Yes | `10000` | Auto-provided by Render; backend binds to `0.0.0.0` |
-| `MONGODB_URI` | Yes | `mongodb+srv://<user>:<pwd>@<cluster>.mongodb.net/edtech_crm?retryWrites=true&w=majority` | Production MongoDB Atlas URI pointing to `edtech_crm` |
+| `MONGODB_URI` | Yes | `mongodb+srv://<user>:<pwd>@<cluster>.mongodb.net/realestate_crm?retryWrites=true&w=majority` | Production MongoDB Atlas URI pointing to `realestate_crm` |
 | `JWT_SECRET` | Yes | `<Generate a 64-char random hex string>` | Secret used to sign HMAC-SHA256 user authentication tokens |
 | `JWT_EXPIRES_IN` | Optional | `7d` | Token lifetime (defaults to 7d) |
 | `ALLOWED_ORIGINS` | Yes | `https://your-frontend.vercel.app,http://localhost:5173` | Comma-delimited list of authorized frontend origins |

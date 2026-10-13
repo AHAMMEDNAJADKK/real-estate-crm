@@ -92,7 +92,11 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               </p>
               <div className="flex items-center gap-1 text-[11px] text-[#94A3B8] capitalize">
                 <ShieldCheck className="w-3 h-3 text-[#84CC16]" />
-                <span className="truncate">{user?.role?.replace('_', ' ') || 'Staff'}</span>
+                <span className="truncate">
+                  {user?.role === 'superadmin' || user?.role === 'super_admin'
+                    ? 'Super Admin'
+                    : user?.role?.replace('_', ' ') || 'Staff'}
+                </span>
               </div>
             </div>
           )}

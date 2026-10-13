@@ -17,6 +17,7 @@ import accountRoutes from '../modules/accounts/accounts.routes.js';
 import reportRoutes from '../modules/reports/reports.routes.js';
 import notificationRoutes from '../modules/notifications/notifications.routes.js';
 import settingsRoutes from '../modules/settings/settings.routes.js';
+import superAdminRoutes from '../modules/superadmin/superadmin.routes.js';
 
 // Dedicated controller imports for top-level direct REST mapping
 import { getCallLogs, recordCallLog, getFollowUps, createFollowUp, updateFollowUp } from '../modules/telecallers/telecallers.controller.js';
@@ -29,6 +30,8 @@ const router = Router();
 
 // Module Route Registrations
 router.use('/auth', authRoutes);
+router.use('/super-admin', superAdminRoutes);
+router.use('/superadmin', superAdminRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/leads', leadRoutes);
 router.use('/telecallers', telecallerRoutes);
@@ -55,6 +58,6 @@ router.post('/call-logs', authenticate, validateRequest(['leadId', 'callOutcome'
 router.get('/follow-ups', authenticate, getFollowUps);
 router.post('/follow-ups', authenticate, validateRequest(['leadId', 'scheduledDate']), createFollowUp);
 router.patch('/follow-ups/:id', authenticate, updateFollowUp);
-router.get('/audit-logs', authenticate, authorize('super_admin', 'admin'), getAuditLogs);
+router.get('/audit-logs', authenticate, authorize('superadmin', 'super_admin', 'admin'), getAuditLogs);
 
 export default router;

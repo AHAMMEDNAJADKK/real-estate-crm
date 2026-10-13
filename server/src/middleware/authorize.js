@@ -1,13 +1,15 @@
 import { sendError } from '../utils/response.js';
 
+export const isSuperAdminRole = (role) => role === 'superadmin' || role === 'super_admin';
+
 export const authorize = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user) {
       return sendError(res, 'Unauthenticated user', 401);
     }
 
-    // super_admin always has access
-    if (req.user.role === 'super_admin') {
+    // Super Admin always has access
+    if (isSuperAdminRole(req.user.role)) {
       return next();
     }
 
@@ -23,12 +25,28 @@ export const authorize = (...allowedRoles) => {
   };
 };
 
+export const authorizeSuperAdmin = (req, res, next) => {
+  if (!req.user) {
+    return sendError(res, 'Unauthenticated user', 401);
+  }
+
+  if (!isSuperAdminRole(req.user.role)) {
+    return sendError(
+      res,
+      `Access denied. Super Admin privileges required. Current role: ${req.user.role}`,
+      403
+    );
+  }
+
+  next();
+};
+
 export const canAccessRecord = (ownerField = 'assignedTo') => {
   return (req, res, next) => {
     if (!req.user) return sendError(res, 'Unauthenticated user', 401);
 
-    // Admins and Sales Managers can access any record
-    if (['super_admin', 'admin', 'sales_manager'].includes(req.user.role)) {
+    // Super Admins, Admins, and Sales Managers can access any record
+    if (['superadmin', 'super_admin', 'admin', 'sales_manager'].includes(req.user.role)) {
       return next();
     }
 

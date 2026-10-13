@@ -1,38 +1,48 @@
 import jwt from 'jsonwebtoken';
 import User from '../../models/User.js';
 import AuditLog from '../../models/AuditLog.js';
-import { config } from '../../config/environment.js';
+import { config, validateJwtSecret } from '../../config/environment.js';
 
 export class AuthService {
   static generateToken(user) {
+    const secret = validateJwtSecret(config.jwtSecret, { nodeEnv: config.nodeEnv });
     return jwt.sign(
       {
         id: user._id,
         email: user.email,
         role: user.role
       },
-      config.jwtSecret,
+      secret,
       { expiresIn: config.jwtExpiresIn }
     );
   }
 
   static async login(email, password, ipAddress = '', userAgent = '') {
     if (!email || !password) {
-      throw new Error('Email and password are required');
+      const err = new Error('Email and password are required');
+      err.statusCode = 400;
+      throw err;
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
+    const normalizedEmail = String(email).toLowerCase().trim();
+    const user = await User.findOne({ email: normalizedEmail }).select('+password');
     if (!user) {
-      throw new Error('Invalid email or password credentials');
+      const err = new Error('Invalid email or password credentials');
+      err.statusCode = 401;
+      throw err;
     }
 
     if (!user.isActive) {
-      throw new Error('Account has been deactivated. Please contact administrator.');
+      const err = new Error('Account has been deactivated. Please contact administrator.');
+      err.statusCode = 403;
+      throw err;
     }
 
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await user.comparePassword(String(password));
     if (!isMatch) {
-      throw new Error('Invalid email or password credentials');
+      const err = new Error('Invalid email or password credentials');
+      err.statusCode = 401;
+      throw err;
     }
 
     user.lastLogin = new Date();
@@ -55,19 +65,43 @@ export class AuthService {
   }
 
   static async seedInitialAdmin() {
-    const adminCount = await User.countDocuments({ role: { $in: ['super_admin', 'admin'] } });
-    if (adminCount === 0) {
+    const superAdminEmail = 'superadmin@gmail.com';
+    const existingSuperAdmin = await User.findOne({ email: superAdminEmail });
+
+    if (!existingSuperAdmin) {
+      const superAdmin = new User({
+        name: 'Super Admin',
+        email: superAdminEmail,
+        phone: '+91 9995982324',
+        password: 'superadmin@111',
+        role: 'superadmin',
+        department: 'Executive Management',
+        isActive: true
+      });
+      await superAdmin.save();
+      console.log(`[Auth] Seeded initial superadmin account (${superAdmin.email})`);
+    } else if (!['superadmin', 'super_admin'].includes(existingSuperAdmin.role)) {
+      console.warn(
+        `[Auth] Account ${superAdminEmail} already exists with role '${existingSuperAdmin.role}'. Existing credentials preserved.`
+      );
+    }
+
+    const defaultAdminEmail = 'admin@kodbrand.com';
+    const existingAdmin = await User.findOne({ email: defaultAdminEmail });
+
+    if (!existingAdmin) {
       const admin = new User({
         name: 'Enterprise Admin',
-        email: 'admin@kodbrand.com',
+        email: defaultAdminEmail,
         phone: '+91 9995982324',
         password: 'Password@123',
-        role: 'super_admin',
+        role: 'admin',
         department: 'Management',
         isActive: true
       });
       await admin.save();
-      console.log('[Auth] Seeded default super_admin: admin@kodbrand.com / Password@123');
+      console.log(`[Auth] Seeded default admin account (${admin.email})`);
     }
   }
 }
+

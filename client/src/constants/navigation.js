@@ -16,7 +16,8 @@ import {
   Receipt,
   BarChart3,
   Bell,
-  Settings
+  Settings,
+  ShieldCheck
 } from 'lucide-react';
 
 export const NAV_SECTIONS = [
@@ -27,7 +28,13 @@ export const NAV_SECTIONS = [
         title: 'Dashboard',
         path: '/',
         icon: LayoutDashboard,
-        roles: ['super_admin', 'admin', 'sales_manager', 'telecaller', 'sales_executive', 'property_manager', 'accountant']
+        roles: ['superadmin', 'super_admin', 'admin', 'sales_manager', 'telecaller', 'sales_executive', 'property_manager', 'accountant']
+      },
+      {
+        title: 'Super Admin',
+        path: '/super-admin',
+        icon: ShieldCheck,
+        roles: ['superadmin', 'super_admin']
       }
     ]
   },
