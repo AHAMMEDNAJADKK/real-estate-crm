@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import request from 'supertest';
 import app from '../../src/app.js';
 import User from '../../src/models/User.js';
-import { connectDB, disconnectDB } from '../../src/config/database.js';
+import { connectDB, disconnectDB, diagnoseMongoError, sanitizeMongoError } from '../../src/config/database.js';
 import { validateMongoUri, validateJwtSecret } from '../../src/config/environment.js';
 
 test('Integration Tests: System Health, Environment & Company Settings', async (t) => {
@@ -126,6 +126,43 @@ test('Integration Tests: System Health, Environment & Company Settings', async (
 
     const validProdSecret = '9f8e7d6c5b4a392817263544536271809f8e7d6c5b4a39281726354453627180';
     assert.equal(validateJwtSecret(validProdSecret, { nodeEnv: 'production' }), validProdSecret);
+  });
+
+  await t.test('diagnoseMongoError correctly classifies DNS, network timeout, auth, and missing config', () => {
+    const testUri = 'mongodb+srv://admin_user:super_secret_pw@cluster0.hvdajky.mongodb.net/realestate_crm';
+
+    // 1. Missing config
+    const missingDiag = diagnoseMongoError(new Error('MongoDB connection URI is missing'));
+    assert.equal(missingDiag.category, 'MISSING_CONFIGURATION');
+
+    // 2. DNS/SRV failure
+    const dnsErr = new Error('querySrv ENOTFOUND _mongodb._tcp.cluster0.hvdajky.mongodb.net');
+    dnsErr.code = 'ENOTFOUND';
+    const dnsDiag = diagnoseMongoError(dnsErr, testUri);
+    assert.equal(dnsDiag.category, 'DNS_SRV_RESOLUTION_FAILURE');
+    assert.ok(dnsDiag.summary.includes('cluster0.hvdajky.mongodb.net'));
+    assert.ok(!dnsDiag.summary.includes('super_secret_pw'));
+
+    // 3. Authentication failure
+    const authErr = new Error('bad auth : Authentication failed.');
+    authErr.code = 8000;
+    authErr.codeName = 'AtlasError';
+    const authDiag = diagnoseMongoError(authErr, testUri);
+    assert.equal(authDiag.category, 'AUTHENTICATION_FAILURE');
+    assert.ok(authDiag.action.includes('Database Access'));
+
+    // 4. Server Selection / IP whitelist timeout
+    const timeoutErr = new Error('Could not connect to any servers in your MongoDB Atlas cluster.');
+    timeoutErr.name = 'MongoServerSelectionError';
+    const timeoutDiag = diagnoseMongoError(timeoutErr, testUri);
+    assert.equal(timeoutDiag.category, 'SERVER_SELECTION_NETWORK_TIMEOUT');
+    assert.ok(timeoutDiag.action.includes('0.0.0.0/0'));
+
+    // 5. Credentials redaction
+    const rawErrorWithCredentials = 'Failed to connect: mongodb+srv://najadahammed34_db_user:X65bNZc1U2BKfGw8@cluster0.hvdajky.mongodb.net/realestate_crm';
+    const sanitized = sanitizeMongoError(rawErrorWithCredentials);
+    assert.ok(!sanitized.includes('X65bNZc1U2BKfGw8'));
+    assert.ok(!sanitized.includes('najadahammed34_db_user'));
   });
 
   await disconnectDB();

@@ -86,6 +86,10 @@ const startServer = async () => {
 
     bindServer();
   } catch (error) {
+    if (error.diagnosis) {
+      console.error(`[Startup Diagnosis]: [${error.diagnosis.category}] - ${error.diagnosis.summary}`);
+      console.error(`[Startup Action Required]: ${error.diagnosis.action}`);
+    }
     console.error('Fatal startup error:', error.message);
     process.exit(1);
   }

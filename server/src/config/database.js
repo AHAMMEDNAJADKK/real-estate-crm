@@ -9,11 +9,106 @@ import { config, isLocalhostMongoUri, validateMongoUri } from './environment.js'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const sanitizeMongoError = (message = '') =>
-  String(message || 'Database connection error').replace(
-    /mongodb(?:\+srv)?:\/\/[^\s"']+/gi,
-    '[REDACTED_MONGODB_URI]'
-  );
+export const sanitizeMongoError = (message = '') =>
+  String(message || 'Database connection error')
+    .replace(/mongodb(?:\+srv)?:\/\/[^\s"']+/gi, '[REDACTED_MONGODB_URI]')
+    .replace(/:\/\/([^:]+):([^@]+)@/g, '://[REDACTED_USER]:[REDACTED_PASS]@')
+    .replace(/(?:password|pwd)=[^&\s]+/gi, 'password=[REDACTED]');
+
+export const extractSafeClusterHost = (uri = '') => {
+  if (!uri) return 'unspecified';
+  const match = uri.match(/@([^/?#:]+)/);
+  if (match) return match[1];
+  const localMatch = uri.match(/^mongodb:\/\/(?:[^@]+@)?([^/?#:]+)/);
+  if (localMatch) return localMatch[1];
+  return 'configured host';
+};
+
+export const diagnoseMongoError = (error, uri = '') => {
+  const host = extractSafeClusterHost(uri);
+  const rawMsg = error?.message || '';
+  const errCode = error?.code;
+  const errName = error?.name;
+  const codeName = error?.codeName;
+
+  // 1. Missing environment variables / configuration
+  if (/missing/i.test(rawMsg)) {
+    return {
+      category: 'MISSING_CONFIGURATION',
+      summary: 'MONGODB_URI environment variable is missing.',
+      action: 'Configure MONGODB_URI (your MongoDB Atlas connection string) in Render Dashboard -> Environment Variables.'
+    };
+  }
+
+  if (/Invalid MONGODB_URI|placeholder|Localhost MongoDB URI is not allowed/i.test(rawMsg)) {
+    return {
+      category: 'INVALID_CONFIGURATION',
+      summary: sanitizeMongoError(rawMsg),
+      action: 'Ensure MONGODB_URI is a valid MongoDB Atlas connection string (mongodb+srv://...) in Render Dashboard.'
+    };
+  }
+
+  // 2. DNS / SRV resolution failure
+  if (
+    errCode === 'ENOTFOUND' ||
+    errCode === 'ESERVFAIL' ||
+    errCode === 'ETIMEOUT' ||
+    /querySrv|getaddrinfo|ENOTFOUND/i.test(rawMsg)
+  ) {
+    return {
+      category: 'DNS_SRV_RESOLUTION_FAILURE',
+      summary: `Failed to resolve DNS/SRV record for MongoDB Atlas host "${host}".`,
+      action: `Verify the cluster hostname in MONGODB_URI on Render (e.g. cluster0.xxxx.mongodb.net) and verify DNS resolution.`
+    };
+  }
+
+  // 3. Authentication failure
+  if (
+    errCode === 8000 ||
+    codeName === 'AtlasError' ||
+    codeName === 'AuthenticationFailed' ||
+    /bad auth|authentication failed/i.test(rawMsg)
+  ) {
+    return {
+      category: 'AUTHENTICATION_FAILURE',
+      summary: `MongoDB Atlas rejected database credentials for host "${host}".`,
+      action: 'Check MongoDB Atlas -> Database Access. Verify username and password match MONGODB_URI on Render. Ensure special characters in password are URL-encoded.'
+    };
+  }
+
+  // 4. Server Selection / Network Timeout (IP Whitelist / Firewall block)
+  if (
+    errName === 'MongoServerSelectionError' ||
+    errName === 'MongooseServerSelectionError' ||
+    /could not connect to any servers|server selection timed out|ETIMEDOUT|ECONNREFUSED/i.test(rawMsg)
+  ) {
+    let shardInfo = '';
+    if (error?.reason?.servers && error.reason.servers.size > 0) {
+      const serverNames = Array.from(error.reason.servers.keys());
+      shardInfo = ` Discovered nodes: [${serverNames.join(', ')}].`;
+    }
+    return {
+      category: 'SERVER_SELECTION_NETWORK_TIMEOUT',
+      summary: `Could not connect to any servers in MongoDB Atlas cluster "${host}" within timeout.${shardInfo}`,
+      action: 'CRITICAL: In MongoDB Atlas, go to "Network Access" -> "+ Add IP Address" -> choose "Allow Access from Anywhere" (0.0.0.0/0). Render uses dynamic cloud IPs; without 0.0.0.0/0, Atlas will block all Render connections.'
+    };
+  }
+
+  // 5. TLS / SSL handshake failure
+  if (/tls|ssl|handshake|certificate/i.test(rawMsg)) {
+    return {
+      category: 'TLS_HANDSHAKE_FAILURE',
+      summary: `TLS/SSL handshake failed when connecting to Atlas cluster "${host}".`,
+      action: 'Verify Node.js TLS/SSL configuration and ensure TLS 1.2+ is supported.'
+    };
+  }
+
+  return {
+    category: 'DATABASE_CONNECTION_ERROR',
+    summary: sanitizeMongoError(rawMsg),
+    action: 'Inspect MongoDB Atlas cluster status and verify MONGODB_URI in Render Dashboard.'
+  };
+};
 
 const checkPortListening = (host, port, timeoutMs = 600) =>
   new Promise((resolve) => {
@@ -133,9 +228,14 @@ export const connectDB = async (customUri = null) => {
   try {
     uri = validateMongoUri(rawUri, { nodeEnv: config.nodeEnv });
   } catch (validationError) {
+    const diagnosis = diagnoseMongoError(validationError, rawUri);
+    console.error(`[Database Error] Category: [${diagnosis.category}]`);
+    console.error(`[Database Error] Details: ${diagnosis.summary}`);
+    console.error(`[Database Error] Recommended Action: ${diagnosis.action}`);
     const safeMsg = sanitizeMongoError(validationError.message);
-    console.error(`[Database Error]: ${safeMsg}`);
-    throw new Error(safeMsg);
+    const sanitizedError = new Error(safeMsg);
+    sanitizedError.diagnosis = diagnosis;
+    throw sanitizedError;
   }
 
   try {
@@ -161,9 +261,12 @@ export const connectDB = async (customUri = null) => {
     await ensureLocalMongoRunning(uri);
 
     const connectOptions = {
-      serverSelectionTimeoutMS: Number(process.env.MONGO_SERVER_SELECTION_TIMEOUT_MS) || 10000,
-      connectTimeoutMS: Number(process.env.MONGO_CONNECT_TIMEOUT_MS) || 10000,
+      serverSelectionTimeoutMS: Number(process.env.MONGO_SERVER_SELECTION_TIMEOUT_MS) || 30000,
       socketTimeoutMS: Number(process.env.MONGO_SOCKET_TIMEOUT_MS) || 45000,
+      maxPoolSize: Number(process.env.MONGO_MAX_POOL_SIZE) || 20,
+      minPoolSize: Number(process.env.MONGO_MIN_POOL_SIZE) || 1,
+      retryWrites: true,
+      w: 'majority',
       ...(explicitDbMatch ? {} : { dbName: targetDbName })
     };
 
@@ -171,9 +274,13 @@ export const connectDB = async (customUri = null) => {
     console.log(`[Database] MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
     return conn;
   } catch (error) {
+    const diagnosis = diagnoseMongoError(error, uri);
+    console.error(`[Database Error] Category: [${diagnosis.category}]`);
+    console.error(`[Database Error] Details: ${diagnosis.summary}`);
+    console.error(`[Database Error] Recommended Action: ${diagnosis.action}`);
     const safeMessage = sanitizeMongoError(error.message);
-    console.error(`[Database Error]: ${safeMessage}`);
     const sanitizedError = new Error(safeMessage);
+    sanitizedError.diagnosis = diagnosis;
     if (error.code) sanitizedError.code = error.code;
     throw sanitizedError;
   }
