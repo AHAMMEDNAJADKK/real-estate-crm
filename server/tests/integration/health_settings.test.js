@@ -111,6 +111,21 @@ test('Integration Tests: System Health, Environment & Company Settings', async (
       () => validateJwtSecret('kodbrand_enterprise_crm_jwt_super_secret_key_2026_realestate', { nodeEnv: 'production' }),
       /strong, unique JWT_SECRET/i
     );
+    assert.throws(
+      () => validateJwtSecret('your_super_secret_jwt_key_here_change_in_production', { nodeEnv: 'production' }),
+      /strong, unique JWT_SECRET/i
+    );
+    assert.throws(
+      () => validateJwtSecret('superadmin@111', { nodeEnv: 'production' }),
+      /strong, unique JWT_SECRET/i
+    );
+    assert.throws(
+      () => validateJwtSecret('short_secret_under_32_chars', { nodeEnv: 'production' }),
+      /strong, unique JWT_SECRET/i
+    );
+
+    const validProdSecret = '9f8e7d6c5b4a392817263544536271809f8e7d6c5b4a39281726354453627180';
+    assert.equal(validateJwtSecret(validProdSecret, { nodeEnv: 'production' }), validProdSecret);
   });
 
   await disconnectDB();
