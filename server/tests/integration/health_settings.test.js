@@ -102,6 +102,10 @@ test('Integration Tests: System Health, Environment & Company Settings', async (
       () => validateMongoUri('mongodb://127.0.0.1:27017/realestate_crm', { nodeEnv: 'production' }),
       /Localhost MongoDB URI is not allowed/i
     );
+    assert.throws(
+      () => validateMongoUri('mongodb://127.0.0.1:27017/realestate_crm', { nodeEnv: 'development', isRender: true }),
+      /Localhost MongoDB URI is not allowed/i
+    );
     assert.throws(() => validateJwtSecret('', { nodeEnv: 'production' }), /missing/i);
     assert.throws(
       () => validateJwtSecret('kodbrand_enterprise_crm_jwt_super_secret_key_2026_realestate', { nodeEnv: 'production' }),
