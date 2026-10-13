@@ -80,6 +80,10 @@ export class AuthService {
       });
       await superAdmin.save();
       console.log(`[Auth] Seeded initial superadmin account (${superAdmin.email})`);
+    } else if (!['superadmin', 'super_admin'].includes(existingSuperAdmin.role)) {
+      console.warn(
+        `[Auth] Account ${superAdminEmail} already exists with role '${existingSuperAdmin.role}'. Existing credentials preserved.`
+      );
     }
 
     const defaultAdminEmail = 'admin@kodbrand.com';

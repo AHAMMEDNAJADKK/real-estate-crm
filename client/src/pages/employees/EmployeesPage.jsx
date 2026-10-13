@@ -5,9 +5,11 @@ import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
 import { UserCog, Plus, Shield, Activity, Phone, Mail } from 'lucide-react';
 
 export const EmployeesPage = () => {
+  const { isSuperAdmin } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
@@ -78,7 +80,11 @@ export const EmployeesPage = () => {
       render: (row) => (
         <div>
           <span className="font-bold text-[#F8FAFC] block">{row.name}</span>
-          <span className="text-xs text-purple-300 font-semibold capitalize">{row.role?.replace('_', ' ')}</span>
+          <span className="text-xs text-purple-300 font-semibold capitalize">
+            {row.role === 'superadmin' || row.role === 'super_admin'
+              ? 'Super Admin'
+              : row.role?.replace('_', ' ')}
+          </span>
         </div>
       )
     },
@@ -205,7 +211,7 @@ export const EmployeesPage = () => {
                 className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               >
                 {[
-                  { id: 'super_admin', label: 'Super Admin' },
+                  ...(isSuperAdmin ? [{ id: 'superadmin', label: 'Super Admin' }] : []),
                   { id: 'admin', label: 'Admin' },
                   { id: 'sales_manager', label: 'Sales Manager' },
                   { id: 'telecaller', label: 'Telecaller' },

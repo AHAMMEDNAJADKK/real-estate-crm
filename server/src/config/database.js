@@ -76,35 +76,50 @@ const ensureLocalMongoRunning = async (uri) => {
   if (!fs.existsSync(dbPath)) {
     fs.mkdirSync(dbPath, { recursive: true });
   }
+  const logPath = path.join(dbPath, 'mongod.log');
 
   console.log('[Database] Local MongoDB service on 127.0.0.1:27017 is stopped. Starting local MongoDB daemon...');
+  const cmdLine = `"${mongodBin}" --dbpath "${dbPath}" --logpath "${logPath}" --logappend --bind_ip 127.0.0.1 --port ${port} --setParameter diagnosticDataCollectionEnabled=false`;
 
   try {
-    const child = spawn(
-      mongodBin,
-      [
-        '--dbpath',
-        dbPath,
-        '--bind_ip',
-        '127.0.0.1',
-        '--port',
-        String(port),
-        '--setParameter',
-        'diagnosticDataCollectionEnabled=false'
-      ],
-      {
-        detached: true,
-        stdio: 'ignore',
-        windowsHide: true
-      }
+    const psScript = `$s = New-CimInstance -ClassName Win32_ProcessStartup -Property @{ CreateFlags = [uint32]8; ShowWindow = [uint16]0 } -ClientOnly; Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = '${cmdLine.replace(/'/g, "''")}'; ProcessStartupInformation = $s } | Out-Null`;
+    const ps = spawn(
+      'powershell.exe',
+      ['-NoProfile', '-NonInteractive', '-Command', psScript],
+      { detached: true, stdio: 'ignore', windowsHide: true }
     );
-    child.unref();
-  } catch (err) {
-    console.warn(`[Database] Failed to auto-start local MongoDB daemon: ${err.message}`);
-    return;
+    ps.unref();
+  } catch {
+    try {
+      const child = spawn(
+        mongodBin,
+        [
+          '--dbpath',
+          dbPath,
+          '--logpath',
+          logPath,
+          '--logappend',
+          '--bind_ip',
+          '127.0.0.1',
+          '--port',
+          String(port),
+          '--setParameter',
+          'diagnosticDataCollectionEnabled=false'
+        ],
+        {
+          detached: true,
+          stdio: 'ignore',
+          windowsHide: true
+        }
+      );
+      child.unref();
+    } catch (err) {
+      console.warn(`[Database] Failed to auto-start local MongoDB daemon: ${err.message}`);
+      return;
+    }
   }
 
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < 30; i++) {
     await new Promise((r) => setTimeout(r, 300));
     if (await checkPortListening('127.0.0.1', port)) {
       return;

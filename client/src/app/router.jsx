@@ -20,6 +20,7 @@ import AccountsPage from '../pages/accounts/AccountsPage';
 import ReportsPage from '../pages/reports/ReportsPage';
 import NotificationsPage from '../pages/notifications/NotificationsPage';
 import SettingsPage from '../pages/settings/SettingsPage';
+import SuperAdminPage from '../pages/superadmin/SuperAdminPage';
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       { index: true, element: <Dashboard /> },
+      { path: 'super-admin', element: <SuperAdminPage /> },
       { path: 'leads', element: <LeadsPage /> },
       { path: 'telecallers', element: <TelecallersPage /> },
       { path: 'followups', element: <FollowUpsPage /> },

@@ -27,10 +27,19 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const rawToken = localStorage.getItem('token');
-    const token = rawToken ? rawToken.replace(/^"(.*)"$/, '$1').replace(/"/g, '').replace(/^Bearer\s+/i, '').trim() : '';
-    if (token && !['undefined', 'null'].includes(token.toLowerCase())) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const isLoginRequest = config.url && /\/auth\/login$/i.test(config.url);
+    if (!isLoginRequest) {
+      const rawToken = localStorage.getItem('token');
+      const token = rawToken
+        ? rawToken
+            .replace(/^"(.*)"$/, '$1')
+            .replace(/"/g, '')
+            .replace(/^Bearer\s+/i, '')
+            .trim()
+        : '';
+      if (token && !['undefined', 'null'].includes(token.toLowerCase())) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },

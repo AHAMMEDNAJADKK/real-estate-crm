@@ -172,7 +172,9 @@ export const Header = ({ isCollapsed, setIsCollapsed }) => {
               {user?.name || 'Administrator'}
             </p>
             <p className="text-[10px] text-[#A78BFA] font-semibold uppercase tracking-wider">
-              {user?.role?.replace('_', ' ') || 'Staff'}
+              {user?.role === 'superadmin' || user?.role === 'super_admin'
+                ? 'Super Admin'
+                : user?.role?.replace('_', ' ') || 'Staff'}
             </p>
           </div>
           <button
