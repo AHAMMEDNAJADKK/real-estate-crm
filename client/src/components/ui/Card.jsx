@@ -11,19 +11,19 @@ export const Card = ({
 }) => {
   return (
     <div
-      className={`bg-[#1E2B40] text-[#F8FAFC] rounded-2xl border border-[#334155] shadow-sm transition-all duration-200 ${className}`}
+      className={`bg-white dark:bg-[#1E2B40] text-slate-900 dark:text-[#F8FAFC] rounded-2xl border border-slate-200 dark:border-[#334155] shadow-xs transition-colors duration-200 ${className}`}
       {...props}
     >
       {(title || actions) && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4.5 border-b border-[#334155]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4.5 border-b border-slate-200 dark:border-[#334155]">
           <div>
             {title && (
-              <h3 className="text-base font-bold text-[#F8FAFC] tracking-tight">
+              <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC] tracking-tight">
                 {title}
               </h3>
             )}
             {subtitle && (
-              <p className="text-xs text-[#94A3B8] mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
                 {subtitle}
               </p>
             )}

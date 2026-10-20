@@ -54,8 +54,8 @@ export const NotificationsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-[#F8FAFC]">System Notifications & Operational Alerts</h1>
-          <p className="text-xs text-[#94A3B8] mt-0.5">Stay informed about lead assignments, callbacks, bookings, and payment status</p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-[#F8FAFC]">System Notifications & Operational Alerts</h1>
+          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">Stay informed about lead assignments, callbacks, bookings, and payment status</p>
         </div>
         <Button variant="secondary" icon={CheckCheck} onClick={handleMarkAllRead}>
           Mark All As Read
@@ -66,24 +66,24 @@ export const NotificationsPage = () => {
         {loading ? (
           <Spinner size="lg" />
         ) : notifications.length === 0 ? (
-          <p className="text-xs text-[#94A3B8] text-center py-12">No notifications found in your queue</p>
+          <p className="text-xs text-slate-500 dark:text-[#94A3B8] text-center py-12">No notifications found in your queue</p>
         ) : (
-          <div className="divide-y divide-[#334155]">
+          <div className="divide-y divide-slate-200 dark:divide-[#334155]">
             {notifications.map((item) => (
               <div
                 key={item._id}
                 className={`py-4 px-3 flex items-start justify-between gap-4 rounded-xl transition-colors ${
-                  !item.isRead ? 'bg-[#4C2A8A]/20 border border-[#6D28D9]/30' : 'hover:bg-[#243249]'
+                  !item.isRead ? 'bg-purple-50 dark:bg-[#4C2A8A]/20 border border-purple-200 dark:border-[#6D28D9]/30' : 'hover:bg-slate-50 dark:hover:bg-[#243249]'
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <div className={`p-2 rounded-xl mt-0.5 ${!item.isRead ? 'bg-[#6D28D9] text-white' : 'bg-[#243249] text-[#94A3B8]'}`}>
+                  <div className={`p-2 rounded-xl mt-0.5 ${!item.isRead ? 'bg-[#6D28D9] text-white' : 'bg-slate-100 dark:bg-[#243249] text-slate-600 dark:text-[#94A3B8]'}`}>
                     <Bell className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-[#F8FAFC]">{item.title}</h4>
-                    <p className="text-xs text-[#94A3B8] mt-0.5">{item.message}</p>
-                    <span className="text-[11px] text-[#64748B] flex items-center gap-1 mt-1.5">
+                    <h4 className="text-sm font-bold text-slate-900 dark:text-[#F8FAFC]">{item.title}</h4>
+                    <p className="text-xs text-slate-600 dark:text-[#94A3B8] mt-0.5">{item.message}</p>
+                    <span className="text-[11px] text-slate-400 dark:text-[#64748B] flex items-center gap-1 mt-1.5">
                       <Clock className="w-3 h-3" />
                       {new Date(item.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                     </span>

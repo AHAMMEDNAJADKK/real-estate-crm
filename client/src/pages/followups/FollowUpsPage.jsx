@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { telecallerService } from '../../services/telecallerService';
+import { leadService } from '../../services/leadService';
 import DataTable from '../../components/common/DataTable';
 import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import { useToast } from '../../context/ToastContext';
-import { CalendarCheck, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 
 export const FollowUpsPage = () => {
   const [followUps, setFollowUps] = useState([]);
@@ -13,8 +13,6 @@ export const FollowUpsPage = () => {
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
   const [statusFilter, setStatusFilter] = useState('');
   const [overdueFilter, setOverdueFilter] = useState(false);
-
-  // Complete Followup Modal
   const [selectedFollowUp, setSelectedFollowUp] = useState(null);
   const [outcomeNotes, setOutcomeNotes] = useState('');
 
@@ -23,7 +21,7 @@ export const FollowUpsPage = () => {
   const fetchFollowUps = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await telecallerService.getFollowUps({
+      const res = await leadService.getFollowUps({
         page,
         limit: 10,
         status: statusFilter,
@@ -34,7 +32,7 @@ export const FollowUpsPage = () => {
         setPagination(res.meta);
       }
     } catch (err) {
-      toast.error(err.message || 'Failed to fetch follow-ups');
+      toast.error('Failed to load follow-ups');
     } finally {
       setLoading(false);
     }
@@ -48,10 +46,7 @@ export const FollowUpsPage = () => {
     e.preventDefault();
     if (!selectedFollowUp) return;
     try {
-      await telecallerService.updateFollowUp(selectedFollowUp._id, {
-        status: 'Completed',
-        outcome: outcomeNotes
-      });
+      await leadService.completeFollowUp(selectedFollowUp._id, { outcomeNotes });
       toast.success('Follow-up marked as completed');
       setSelectedFollowUp(null);
       setOutcomeNotes('');
@@ -67,8 +62,8 @@ export const FollowUpsPage = () => {
       accessor: 'lead',
       render: (row) => (
         <div>
-          <span className="font-semibold text-[#F8FAFC] block">{row.lead?.leadName}</span>
-          <span className="text-xs text-[#94A3B8]">{row.lead?.phone}</span>
+          <span className="font-semibold text-slate-900 dark:text-[#F8FAFC] block">{row.lead?.leadName}</span>
+          <span className="text-xs text-slate-500 dark:text-[#94A3B8]">{row.lead?.phone}</span>
         </div>
       )
     },
@@ -78,7 +73,7 @@ export const FollowUpsPage = () => {
       render: (row) => {
         const isOverdue = new Date(row.scheduledDate) < new Date() && row.status === 'Pending';
         return (
-          <span className={`text-xs font-medium flex items-center gap-1.5 ${isOverdue ? 'text-rose-400 font-bold' : 'text-[#F8FAFC]'}`}>
+          <span className={`text-xs font-medium flex items-center gap-1.5 ${isOverdue ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-800 dark:text-[#F8FAFC]'}`}>
             {isOverdue && <AlertCircle className="w-3.5 h-3.5" />}
             {new Date(row.scheduledDate).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
           </span>
@@ -98,12 +93,12 @@ export const FollowUpsPage = () => {
     {
       header: 'Assigned Agent',
       accessor: 'assignedTo',
-      render: (row) => <span className="text-xs text-slate-600">{row.assignedTo?.name || 'Staff'}</span>
+      render: (row) => <span className="text-xs text-slate-700 dark:text-[#94A3B8]">{row.assignedTo?.name || 'Staff'}</span>
     },
     {
       header: 'Notes',
       accessor: 'notes',
-      render: (row) => <div className="text-xs text-slate-500 max-w-xs truncate">{row.notes || '—'}</div>
+      render: (row) => <div className="text-xs text-slate-600 dark:text-[#94A3B8] max-w-xs truncate">{row.notes || '—'}</div>
     },
     {
       header: 'Action',
@@ -122,7 +117,7 @@ export const FollowUpsPage = () => {
             Mark Done
           </Button>
         ) : (
-          <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+          <span className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
             <CheckCircle2 className="w-3.5 h-3.5" /> Completed
           </span>
         )
@@ -131,19 +126,19 @@ export const FollowUpsPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-[#334155]">
         <div>
-          <h1 className="text-xl font-bold text-[#F8FAFC]">Customer Follow-up Scheduler</h1>
-          <p className="text-xs text-[#94A3B8] mt-0.5">Manage scheduled reminders, overdue calls, and interaction plans</p>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-[#F8FAFC] tracking-tight">Customer Follow-up Scheduler</h1>
+          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">Manage scheduled reminders, overdue calls, and interaction plans</p>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 bg-[#1E2B40] p-4 rounded-2xl border border-[#334155] flex-wrap">
-        <span className="text-xs font-semibold text-[#94A3B8] uppercase">Filters:</span>
+      <div className="flex items-center gap-3 bg-white dark:bg-[#1E2B40] p-4 rounded-2xl border border-slate-200 dark:border-[#334155] shadow-xs flex-wrap">
+        <span className="text-xs font-bold text-slate-500 dark:text-[#94A3B8] uppercase">Filters:</span>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="text-xs bg-[#243249] border border-[#334155] text-[#F8FAFC] rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#6D28D9]"
+          className="text-xs bg-slate-50 dark:bg-[#243249] border border-slate-300 dark:border-[#334155] text-slate-900 dark:text-[#F8FAFC] rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#6D28D9] cursor-pointer"
         >
           <option value="">All Statuses</option>
           <option value="Pending">Pending</option>
@@ -151,10 +146,10 @@ export const FollowUpsPage = () => {
         </select>
         <button
           onClick={() => setOverdueFilter(!overdueFilter)}
-          className={`text-xs px-3 py-1.5 rounded-xl border font-medium transition-colors ${
+          className={`text-xs px-3 py-1.5 rounded-xl border font-semibold transition-colors cursor-pointer ${
             overdueFilter
-              ? 'bg-rose-950/40 border-rose-800 text-rose-400'
-              : 'bg-[#243249] border-[#334155] text-[#94A3B8] hover:text-[#F8FAFC]'
+              ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400'
+              : 'bg-slate-100 dark:bg-[#243249] border-slate-300 dark:border-[#334155] text-slate-700 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-[#F8FAFC]'
           }`}
         >
           {overdueFilter ? 'Showing Overdue Only' : 'Show Overdue'}
@@ -181,17 +176,17 @@ export const FollowUpsPage = () => {
         >
           <form onSubmit={handleMarkComplete} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Follow-up Outcome Notes *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Follow-up Outcome Notes *</label>
               <textarea
                 required
                 rows="3"
                 value={outcomeNotes}
                 onChange={(e) => setOutcomeNotes(e.target.value)}
                 placeholder="Discussed floor options, customer visiting site this weekend..."
-                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-[#64748B] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
-            <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
+            <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-[#334155]">
               <Button variant="secondary" type="button" onClick={() => setSelectedFollowUp(null)}>
                 Cancel
               </Button>

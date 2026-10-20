@@ -9,22 +9,22 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-40 h-screen transition-all duration-300 bg-[#1E2B40] border-r border-[#334155] text-[#94A3B8] flex flex-col ${
+      className={`fixed top-0 left-0 z-40 h-screen transition-all duration-300 bg-white dark:bg-[#1E2B40] border-r border-slate-200 dark:border-[#334155] text-slate-600 dark:text-[#94A3B8] flex flex-col shadow-xs ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}
     >
       {/* Brand Header */}
-      <div className="h-16 px-4 flex items-center justify-between border-b border-[#334155] bg-[#1A2537]">
+      <div className="h-16 px-4 flex items-center justify-between border-b border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#1A2537]">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] flex items-center justify-center text-white font-bold flex-shrink-0 shadow-lg shadow-[#6D28D9]/20">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] flex items-center justify-center text-white font-bold flex-shrink-0 shadow-md shadow-[#6D28D9]/20">
             <Building2 className="w-5 h-5 text-white" />
           </div>
           {!isCollapsed && (
             <div className="overflow-hidden">
-              <h1 className="font-extrabold text-[#F8FAFC] text-base leading-tight tracking-tight">
+              <h1 className="font-extrabold text-slate-900 dark:text-[#F8FAFC] text-base leading-tight tracking-tight">
                 KODBRAND
               </h1>
-              <p className="text-[10px] text-[#A78BFA] font-bold tracking-widest uppercase">
+              <p className="text-[10px] text-purple-600 dark:text-[#A78BFA] font-bold tracking-widest uppercase">
                 Real Estate CRM
               </p>
             </div>
@@ -34,8 +34,9 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         {/* Collapse Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] transition-colors cursor-pointer"
+          className="p-1.5 rounded-lg text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#243249] transition-colors cursor-pointer"
           title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
@@ -50,7 +51,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           return (
             <div key={section.title} className="space-y-1">
               {!isCollapsed && (
-                <h4 className="px-3.5 text-[10px] font-extrabold tracking-widest text-[#64748B] uppercase mb-1">
+                <h4 className="px-3.5 text-[10px] font-extrabold tracking-widest text-slate-400 dark:text-[#64748B] uppercase mb-1">
                   {section.title}
                 </h4>
               )}
@@ -63,8 +64,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 ${
                         isActive
-                          ? 'bg-[#4C2A8A] text-[#F8FAFC] font-semibold shadow-md shadow-[#4C2A8A]/30 border-l-4 border-[#8B5CF6]'
-                          : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249]'
+                          ? 'bg-purple-50 dark:bg-[#4C2A8A] text-[#6D28D9] dark:text-[#F8FAFC] font-semibold shadow-xs border-l-4 border-[#6D28D9] dark:border-[#8B5CF6]'
+                          : 'text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#243249]'
                       } ${isCollapsed ? 'justify-center px-0' : ''}`
                     }
                     title={isCollapsed ? item.title : undefined}
@@ -80,18 +81,18 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       </div>
 
       {/* User Profile Footer */}
-      <div className="p-3 border-t border-[#334155] bg-[#1A2537]">
+      <div className="p-3 border-t border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#1A2537]">
         <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : 'px-2 py-1'}`}>
           <div className="w-9 h-9 rounded-full bg-[#6D28D9] text-white flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-md">
             {user?.name ? user.name.slice(0, 2).toUpperCase() : 'KB'}
           </div>
           {!isCollapsed && (
             <div className="flex-1 overflow-hidden">
-              <p className="text-xs font-bold text-[#F8FAFC] truncate">
+              <p className="text-xs font-bold text-slate-900 dark:text-[#F8FAFC] truncate">
                 {user?.name || 'Administrator'}
               </p>
-              <div className="flex items-center gap-1 text-[11px] text-[#94A3B8] capitalize">
-                <ShieldCheck className="w-3 h-3 text-[#84CC16]" />
+              <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-[#94A3B8] capitalize">
+                <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-[#84CC16]" />
                 <span className="truncate">
                   {user?.role === 'superadmin' || user?.role === 'super_admin'
                     ? 'Super Admin'
@@ -104,7 +105,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             <button
               onClick={logout}
               title="Sign Out"
-              className="p-1.5 text-[#94A3B8] hover:text-[#EF4444] rounded-lg hover:bg-[#243249] transition-colors cursor-pointer"
+              aria-label="Sign Out"
+              className="p-1.5 text-slate-400 dark:text-[#94A3B8] hover:text-rose-600 dark:hover:text-[#EF4444] rounded-lg hover:bg-slate-200 dark:hover:bg-[#243249] transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
             </button>

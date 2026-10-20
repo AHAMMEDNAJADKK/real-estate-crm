@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { notificationService } from '../../services/dashboardService';
 import {
   Menu,
@@ -10,12 +11,15 @@ import {
   CheckCheck,
   Search,
   ChevronRight,
-  ShieldCheck
+  ShieldCheck,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { NAV_ITEMS } from '../../constants/navigation';
 
 export const Header = ({ isCollapsed, setIsCollapsed }) => {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme, isDark } = useTheme();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -52,13 +56,14 @@ export const Header = ({ isCollapsed, setIsCollapsed }) => {
   };
 
   return (
-    <header className="h-16 bg-[#1E2B40] border-b border-[#334155] sticky top-0 z-30 px-6 flex items-center justify-between shadow-md">
+    <header className="h-16 bg-[#1E2B40] border-b border-[#334155] sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between shadow-xs transition-colors duration-200">
       {/* Left side: Hamburger toggle & Breadcrumbs */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-2 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] rounded-xl transition-colors cursor-pointer"
+          className="p-2 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] rounded-xl transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40"
           title="Toggle Navigation"
+          aria-label="Toggle Navigation"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -68,7 +73,7 @@ export const Header = ({ isCollapsed, setIsCollapsed }) => {
           <Link to="/" className="hover:text-[#F8FAFC] font-semibold transition-colors">
             KODBRAND CRM
           </Link>
-          <ChevronRight size={14} className="text-[#475569]" />
+          <ChevronRight size={14} className="text-[#64748B]" />
           <span className="font-bold text-[#F8FAFC]">
             {currentNav?.title || 'Dashboard'}
           </span>
@@ -91,20 +96,37 @@ export const Header = ({ isCollapsed, setIsCollapsed }) => {
         </div>
       </div>
 
-      {/* Right side: Status indicator, Notifications & Profile */}
-      <div className="flex items-center gap-3">
+      {/* Right side: Status indicator, Notifications, Theme Toggle & Profile */}
+      <div className="flex items-center gap-2 sm:gap-3">
         {/* Live System Status Pill */}
         <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#243249] border border-[#334155] text-[11px] font-semibold text-[#84CC16]">
           <span className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse" />
           <span>Live Operations</span>
         </div>
 
+        {/* Theme Toggle (Dark / Light Switcher) */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="p-2 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] rounded-xl border border-transparent hover:border-[#334155] transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/50"
+          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          data-testid="theme-toggle-btn"
+        >
+          {isDark ? (
+            <Sun className="w-5 h-5 text-amber-400 hover:text-amber-300 transition-transform duration-300 hover:rotate-45" />
+          ) : (
+            <Moon className="w-5 h-5 text-indigo-600 hover:text-indigo-800 transition-transform duration-300 hover:-rotate-12" />
+          )}
+        </button>
+
         {/* Notification Bell with Dropdown */}
         <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] rounded-xl transition-colors cursor-pointer"
+            className="relative p-2 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] rounded-xl transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40"
             title="System Alerts"
+            aria-label="System Alerts"
           >
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
@@ -166,12 +188,12 @@ export const Header = ({ isCollapsed, setIsCollapsed }) => {
         </div>
 
         {/* User Mini Card */}
-        <div className="flex items-center gap-3 pl-3 border-l border-[#334155]">
+        <div className="flex items-center gap-3 pl-2 sm:pl-3 border-l border-[#334155]">
           <div className="text-right hidden sm:block">
             <p className="text-xs font-bold text-[#F8FAFC]">
               {user?.name || 'Administrator'}
             </p>
-            <p className="text-[10px] text-[#A78BFA] font-semibold uppercase tracking-wider">
+            <p className="text-[10px] text-[#8B5CF6] dark:text-[#A78BFA] font-semibold uppercase tracking-wider">
               {user?.role === 'superadmin' || user?.role === 'super_admin'
                 ? 'Super Admin'
                 : user?.role?.replace('_', ' ') || 'Staff'}
@@ -179,8 +201,9 @@ export const Header = ({ isCollapsed, setIsCollapsed }) => {
           </div>
           <button
             onClick={logout}
-            className="p-2 text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#243249] rounded-xl transition-colors cursor-pointer"
+            className="p-2 text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#243249] rounded-xl transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#EF4444]/40"
             title="Sign Out"
+            aria-label="Sign Out"
           >
             <LogOut className="w-4.5 h-4.5" />
           </button>
