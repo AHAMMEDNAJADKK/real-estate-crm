@@ -51,7 +51,7 @@ export class DashboardService {
       }),
       FollowUp.countDocuments({
         ...taskFilter,
-        status: 'Pending',
+        status: { $in: ['Pending', 'Overdue', 'Rescheduled'] },
         scheduledDate: { $lte: endOfToday }
       }),
       Meeting.countDocuments({
