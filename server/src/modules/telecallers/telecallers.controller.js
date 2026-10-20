@@ -28,6 +28,16 @@ export const getFollowUps = async (req, res) => {
   }
 };
 
+export const getFollowUpById = async (req, res) => {
+  try {
+    const followUp = await TelecallersService.getFollowUpById(req.params.id, req.user);
+    return sendSuccess(res, 'Follow-up retrieved successfully', followUp);
+  } catch (error) {
+    const status = error.message.includes('authorized') ? 403 : error.message.includes('not found') ? 404 : 400;
+    return sendError(res, error.message, status);
+  }
+};
+
 export const createFollowUp = async (req, res) => {
   try {
     const followUp = await TelecallersService.createFollowUp(req.body, req.user);
@@ -42,7 +52,18 @@ export const updateFollowUp = async (req, res) => {
     const followUp = await TelecallersService.updateFollowUp(req.params.id, req.body, req.user);
     return sendSuccess(res, 'Follow-up updated successfully', followUp);
   } catch (error) {
-    return sendError(res, error.message, 400);
+    const status = error.message.includes('authorized') ? 403 : error.message.includes('not found') ? 404 : 400;
+    return sendError(res, error.message, status);
+  }
+};
+
+export const deleteFollowUp = async (req, res) => {
+  try {
+    const result = await TelecallersService.deleteFollowUp(req.params.id, req.user);
+    return sendSuccess(res, 'Follow-up deleted successfully', result);
+  } catch (error) {
+    const status = error.message.includes('authorized') ? 403 : error.message.includes('not found') ? 404 : 400;
+    return sendError(res, error.message, status);
   }
 };
 

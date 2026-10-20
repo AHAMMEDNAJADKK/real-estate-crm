@@ -9,5 +9,10 @@ export const leadService = {
   updateStatus: (id, data) => apiClient.patch(`/leads/${id}/status`, data),
   getLeadHistory: (id) => apiClient.get(`/leads/${id}/history`),
   importLeads: (leads) => apiClient.post('/leads/import', { leads }),
-  exportLeads: (params) => apiClient.get('/leads/export', { params })
+  exportLeads: (params) => apiClient.get('/leads/export', { params }),
+  getFollowUps: (params) => apiClient.get('/follow-ups', { params }),
+  getFollowUpById: (id) => apiClient.get(`/follow-ups/${id}`),
+  createFollowUp: (data) => apiClient.post('/follow-ups', data),
+  updateFollowUp: (id, data) => apiClient.patch(`/follow-ups/${id}`, data),
+  completeFollowUp: (id, data) => apiClient.patch(`/follow-ups/${id}`, { ...data, status: 'Completed' })
 };

@@ -20,7 +20,15 @@ import settingsRoutes from '../modules/settings/settings.routes.js';
 import superAdminRoutes from '../modules/superadmin/superadmin.routes.js';
 
 // Dedicated controller imports for top-level direct REST mapping
-import { getCallLogs, recordCallLog, getFollowUps, createFollowUp, updateFollowUp } from '../modules/telecallers/telecallers.controller.js';
+import {
+  getCallLogs,
+  recordCallLog,
+  getFollowUps,
+  getFollowUpById,
+  createFollowUp,
+  updateFollowUp,
+  deleteFollowUp
+} from '../modules/telecallers/telecallers.controller.js';
 import { getAuditLogs } from '../modules/settings/settings.controller.js';
 import { authenticate } from '../middleware/authenticate.js';
 import { authorize } from '../middleware/authorize.js';
@@ -56,8 +64,11 @@ router.use('/performance-dashboard', dashboardRoutes);
 router.get('/call-logs', authenticate, getCallLogs);
 router.post('/call-logs', authenticate, validateRequest(['leadId', 'callOutcome']), recordCallLog);
 router.get('/follow-ups', authenticate, getFollowUps);
+router.get('/follow-ups/:id', authenticate, getFollowUpById);
 router.post('/follow-ups', authenticate, validateRequest(['leadId', 'scheduledDate']), createFollowUp);
+router.put('/follow-ups/:id', authenticate, updateFollowUp);
 router.patch('/follow-ups/:id', authenticate, updateFollowUp);
+router.delete('/follow-ups/:id', authenticate, deleteFollowUp);
 router.get('/audit-logs', authenticate, authorize('superadmin', 'super_admin', 'admin'), getAuditLogs);
 
 export default router;

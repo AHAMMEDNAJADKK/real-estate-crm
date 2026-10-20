@@ -4,7 +4,10 @@ export const sendSuccess = (res, message = 'Success', data = null, statusCode = 
     message,
     data
   };
-  if (meta) payload.meta = meta;
+  if (meta) {
+    payload.meta = meta;
+    payload.pagination = meta;
+  }
   return res.status(statusCode).json(payload);
 };
 

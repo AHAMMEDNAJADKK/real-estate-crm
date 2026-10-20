@@ -20,7 +20,7 @@ const followUpSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Pending', 'Completed', 'Rescheduled', 'Missed'],
+    enum: ['Pending', 'Completed', 'Rescheduled', 'Missed', 'Overdue', 'Cancelled'],
     default: 'Pending',
     index: true
   },
@@ -54,6 +54,7 @@ const followUpSchema = new mongoose.Schema({
 });
 
 followUpSchema.index({ scheduledDate: 1, status: 1 });
+followUpSchema.index({ assignedTo: 1, status: 1 });
 
 const FollowUp = mongoose.model('FollowUp', followUpSchema);
 export default FollowUp;
