@@ -79,8 +79,8 @@ export const EmployeesPage = () => {
       accessor: 'name',
       render: (row) => (
         <div>
-          <span className="font-bold text-[#F8FAFC] block">{row.name}</span>
-          <span className="text-xs text-purple-300 font-semibold capitalize">
+          <span className="font-bold text-slate-900 dark:text-[#F8FAFC] block">{row.name}</span>
+          <span className="text-xs text-purple-700 dark:text-purple-300 font-semibold capitalize">
             {row.role === 'superadmin' || row.role === 'super_admin'
               ? 'Super Admin'
               : row.role?.replace('_', ' ')}
@@ -93,8 +93,8 @@ export const EmployeesPage = () => {
       accessor: 'email',
       render: (row) => (
         <div>
-          <span className="text-xs text-[#F8FAFC] flex items-center gap-1"><Mail className="w-3 h-3 text-[#64748B]" /> {row.email}</span>
-          <span className="text-xs text-[#94A3B8] flex items-center gap-1 mt-0.5"><Phone className="w-3 h-3 text-[#64748B]" /> {row.phone}</span>
+          <span className="text-xs text-slate-800 dark:text-[#F8FAFC] flex items-center gap-1"><Mail className="w-3 h-3 text-slate-400 dark:text-[#64748B]" /> {row.email}</span>
+          <span className="text-xs text-slate-500 dark:text-[#94A3B8] flex items-center gap-1 mt-0.5"><Phone className="w-3 h-3 text-slate-400 dark:text-[#64748B]" /> {row.phone}</span>
         </div>
       )
     },
@@ -121,10 +121,10 @@ export const EmployeesPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-[#334155]">
         <div>
-          <h1 className="text-xl font-bold text-[#F8FAFC]">Staff & Team Management</h1>
-          <p className="text-xs text-[#94A3B8] mt-0.5">Manage employee roles, system permissions, and operational workloads</p>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-[#F8FAFC] tracking-tight">Staff & Team Management</h1>
+          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">Manage employee roles, system permissions, and operational workloads</p>
         </div>
         <Button icon={Plus} onClick={() => setIsAddOpen(true)}>
           Onboard Employee
@@ -156,59 +156,59 @@ export const EmployeesPage = () => {
         <form onSubmit={handleCreateUser} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Full Name *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Full Name *</label>
               <input
                 type="text"
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Employee Name"
-                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-[#64748B] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Email *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Email *</label>
               <input
                 type="email"
                 required
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="name@kodbrand.com"
-                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-[#64748B] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Phone Number *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Phone Number *</label>
               <input
                 type="text"
                 required
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="Mobile Number"
-                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-[#64748B] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Initial Password *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Initial Password *</label>
               <input
                 type="password"
                 required
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Minimum 6 characters"
-                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-[#64748B] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">System Role *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">System Role *</label>
               <select
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value })}
-                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9] cursor-pointer"
               >
                 {[
                   ...(isSuperAdmin ? [{ id: 'superadmin', label: 'Super Admin' }] : []),
@@ -225,18 +225,18 @@ export const EmployeesPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] uppercase mb-1">Department</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Department</label>
               <input
                 type="text"
                 value={form.department}
                 onChange={(e) => setForm({ ...form, department: e.target.value })}
                 placeholder="e.g. Sales, Telecalling, Finance"
-                className="w-full px-3 py-2 text-sm bg-[#243249] text-[#F8FAFC] placeholder-[#64748B] border border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-[#64748B] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-[#334155]">
+          <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-[#334155]">
             <Button variant="secondary" type="button" onClick={() => setIsAddOpen(false)}>
               Cancel
             </Button>
@@ -256,24 +256,24 @@ export const EmployeesPage = () => {
           subtitle={`Role: ${workloadUser.role?.replace('_', ' ')} &bull; ${workloadUser.department}`}
         >
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-2xl text-center">
-              <span className="text-xs text-indigo-700 font-semibold block uppercase">Assigned Leads</span>
-              <span className="text-3xl font-extrabold text-[#442d82] mt-1 block">{workloadData?.assignedLeads || 0}</span>
+            <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl text-center">
+              <span className="text-xs text-indigo-700 dark:text-indigo-400 font-bold block uppercase">Assigned Leads</span>
+              <span className="text-3xl font-extrabold text-indigo-900 dark:text-indigo-200 mt-1 block">{workloadData?.assignedLeads || 0}</span>
             </div>
 
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center">
-              <span className="text-xs text-emerald-700 font-semibold block uppercase">Active Opportunities</span>
-              <span className="text-3xl font-extrabold text-emerald-800 mt-1 block">{workloadData?.activeOpportunities || 0}</span>
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 rounded-2xl text-center">
+              <span className="text-xs text-emerald-700 dark:text-emerald-400 font-bold block uppercase">Active Opportunities</span>
+              <span className="text-3xl font-extrabold text-emerald-800 dark:text-emerald-200 mt-1 block">{workloadData?.activeOpportunities || 0}</span>
             </div>
 
-            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-center">
-              <span className="text-xs text-amber-700 font-semibold block uppercase">Completed Site Visits</span>
-              <span className="text-3xl font-extrabold text-amber-800 mt-1 block">{workloadData?.completedSiteVisits || 0}</span>
+            <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-2xl text-center">
+              <span className="text-xs text-amber-800 dark:text-amber-400 font-bold block uppercase">Completed Site Visits</span>
+              <span className="text-3xl font-extrabold text-amber-900 dark:text-amber-200 mt-1 block">{workloadData?.completedSiteVisits || 0}</span>
             </div>
 
-            <div className="p-4 bg-purple-50 border border-purple-200 rounded-2xl text-center">
-              <span className="text-xs text-purple-700 font-semibold block uppercase">Closed Bookings</span>
-              <span className="text-3xl font-extrabold text-purple-900 mt-1 block">{workloadData?.totalBookings || 0}</span>
+            <div className="p-4 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 rounded-2xl text-center">
+              <span className="text-xs text-purple-700 dark:text-purple-400 font-bold block uppercase">Closed Bookings</span>
+              <span className="text-3xl font-extrabold text-purple-900 dark:text-purple-200 mt-1 block">{workloadData?.totalBookings || 0}</span>
             </div>
           </div>
           <div className="flex justify-end pt-4">

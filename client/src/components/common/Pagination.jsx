@@ -13,19 +13,19 @@ export const Pagination = ({
 
   return (
     <div
-      className={`flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-[#1E2B40] border-t border-[#334155] ${className}`}
+      className={`flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-white dark:bg-[#1E2B40] border-t border-slate-200 dark:border-[#334155] ${className}`}
     >
-      <p className="text-xs text-[#94A3B8]">
+      <p className="text-xs text-slate-500 dark:text-[#94A3B8]">
         Showing{' '}
-        <span className="font-semibold text-[#F8FAFC]">
+        <span className="font-semibold text-slate-900 dark:text-[#F8FAFC]">
           {(currentPage - 1) * pageSize + 1}
         </span>{' '}
         to{' '}
-        <span className="font-semibold text-[#F8FAFC]">
+        <span className="font-semibold text-slate-900 dark:text-[#F8FAFC]">
           {Math.min(currentPage * pageSize, totalItems)}
         </span>{' '}
         of{' '}
-        <span className="font-semibold text-[#F8FAFC]">
+        <span className="font-semibold text-slate-900 dark:text-[#F8FAFC]">
           {totalItems}
         </span>{' '}
         records
@@ -36,12 +36,12 @@ export const Pagination = ({
           type="button"
           disabled={currentPage <= 1}
           onClick={() => onPageChange(currentPage - 1)}
-          className="p-2 rounded-xl border border-[#334155] text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          className="p-2 rounded-xl border border-slate-300 dark:border-[#334155] text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#243249] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
         >
           <ChevronLeft size={16} />
         </button>
 
-        <span className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-[#243249] text-[#F8FAFC] border border-[#334155]">
+        <span className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-[#243249] text-slate-800 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155]">
           Page {currentPage} of {totalPages}
         </span>
 
@@ -49,7 +49,7 @@ export const Pagination = ({
           type="button"
           disabled={currentPage >= totalPages}
           onClick={() => onPageChange(currentPage + 1)}
-          className="p-2 rounded-xl border border-[#334155] text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#243249] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          className="p-2 rounded-xl border border-slate-300 dark:border-[#334155] text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#243249] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
         >
           <ChevronRight size={16} />
         </button>

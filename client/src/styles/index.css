@@ -1,67 +1,263 @@
 @import "tailwindcss";
 
-@layer theme {
-  :root {
-    --bg-main: #182437;
-    --bg-sidebar: #1E2B40;
-    --bg-card: #1E2B40;
-    --bg-surface: #243249;
-    --color-purple-primary: #6D28D9;
-    --color-purple-active: #4C2A8A;
-    --color-purple-light: #8B5CF6;
-    --text-main: #F8FAFC;
-    --text-muted: #94A3B8;
-    --border-color: #334155;
-    --color-success: #84CC16;
-    --color-info: #3B82F6;
-    --color-warning: #F59E0B;
-    --color-danger: #EF4444;
-  }
+/* Enable class-based dark mode in Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   GLOBAL THEME DESIGN SYSTEM & CSS TOKENS
+   ========================================================================== */
+
+:root {
+  /* Light Mode Palette (Default / Light) */
+  --bg-app: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #F1F5F9;
+  --bg-surface: #F8FAFC;
+  --bg-surface-elevated: #FFFFFF;
+  --bg-surface-hover: #E2E8F0;
+  --bg-input: #FFFFFF;
+  --text-main: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-subtle: #94A3B8;
+  --border-color: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --border-strong: #CBD5E1;
+  
+  /* Brand Accents */
+  --color-primary: #6D28D9;
+  --color-primary-hover: #5B21B6;
+  --color-primary-light: #8B5CF6;
+  --color-primary-active: #4C2A8A;
+  
+  /* Nav & Sidebar */
+  --sidebar-bg: #FFFFFF;
+  --sidebar-header: #F8FAFC;
+  --header-bg: #FFFFFF;
+  
+  /* Status Colors (Light Mode - WCAG AA Contrast) */
+  --color-success: #15803D;
+  --color-success-bg: #F0FDF4;
+  --color-success-border: #BBF7D0;
+  --color-warning: #B45309;
+  --color-warning-bg: #FFFBEB;
+  --color-warning-border: #FDE68A;
+  --color-danger: #B91C1C;
+  --color-danger-bg: #FEF2F2;
+  --color-danger-border: #FECACA;
+  --color-info: #1D4ED8;
+  --color-info-bg: #EFF6FF;
+  --color-info-border: #BFDBFE;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+  --shadow-dropdown: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
+.dark {
+  /* Dark Mode Palette (Kodbrand Executive Navy) */
+  --bg-app: #182437;
+  --bg-card: #1E2B40;
+  --bg-card-subtle: #1A2537;
+  --bg-surface: #243249;
+  --bg-surface-elevated: #273449;
+  --bg-surface-hover: #2E3E59;
+  --bg-input: #243249;
+  --text-main: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-subtle: #64748B;
+  --border-color: #334155;
+  --border-subtle: #243249;
+  --border-strong: #475569;
+  
+  /* Brand Accents */
+  --color-primary: #8B5CF6;
+  --color-primary-hover: #7C3AED;
+  --color-primary-light: #A78BFA;
+  --color-primary-active: #4C2A8A;
+  
+  /* Nav & Sidebar */
+  --sidebar-bg: #1E2B40;
+  --sidebar-header: #1A2537;
+  --header-bg: #1E2B40;
+  
+  /* Status Colors (Dark Mode) */
+  --color-success: #4ADE80;
+  --color-success-bg: rgba(6, 78, 59, 0.4);
+  --color-success-border: rgba(4, 120, 87, 0.6);
+  --color-warning: #FBBF24;
+  --color-warning-bg: rgba(120, 53, 15, 0.4);
+  --color-warning-border: rgba(180, 83, 9, 0.6);
+  --color-danger: #F87171;
+  --color-danger-bg: rgba(127, 29, 29, 0.4);
+  --color-danger-border: rgba(185, 28, 28, 0.6);
+  --color-info: #60A5FA;
+  --color-info-bg: rgba(30, 58, 138, 0.4);
+  --color-info-border: rgba(29, 78, 216, 0.6);
+
+  /* Shadows */
+  --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-dropdown: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+}
+
+/* Base Body Styles */
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #182437;
-  color: #F8FAFC;
+  background-color: var(--bg-app);
+  color: var(--text-main);
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Custom modern scrollbars */
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #182437;
+  background: var(--bg-app);
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: var(--border-color);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: var(--text-muted);
 }
 
-/* Subtle glassmorphism and card utility */
+/* Semantic Component Utilities */
 .crm-card {
-  background-color: #1E2B40;
-  border: 1px solid #334155;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .crm-surface {
-  background-color: #243249;
-  border: 1px solid #334155;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .crm-sidebar {
-  background-color: #1E2B40;
-  border-right: 1px solid #334155;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .crm-header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Custom scrollbar utility */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 9999px;
+}
+
+/* ==========================================================================
+   LIGHT MODE REMAPPING FOR HARDCODED DARK HEX UTILITY CLASSES
+   This guarantees that every page, card, modal, and control throughout the CRM
+   adapts seamlessly to Light Mode while preserving exact colors in Dark Mode.
+   ========================================================================== */
+
+html:not(.dark) {
+  /* App background remap */
+  .bg-\[\#182437\],
+  [class*="bg-[#182437]"] {
+    background-color: var(--bg-app) !important;
+  }
+
+  /* Card / Header / Sidebar background remap */
+  .bg-\[\#1E2B40\],
+  [class*="bg-[#1E2B40]"] {
+    background-color: var(--bg-card) !important;
+  }
+
+  /* Subsurface / Input / Table header remap */
+  .bg-\[\#243249\],
+  [class*="bg-[#243249]"] {
+    background-color: var(--bg-surface) !important;
+  }
+
+  /* Subtle card / brand header background remap */
+  .bg-\[\#1A2537\],
+  [class*="bg-[#1A2537]"] {
+    background-color: var(--bg-card-subtle) !important;
+  }
+
+  /* Primary text remap */
+  .text-\[\#F8FAFC\],
+  [class*="text-[#F8FAFC]"] {
+    color: var(--text-main) !important;
+  }
+
+  /* Muted text remap */
+  .text-\[\#94A3B8\],
+  [class*="text-[#94A3B8]"] {
+    color: var(--text-muted) !important;
+  }
+
+  /* Subtle muted text remap */
+  .text-\[\#64748B\],
+  [class*="text-[#64748B]"] {
+    color: var(--text-subtle) !important;
+  }
+
+  /* Border color remap */
+  .border-\[\#334155\],
+  [class*="border-[#334155]"] {
+    border-color: var(--border-color) !important;
+  }
+
+  /* Divide color remap */
+  .divide-\[\#334155\] > :not([hidden]) ~ :not([hidden]),
+  [class*="divide-[#334155]"] > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--border-color) !important;
+  }
+
+  /* Hover states remap */
+  .hover\:bg-\[\#243249\]:hover,
+  .hover\:bg-\[\#334155\]:hover,
+  .hover\:bg-\[\#1E2B40\]:hover {
+    background-color: var(--bg-surface-hover) !important;
+  }
+
+  .hover\:text-\[\#F8FAFC\]:hover {
+    color: var(--text-main) !important;
+  }
+
+  /* Form inputs & selects in light mode */
+  input, select, textarea {
+    color: var(--text-main);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  /* Select dropdown option styling for light mode */
+  select option {
+    background-color: #FFFFFF;
+    color: #0F172A;
+  }
+}
+
+/* Dark mode select option styling */
+html.dark select option {
   background-color: #1E2B40;
-  border-bottom: 1px solid #334155;
+  color: #F8FAFC;
 }

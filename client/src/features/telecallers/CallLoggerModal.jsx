@@ -5,7 +5,7 @@ import { Button } from '../../components/ui/Button.jsx';
 import { Select } from '../../components/ui/Select.jsx';
 import { Input } from '../../components/ui/Input.jsx';
 import telecallerService from '../../services/telecallerService.js';
-import { useToast } from '../../hooks/useToast.js';
+import { useToast } from '../../context/ToastContext.jsx';
 
 const CALL_OUTCOMES = [
   'Connected',
@@ -22,7 +22,7 @@ export const CallLoggerModal = ({
   lead,
   onSuccess
 }) => {
-  const { showToast } = useToast();
+  const toast = useToast();
   const [outcome, setOutcome] = useState('Connected');
   const [duration, setDuration] = useState('60');
   const [remarks, setRemarks] = useState('');
@@ -46,11 +46,11 @@ export const CallLoggerModal = ({
         nextFollowUpDate: nextCallback || undefined
       });
 
-      showToast(`Call logged successfully for ${lead.name || lead.leadName}`, 'success');
+      toast.success(`Call logged successfully for ${lead.name || lead.leadName}`);
       onSuccess && onSuccess();
       onClose();
     } catch (err) {
-      showToast(err.response?.data?.message || 'Failed to record call log', 'error');
+      toast.error(err.response?.data?.message || err.message || 'Failed to record call log');
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ export const CallLoggerModal = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-[#94A3B8] mb-1.5">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-[#94A3B8] mb-1.5">
             Call Remarks & Next Action
           </label>
           <textarea
@@ -108,11 +108,11 @@ export const CallLoggerModal = ({
             value={remarks}
             onChange={(e) => setRemarks(e.target.value)}
             placeholder="Key discussion points, budget updates, preferred unit details..."
-            className="w-full rounded-xl border border-[#334155] bg-[#243249] px-3.5 py-2.5 text-sm text-[#F8FAFC] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+            className="w-full rounded-xl border border-slate-300 dark:border-[#334155] bg-white dark:bg-[#243249] px-3.5 py-2.5 text-sm text-slate-900 dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#334155]">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-[#334155]">
           <Button variant="outline" onClick={onClose} disabled={loading}>
             Cancel
           </Button>

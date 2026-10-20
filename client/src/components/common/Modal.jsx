@@ -23,27 +23,27 @@ export const Modal = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div
-        className="fixed inset-0 bg-[#0b101b]/70 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-900/60 dark:bg-[#0b101b]/70 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
       <div className="flex min-h-full items-center justify-center p-4 text-center">
         <div
-          className={`relative transform overflow-hidden rounded-2xl bg-[#1E2B40] border border-[#334155] text-left shadow-2xl transition-all w-full ${maxWidth} ${className}`}
+          className={`relative transform overflow-hidden rounded-2xl bg-white dark:bg-[#1E2B40] border border-slate-200 dark:border-[#334155] text-left shadow-2xl transition-all w-full ${maxWidth} ${className}`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="px-6 py-4 border-b border-[#334155] flex items-center justify-between bg-[#1A2537]">
+          <div className="px-6 py-4 border-b border-slate-200 dark:border-[#334155] flex items-center justify-between bg-slate-50 dark:bg-[#1A2537]">
             <div>
-              {title && <h3 className="text-base sm:text-lg font-bold text-[#F8FAFC]">{title}</h3>}
-              {subtitle && <p className="text-xs text-[#94A3B8] mt-0.5">{subtitle}</p>}
+              {title && <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-[#F8FAFC]">{title}</h3>}
+              {subtitle && <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">{subtitle}</p>}
             </div>
             <button
               onClick={onClose}
-              className="rounded-lg p-1.5 text-[#94A3B8] hover:bg-[#243249] hover:text-[#F8FAFC] transition-colors cursor-pointer"
+              className="rounded-lg p-1.5 text-slate-400 dark:text-[#94A3B8] hover:bg-slate-100 dark:hover:bg-[#243249] hover:text-slate-700 dark:hover:text-[#F8FAFC] transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
-          <div className="p-6 max-h-[80vh] overflow-y-auto text-[#F8FAFC] custom-scrollbar">
+          <div className="p-6 max-h-[80vh] overflow-y-auto text-slate-800 dark:text-[#F8FAFC] custom-scrollbar">
             {children}
           </div>
         </div>

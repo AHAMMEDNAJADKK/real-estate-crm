@@ -10,7 +10,8 @@
     "test": "node --test tests/**/*.test.js",
     "test:unit": "node --test tests/unit/**/*.test.js",
     "test:integration": "node --test tests/integration/**/*.test.js",
-    "test:workflows": "node --test tests/workflows/**/*.test.js"
+    "test:workflows": "node --test tests/workflows/**/*.test.js",
+    "seed:demo": "node src/scripts/seedDemoData.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

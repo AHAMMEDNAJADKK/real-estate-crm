@@ -67,8 +67,8 @@ export const ReportsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-[#F8FAFC]">Reports & Executive Analytics</h1>
-          <p className="text-xs text-[#94A3B8] mt-0.5">Measurable insight into lead conversion funnels, calling efficiency, and sales revenue</p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-[#F8FAFC]">Reports & Executive Analytics</h1>
+          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">Measurable insight into lead conversion funnels, calling efficiency, and sales revenue</p>
         </div>
         <Button variant="secondary" icon={Download} onClick={handleExport}>
           Export CSV Report
@@ -76,7 +76,7 @@ export const ReportsPage = () => {
       </div>
 
       {/* Report Selector Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#334155]">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 dark:border-[#334155]">
         {[
           { id: 'lead-source', label: 'Lead Source & Conversions', icon: Users },
           { id: 'lead-temperature', label: 'Temperature Distribution', icon: TrendingUp },
@@ -91,7 +91,7 @@ export const ReportsPage = () => {
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 reportType === tab.id
                   ? 'bg-[#6D28D9] text-white shadow-xs'
-                  : 'bg-[#243249] text-[#94A3B8] border border-[#334155] hover:bg-[#1E2B40] hover:text-[#F8FAFC]'
+                  : 'bg-white dark:bg-[#243249] text-slate-700 dark:text-[#94A3B8] border border-slate-200 dark:border-[#334155] hover:bg-slate-50 dark:hover:bg-[#1E2B40] hover:text-slate-900 dark:hover:text-[#F8FAFC]'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -106,13 +106,13 @@ export const ReportsPage = () => {
         {loading ? (
           <Spinner size="lg" />
         ) : reportData.length === 0 ? (
-          <p className="text-xs text-[#94A3B8] text-center py-12">No data recorded for this report category</p>
+          <p className="text-xs text-slate-500 dark:text-[#94A3B8] text-center py-12">No data recorded for this report category</p>
         ) : (
           <div className="overflow-x-auto">
             {reportType === 'lead-source' && (
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-[#334155] bg-[#182437] text-[#94A3B8] font-semibold uppercase">
+                  <tr className="border-b border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#182437] text-slate-600 dark:text-[#94A3B8] font-semibold uppercase">
                     <th className="py-3 px-4">Lead Source</th>
                     <th className="py-3 px-4">Total Inquiries</th>
                     <th className="py-3 px-4">Converted</th>
@@ -120,16 +120,16 @@ export const ReportsPage = () => {
                     <th className="py-3 px-4">Conversion Rate</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#334155]">
+                <tbody className="divide-y divide-slate-200 dark:divide-[#334155]">
                   {reportData.map((r, i) => {
                     const convRate = r.totalLeads > 0 ? ((r.convertedLeads / r.totalLeads) * 100).toFixed(1) : '0';
                     return (
-                      <tr key={i} className="hover:bg-[#243249]/60 transition-colors">
-                        <td className="py-3 px-4 font-bold text-[#F8FAFC]">{r._id || 'Unknown'}</td>
-                        <td className="py-3 px-4 text-[#F8FAFC]">{r.totalLeads}</td>
-                        <td className="py-3 px-4 text-emerald-400 font-semibold">{r.convertedLeads}</td>
-                        <td className="py-3 px-4 text-rose-400">{r.lostLeads}</td>
-                        <td className="py-3 px-4 font-extrabold text-purple-400">{convRate}%</td>
+                      <tr key={i} className="hover:bg-slate-50 dark:hover:bg-[#243249]/60 transition-colors">
+                        <td className="py-3 px-4 font-bold text-slate-900 dark:text-[#F8FAFC]">{r._id || 'Unknown'}</td>
+                        <td className="py-3 px-4 text-slate-900 dark:text-[#F8FAFC]">{r.totalLeads}</td>
+                        <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-semibold">{r.convertedLeads}</td>
+                        <td className="py-3 px-4 text-rose-600 dark:text-rose-400 font-medium">{r.lostLeads}</td>
+                        <td className="py-3 px-4 font-extrabold text-[#6D28D9] dark:text-purple-400">{convRate}%</td>
                       </tr>
                     );
                   })}
@@ -140,17 +140,17 @@ export const ReportsPage = () => {
             {reportType === 'lead-temperature' && (
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-[#334155] bg-[#182437] text-[#94A3B8] font-semibold uppercase">
+                  <tr className="border-b border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#182437] text-slate-600 dark:text-[#94A3B8] font-semibold uppercase">
                     <th className="py-3 px-4">Temperature Classification</th>
                     <th className="py-3 px-4">Total Leads Count</th>
                     <th className="py-3 px-4">Badge</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#334155]">
+                <tbody className="divide-y divide-slate-200 dark:divide-[#334155]">
                   {reportData.map((r, i) => (
-                    <tr key={i} className="hover:bg-[#243249]/60 transition-colors">
-                      <td className="py-3 px-4 font-bold text-[#F8FAFC]">{r._id || 'Unassigned'}</td>
-                      <td className="py-3 px-4 font-extrabold text-[#F8FAFC] text-sm">{r.count}</td>
+                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-[#243249]/60 transition-colors">
+                      <td className="py-3 px-4 font-bold text-slate-900 dark:text-[#F8FAFC]">{r._id || 'Unassigned'}</td>
+                      <td className="py-3 px-4 font-extrabold text-slate-900 dark:text-[#F8FAFC] text-sm">{r.count}</td>
                       <td className="py-3 px-4"><Badge>{r._id}</Badge></td>
                     </tr>
                   ))}
@@ -161,7 +161,7 @@ export const ReportsPage = () => {
             {reportType === 'sales-summary' && (
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-[#334155] bg-[#182437] text-[#94A3B8] font-semibold uppercase">
+                  <tr className="border-b border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#182437] text-slate-600 dark:text-[#94A3B8] font-semibold uppercase">
                     <th className="py-3 px-4">Project Development</th>
                     <th className="py-3 px-4">Total Bookings</th>
                     <th className="py-3 px-4">Sales Value</th>
@@ -169,14 +169,14 @@ export const ReportsPage = () => {
                     <th className="py-3 px-4">Outstanding Balance</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#334155]">
+                <tbody className="divide-y divide-slate-200 dark:divide-[#334155]">
                   {reportData.map((r, i) => (
-                    <tr key={i} className="hover:bg-[#243249]/60 transition-colors">
-                      <td className="py-3 px-4 font-bold text-[#F8FAFC]">{r._id?.name || 'Development'}</td>
-                      <td className="py-3 px-4 font-semibold text-[#F8FAFC]">{r.totalBookings}</td>
-                      <td className="py-3 px-4 font-extrabold text-purple-400">{formatCurrency(r.totalSalesValue)}</td>
-                      <td className="py-3 px-4 text-emerald-400 font-bold">{formatCurrency(r.totalCollected)}</td>
-                      <td className="py-3 px-4 text-rose-400 font-bold">{formatCurrency(r.totalOutstanding)}</td>
+                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-[#243249]/60 transition-colors">
+                      <td className="py-3 px-4 font-bold text-slate-900 dark:text-[#F8FAFC]">{r._id?.name || 'Development'}</td>
+                      <td className="py-3 px-4 font-semibold text-slate-900 dark:text-[#F8FAFC]">{r.totalBookings}</td>
+                      <td className="py-3 px-4 font-extrabold text-[#6D28D9] dark:text-purple-400">{formatCurrency(r.totalSalesValue)}</td>
+                      <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-bold">{formatCurrency(r.totalCollected)}</td>
+                      <td className="py-3 px-4 text-rose-600 dark:text-rose-400 font-bold">{formatCurrency(r.totalOutstanding)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -186,20 +186,20 @@ export const ReportsPage = () => {
             {reportType === 'telecaller-performance' && (
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-[#334155] bg-[#182437] text-[#94A3B8] font-semibold uppercase">
+                  <tr className="border-b border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#182437] text-slate-600 dark:text-[#94A3B8] font-semibold uppercase">
                     <th className="py-3 px-4">Telecaller Staff</th>
                     <th className="py-3 px-4">Total Calls Made</th>
                     <th className="py-3 px-4">Connected / Interested</th>
                     <th className="py-3 px-4">Total Talk Time</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#334155]">
+                <tbody className="divide-y divide-slate-200 dark:divide-[#334155]">
                   {reportData.map((r, i) => (
-                    <tr key={i} className="hover:bg-[#243249]/60 transition-colors">
-                      <td className="py-3 px-4 font-bold text-[#F8FAFC]">{r._id?.name || 'Staff'}</td>
-                      <td className="py-3 px-4 font-extrabold text-[#F8FAFC]">{r.totalCalls}</td>
-                      <td className="py-3 px-4 text-emerald-400 font-bold">{r.connectedCalls}</td>
-                      <td className="py-3 px-4 text-[#94A3B8]">
+                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-[#243249]/60 transition-colors">
+                      <td className="py-3 px-4 font-bold text-slate-900 dark:text-[#F8FAFC]">{r._id?.name || 'Staff'}</td>
+                      <td className="py-3 px-4 font-extrabold text-slate-900 dark:text-[#F8FAFC]">{r.totalCalls}</td>
+                      <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-bold">{r.connectedCalls}</td>
+                      <td className="py-3 px-4 text-slate-500 dark:text-[#94A3B8]">
                         {Math.floor((r.totalDurationSeconds || 0) / 60)} minutes
                       </td>
                     </tr>
