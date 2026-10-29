@@ -450,11 +450,59 @@ test('Integration & Regression Tests: Bugs 1 through 7 Full Coverage Suite', asy
     assert.equal(repeatConfirm.status, 200);
     assert.equal(repeatConfirm.body.data.status, 'Confirmed');
 
+    // Step 5: Test booking failure safeguards & atomic rollback
+    // Attempting to book the already booked unit must fail with 400
+    const conflictBooking = await request(app)
+      .post('/api/bookings')
+      .set('Authorization', `Bearer ${superadminToken}`)
+      .send({
+        customerId: testCustomer._id,
+        propertyId: testUnit._id,
+        tokenAmount: 100000
+      });
+    assert.equal(conflictBooking.status, 400);
+
+    // Cancel booking and verify property is released back to Available
+    const cancelRes = await request(app)
+      .post(`/api/bookings/${bookingId}/cancel`)
+      .set('Authorization', `Bearer ${superadminToken}`)
+      .send({ reason: 'Client requested cancellation' });
+    assert.equal(cancelRes.status, 200);
+
+    const releasedProperty = await Property.findById(testUnit._id);
+    assert.equal(releasedProperty.status, 'Available');
+
     // Clean up
     await Booking.findByIdAndDelete(bookingId);
     await Property.findByIdAndDelete(testUnit._id);
     await Project.findByIdAndDelete(testProj._id);
     await Customer.findByIdAndDelete(testCustomer._id);
+  });
+
+  // ========================================================
+  // BUG 6 & 7: PRESERVATION OF CUSTOMERS, INVENTORY & OPPORTUNITY
+  // ========================================================
+  await t.test('Bugs 6 & 7: Customer, Inventory, and Opportunity Pipeline Integrity', async () => {
+    // 1. Verify Customer model & retrieval
+    const custRes = await request(app)
+      .get('/api/customers')
+      .set('Authorization', `Bearer ${adminToken}`);
+    assert.equal(custRes.status, 200);
+    assert.equal(custRes.body.success, true);
+
+    // 2. Verify Property inventory retrieval and filtering
+    const propRes = await request(app)
+      .get('/api/properties?status=Available')
+      .set('Authorization', `Bearer ${adminToken}`);
+    assert.equal(propRes.status, 200);
+    assert.equal(propRes.body.success, true);
+
+    // 3. Verify Opportunity pipeline retrieval
+    const oppRes = await request(app)
+      .get('/api/opportunities')
+      .set('Authorization', `Bearer ${adminToken}`);
+    assert.equal(oppRes.status, 200);
+    assert.equal(oppRes.body.success, true);
   });
 
   await disconnectDB();
