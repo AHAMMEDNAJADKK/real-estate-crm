@@ -197,10 +197,10 @@ export class TelecallersService {
       filter.$and = conditions;
     }
 
-    let sort = { scheduledDate: 1 };
-    if (sortBy === 'scheduledDate_desc') sort = { scheduledDate: -1 };
-    if (sortBy === 'createdAt_desc') sort = { createdAt: -1 };
-    if (sortBy === 'priority_desc') sort = { priority: -1, scheduledDate: 1 };
+    let sort = { scheduledDate: 1, createdAt: -1 };
+    if (sortBy === 'scheduledDate_desc') sort = { scheduledDate: -1, createdAt: -1 };
+    if (sortBy === 'createdAt_desc' || sortBy === 'newest') sort = { createdAt: -1 };
+    if (sortBy === 'priority_desc') sort = { priority: -1, scheduledDate: 1, createdAt: -1 };
 
     const parsedPage = Math.max(1, parseInt(page) || 1);
     const parsedLimit = Math.max(1, parseInt(limit) || 10);
@@ -426,20 +426,43 @@ export class TelecallersService {
     return { message: 'Follow-up removed successfully' };
   }
 
-  static async getTelecallerCallingQueue(user) {
+  static async getTelecallerCallingQueue(user, query = {}) {
     const today = new Date();
     today.setHours(23, 59, 59, 999);
 
-    const pendingFollowUps = await FollowUp.find({
-      assignedTo: user._id,
+    const isManagerOrAdmin = ['superadmin', 'super_admin', 'admin', 'sales_manager'].includes(user.role);
+    const targetTelecallerId = query.telecallerId || query.assignedTo;
+
+    const fuFilter = {
       status: { $in: ['Pending', 'Overdue', 'Rescheduled'] },
       scheduledDate: { $lte: today }
-    }).populate('lead', 'leadName phone status temperature preferredPropertyType');
+    };
 
-    const freshLeads = await Lead.find({
-      assignedTo: user._id,
+    const leadFilter = {
       status: { $in: ['New', 'Contacted', 'Follow Up'] }
-    }).sort({ createdAt: -1 }).limit(20);
+    };
+
+    if (isManagerOrAdmin) {
+      if (targetTelecallerId && mongoose.Types.ObjectId.isValid(targetTelecallerId)) {
+        fuFilter.assignedTo = new mongoose.Types.ObjectId(targetTelecallerId);
+        leadFilter.assignedTo = new mongoose.Types.ObjectId(targetTelecallerId);
+      }
+    } else {
+      fuFilter.assignedTo = user._id;
+      leadFilter.$or = [{ assignedTo: user._id }, { createdBy: user._id }];
+    }
+
+    const [pendingFollowUps, freshLeads] = await Promise.all([
+      FollowUp.find(fuFilter)
+        .populate('lead', 'leadName phone status temperature preferredPropertyType')
+        .populate('assignedTo', 'name email role')
+        .sort({ scheduledDate: 1, createdAt: -1 })
+        .limit(50),
+      Lead.find(leadFilter)
+        .populate('assignedTo', 'name email role')
+        .sort({ createdAt: -1 })
+        .limit(50)
+    ]);
 
     return {
       pendingFollowUps,

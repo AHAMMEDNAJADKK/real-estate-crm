@@ -5,10 +5,13 @@ import DataTable from '../../components/common/DataTable';
 import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
+import ConfirmDialog from '../../components/common/ConfirmDialog';
 import { useToast } from '../../context/ToastContext';
-import { Plus, Download, Phone, Mail, UserCheck, Calendar, Flame } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { Plus, Download, Phone, Mail, UserCheck, Calendar, Flame, Edit3, Trash2, Eye } from 'lucide-react';
 
 export const LeadsPage = () => {
+  const { hasRole } = useAuth();
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
@@ -18,7 +21,11 @@ export const LeadsPage = () => {
 
   // Modals
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteLeadId, setDeleteLeadId] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [employees, setEmployees] = useState([]);
 
@@ -30,6 +37,23 @@ export const LeadsPage = () => {
     city: '',
     source: 'Meta Ads',
     temperature: 'Warm',
+    assignedTo: '',
+    budgetMin: '',
+    budgetMax: '',
+    preferredLocation: '',
+    preferredPropertyType: 'Apartment',
+    remarks: ''
+  });
+
+  const [editFormData, setEditFormData] = useState({
+    leadName: '',
+    phone: '',
+    email: '',
+    city: '',
+    source: 'Meta Ads',
+    temperature: 'Warm',
+    status: 'New',
+    assignedTo: '',
     budgetMin: '',
     budgetMax: '',
     preferredLocation: '',
@@ -72,8 +96,11 @@ export const LeadsPage = () => {
 
   const handleCreateLead = async (e) => {
     e.preventDefault();
+    setActionLoading(true);
     try {
-      await leadService.createLead(formData);
+      const payload = { ...formData };
+      if (!payload.assignedTo) delete payload.assignedTo;
+      await leadService.createLead(payload);
       toast.success('Lead created successfully');
       setIsAddOpen(false);
       setFormData({
@@ -83,6 +110,7 @@ export const LeadsPage = () => {
         city: '',
         source: 'Meta Ads',
         temperature: 'Warm',
+        assignedTo: '',
         budgetMin: '',
         budgetMax: '',
         preferredLocation: '',
@@ -92,6 +120,67 @@ export const LeadsPage = () => {
       fetchLeads(1);
     } catch (err) {
       toast.error(err.message || 'Failed to create lead');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleOpenEdit = (lead) => {
+    setSelectedLead(lead);
+    setEditFormData({
+      leadName: lead.leadName || '',
+      phone: lead.phone || '',
+      email: lead.email || '',
+      city: lead.city || '',
+      source: lead.source || 'Meta Ads',
+      temperature: lead.temperature || 'Warm',
+      status: lead.status || 'New',
+      assignedTo: lead.assignedTo?._id || lead.assignedTo || '',
+      budgetMin: lead.budgetMin ?? '',
+      budgetMax: lead.budgetMax ?? '',
+      preferredLocation: lead.preferredLocation || '',
+      preferredPropertyType: lead.preferredPropertyType || 'Apartment',
+      remarks: lead.remarks || ''
+    });
+    setIsEditOpen(true);
+  };
+
+  const handleUpdateLead = async (e) => {
+    e.preventDefault();
+    if (!selectedLead) return;
+    setActionLoading(true);
+    try {
+      const payload = { ...editFormData };
+      if (!payload.assignedTo) payload.assignedTo = null;
+      await leadService.updateLead(selectedLead._id, payload);
+      toast.success('Lead updated successfully');
+      setIsEditOpen(false);
+      fetchLeads(pagination.page);
+    } catch (err) {
+      toast.error(err.message || 'Failed to update lead');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleOpenDelete = (id) => {
+    setDeleteLeadId(id);
+    setIsDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteLeadId) return;
+    setActionLoading(true);
+    try {
+      await leadService.deleteLead(deleteLeadId);
+      toast.success('Lead deleted successfully');
+      setIsDeleteOpen(false);
+      setDeleteLeadId(null);
+      fetchLeads(pagination.page);
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete lead');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -219,16 +308,40 @@ export const LeadsPage = () => {
       header: 'Actions',
       accessor: '_id',
       render: (row) => (
-        <Button
-          size="sm"
-          variant="secondary"
-          onClick={() => {
-            setSelectedLead(row);
-            setIsDetailOpen(true);
-          }}
-        >
-          View Details
-        </Button>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Button
+            size="sm"
+            variant="secondary"
+            icon={Eye}
+            onClick={() => {
+              setSelectedLead(row);
+              setIsDetailOpen(true);
+            }}
+            title="View Details"
+          >
+            View
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            icon={Edit3}
+            onClick={() => handleOpenEdit(row)}
+            title="Edit Lead"
+          >
+            Edit
+          </Button>
+          {hasRole('super_admin', 'superadmin', 'admin', 'sales_manager') && (
+            <Button
+              size="sm"
+              variant="danger"
+              icon={Trash2}
+              onClick={() => handleOpenDelete(row._id)}
+              title="Delete Lead"
+            >
+              Delete
+            </Button>
+          )}
+        </div>
       )
     }
   ];
@@ -389,6 +502,31 @@ export const LeadsPage = () => {
                 className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl placeholder-slate-400 dark:placeholder-[#64748B] focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
               />
             </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Assign To Staff</label>
+              <select
+                value={formData.assignedTo}
+                onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9] cursor-pointer"
+              >
+                <option value="">Assign to Me (Default)</option>
+                {employees.map(emp => (
+                  <option key={emp._id} value={emp._id}>{emp.name} ({emp.role?.replace('_', ' ')})</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Property Type</label>
+              <select
+                value={formData.preferredPropertyType}
+                onChange={(e) => setFormData({ ...formData, preferredPropertyType: e.target.value })}
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9] cursor-pointer"
+              >
+                {['Apartment', 'Villa', 'Plot', 'Commercial', 'Penthouse'].map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Initial Remarks / Notes</label>
@@ -462,6 +600,163 @@ export const LeadsPage = () => {
           </div>
         </Modal>
       )}
+
+      {/* Edit Lead Modal */}
+      {selectedLead && (
+        <Modal
+          isOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          title={`Edit Lead: ${selectedLead.leadName}`}
+          subtitle="Modify lead contact details, stage, temperature, and preferences"
+          maxWidth="max-w-2xl"
+        >
+          <form onSubmit={handleUpdateLead} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Customer Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={editFormData.leadName}
+                  onChange={(e) => setEditFormData({ ...editFormData, leadName: e.target.value })}
+                  placeholder="Full Name"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Phone Number *</label>
+                <input
+                  type="text"
+                  required
+                  value={editFormData.phone}
+                  onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
+                  placeholder="10-digit mobile"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Email Address</label>
+                <input
+                  type="email"
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                  placeholder="email@domain.com"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">City / Location</label>
+                <input
+                  type="text"
+                  value={editFormData.city}
+                  onChange={(e) => setEditFormData({ ...editFormData, city: e.target.value })}
+                  placeholder="e.g. Bangalore"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Pipeline Status</label>
+                <select
+                  value={editFormData.status}
+                  onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9] cursor-pointer"
+                >
+                  {['New', 'Contacted', 'Follow Up', 'Interested', 'Qualified', 'Converted', 'Lost'].map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Temperature Rating</label>
+                <select
+                  value={editFormData.temperature}
+                  onChange={(e) => setEditFormData({ ...editFormData, temperature: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9] cursor-pointer"
+                >
+                  {['Hot', 'Warm', 'Cold', 'RNT', 'SwitchedOff', 'Call Back'].map(temp => (
+                    <option key={temp} value={temp}>{temp}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Assigned Staff</label>
+                <select
+                  value={editFormData.assignedTo}
+                  onChange={(e) => setEditFormData({ ...editFormData, assignedTo: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9] cursor-pointer"
+                >
+                  <option value="">Unassigned</option>
+                  {employees.map(emp => (
+                    <option key={emp._id} value={emp._id}>{emp.name} ({emp.role?.replace('_', ' ')})</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Lead Source</label>
+                <select
+                  value={editFormData.source}
+                  onChange={(e) => setEditFormData({ ...editFormData, source: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9] cursor-pointer"
+                >
+                  {['Meta Ads', 'Google Ads', 'Website', 'Walk-in', 'Broker Network', 'Referral', 'Cold Call'].map(src => (
+                    <option key={src} value={src}>{src}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Min Budget (₹)</label>
+                <input
+                  type="number"
+                  value={editFormData.budgetMin}
+                  onChange={(e) => setEditFormData({ ...editFormData, budgetMin: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Max Budget (₹)</label>
+                <input
+                  type="number"
+                  value={editFormData.budgetMax}
+                  onChange={(e) => setEditFormData({ ...editFormData, budgetMax: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1.5">Remarks / Requirement Details</label>
+              <textarea
+                rows="3"
+                value={editFormData.remarks}
+                onChange={(e) => setEditFormData({ ...editFormData, remarks: e.target.value })}
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6D28D9]"
+              />
+            </div>
+            <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-[#334155]">
+              <Button variant="secondary" type="button" onClick={() => setIsEditOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" loading={actionLoading}>
+                Update Lead
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setDeleteLeadId(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Lead Record"
+        message="Are you sure you want to delete this lead? All associated call logs and scheduled follow-ups will be permanently removed. This action cannot be undone."
+        confirmText="Delete Lead"
+        variant="danger"
+        loading={actionLoading}
+      />
     </div>
   );
 };

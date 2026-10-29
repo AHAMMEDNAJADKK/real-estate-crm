@@ -4,17 +4,42 @@ import DataTable from '../../components/common/DataTable';
 import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
+import ConfirmDialog from '../../components/common/ConfirmDialog';
 import Card from '../../components/common/Card';
 import { useToast } from '../../context/ToastContext';
-import { Building2, Plus, MapPin, Layers, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { Building2, Plus, MapPin, Layers, CheckCircle2, Edit3, Trash2 } from 'lucide-react';
 
 export const ProjectsPage = () => {
+  const { hasRole } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteProjectId, setDeleteProjectId] = useState(null);
+  const [deleteProjectName, setDeleteProjectName] = useState('');
+  const [actionLoading, setActionLoading] = useState(false);
 
   const [form, setForm] = useState({
+    name: '',
+    code: '',
+    developer: 'KODBRAND Realty Group',
+    projectType: 'Residential',
+    reraNumber: '',
+    location: {
+      address: '',
+      locality: '',
+      city: 'Bangalore',
+      state: 'Karnataka'
+    },
+    status: 'Under Construction',
+    description: ''
+  });
+
+  const [editForm, setEditForm] = useState({
     name: '',
     code: '',
     developer: 'KODBRAND Realty Group',
@@ -53,13 +78,89 @@ export const ProjectsPage = () => {
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
+    setActionLoading(true);
     try {
       await projectService.createProject(form);
       toast.success('Project created successfully');
       setIsModalOpen(false);
+      setForm({
+        name: '',
+        code: '',
+        developer: 'KODBRAND Realty Group',
+        projectType: 'Residential',
+        reraNumber: '',
+        location: {
+          address: '',
+          locality: '',
+          city: 'Bangalore',
+          state: 'Karnataka'
+        },
+        status: 'Under Construction',
+        description: ''
+      });
       fetchProjects(1);
     } catch (err) {
       toast.error(err.message || 'Failed to create project');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleOpenEdit = (project) => {
+    setSelectedProject(project);
+    setEditForm({
+      name: project.name || '',
+      code: project.code || '',
+      developer: project.developer || '',
+      projectType: project.projectType || 'Residential',
+      reraNumber: project.reraNumber || '',
+      location: {
+        address: project.location?.address || '',
+        locality: project.location?.locality || '',
+        city: project.location?.city || 'Bangalore',
+        state: project.location?.state || 'Karnataka'
+      },
+      status: project.status || 'Under Construction',
+      description: project.description || ''
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateProject = async (e) => {
+    e.preventDefault();
+    if (!selectedProject) return;
+    setActionLoading(true);
+    try {
+      await projectService.updateProject(selectedProject._id || selectedProject.id, editForm);
+      toast.success('Project updated successfully');
+      setIsEditModalOpen(false);
+      fetchProjects(pagination.page);
+    } catch (err) {
+      toast.error(err.message || 'Failed to update project');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleOpenDelete = (project) => {
+    setDeleteProjectId(project._id || project.id);
+    setDeleteProjectName(project.name);
+    setIsDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteProjectId) return;
+    setActionLoading(true);
+    try {
+      await projectService.deleteProject(deleteProjectId);
+      toast.success('Project deleted successfully');
+      setIsDeleteOpen(false);
+      setDeleteProjectId(null);
+      fetchProjects(pagination.page);
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete project');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -106,6 +207,34 @@ export const ProjectsPage = () => {
       header: 'RERA Number',
       accessor: 'reraNumber',
       render: (row) => <span className="text-xs text-slate-500 dark:text-[#94A3B8] font-mono">{row.reraNumber || 'PRM/KA/RERA/...'}</span>
+    },
+    {
+      header: 'Actions',
+      accessor: '_id',
+      render: (row) => (
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Button
+            size="sm"
+            variant="outline"
+            icon={Edit3}
+            onClick={() => handleOpenEdit(row)}
+            title="Edit Project"
+          >
+            Edit
+          </Button>
+          {hasRole('superadmin', 'super_admin', 'admin', 'property_manager') && (
+            <Button
+              size="sm"
+              variant="danger"
+              icon={Trash2}
+              onClick={() => handleOpenDelete(row)}
+              title="Delete Project"
+            >
+              Delete
+            </Button>
+          )}
+        </div>
+      )
     }
   ];
 
@@ -219,12 +348,130 @@ export const ProjectsPage = () => {
             <Button variant="secondary" type="button" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">
+            <Button type="submit" loading={actionLoading}>
               Save Project
             </Button>
           </div>
         </form>
       </Modal>
+
+      {/* Edit Project Modal */}
+      {selectedProject && (
+        <Modal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          title={`Edit Project: ${selectedProject.name}`}
+          subtitle="Modify project development details, status, and RERA registration"
+        >
+          <form onSubmit={handleUpdateProject} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Project Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Project Code *</label>
+                <input
+                  type="text"
+                  required
+                  value={editForm.code}
+                  onChange={(e) => setEditForm({ ...editForm, code: e.target.value.toUpperCase() })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Developer / Builder</label>
+                <input
+                  type="text"
+                  value={editForm.developer}
+                  onChange={(e) => setEditForm({ ...editForm, developer: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Project Type</label>
+                <select
+                  value={editForm.projectType}
+                  onChange={(e) => setEditForm({ ...editForm, projectType: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9] cursor-pointer"
+                >
+                  {['Residential', 'Commercial', 'Mixed Use', 'Villa Community', 'Plotted Development'].map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Development Status</label>
+                <select
+                  value={editForm.status}
+                  onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9] cursor-pointer"
+                >
+                  {['Planning', 'Under Construction', 'Ready to Move', 'Completed'].map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">City</label>
+                <input
+                  type="text"
+                  value={editForm.location?.city || ''}
+                  onChange={(e) => setEditForm({ ...editForm, location: { ...editForm.location, city: e.target.value } })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">Locality</label>
+                <input
+                  type="text"
+                  value={editForm.location?.locality || ''}
+                  onChange={(e) => setEditForm({ ...editForm, location: { ...editForm.location, locality: e.target.value } })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] uppercase mb-1">RERA Number</label>
+                <input
+                  type="text"
+                  value={editForm.reraNumber}
+                  onChange={(e) => setEditForm({ ...editForm, reraNumber: e.target.value })}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6D28D9]/40 focus:border-[#6D28D9]"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-[#334155]">
+              <Button variant="secondary" type="button" onClick={() => setIsEditModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" loading={actionLoading}>
+                Update Project
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* Delete Project Dialog */}
+      <ConfirmDialog
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setDeleteProjectId(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Development Project"
+        message={`Are you sure you want to delete project "${deleteProjectName}"? Projects with associated inventory units or bookings cannot be deleted.`}
+        confirmText="Delete Project"
+        variant="danger"
+        loading={actionLoading}
+      />
     </div>
   );
 };

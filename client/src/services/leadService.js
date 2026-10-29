@@ -5,6 +5,7 @@ export const leadService = {
   getLeadById: (id) => apiClient.get(`/leads/${id}`),
   createLead: (data) => apiClient.post('/leads', data),
   updateLead: (id, data) => apiClient.patch(`/leads/${id}`, data),
+  deleteLead: (id) => apiClient.delete(`/leads/${id}`),
   assignLead: (id, assignedTo) => apiClient.patch(`/leads/${id}/assignment`, { assignedTo }),
   updateStatus: (id, data) => apiClient.patch(`/leads/${id}/status`, data),
   getLeadHistory: (id) => apiClient.get(`/leads/${id}/history`),
