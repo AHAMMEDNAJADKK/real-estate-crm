@@ -50,11 +50,14 @@ export const assignLead = async (req, res) => {
 
 export const updateLeadStatus = async (req, res) => {
   try {
-    const { status, temperature, remarks, scheduledDate, nextFollowUpDate, priority } = req.body;
+    const { status, temperature, remarks, notes, scheduledDate, nextFollowUpDate, priority } = req.body;
     const updateData = {};
     if (status) updateData.status = status;
     if (temperature) updateData.temperature = temperature;
-    if (remarks) updateData.remarks = remarks;
+    if (remarks || notes) {
+      updateData.remarks = remarks || notes;
+      updateData.notes = remarks || notes;
+    }
     if (scheduledDate) updateData.scheduledDate = scheduledDate;
     if (nextFollowUpDate) updateData.nextFollowUpDate = nextFollowUpDate;
     if (priority) updateData.priority = priority;

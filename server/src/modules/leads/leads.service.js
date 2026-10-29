@@ -180,7 +180,7 @@ export class LeadsService {
 
       if (existingFollowUp) {
         existingFollowUp.scheduledDate = scheduledDate;
-        if (data.remarks) existingFollowUp.notes = data.remarks;
+        if (data.remarks || data.notes) existingFollowUp.notes = data.remarks || data.notes;
         if (data.assignedTo && mongoose.Types.ObjectId.isValid(data.assignedTo)) {
           existingFollowUp.assignedTo = data.assignedTo;
         }
@@ -191,7 +191,7 @@ export class LeadsService {
           assignedTo: lead.assignedTo || user._id,
           scheduledDate,
           priority: data.priority || lead.priority || 'Medium',
-          notes: data.remarks || 'Follow-up created from lead status update',
+          notes: data.remarks || data.notes || 'Follow-up created from lead status update',
           status: 'Pending'
         });
       }
@@ -299,6 +299,12 @@ export class LeadsService {
     const oldAssignee = lead.assignedTo;
     lead.assignedTo = newAssignedToId;
     await lead.save();
+
+    // Reassign open follow-ups to maintain workbench synchronization
+    await FollowUp.updateMany(
+      { lead: lead._id, status: { $in: ['Pending', 'Rescheduled', 'Overdue'] } },
+      { assignedTo: newAssignedToId }
+    );
 
     await AuditLog.create({
       user: managerUser._id,
