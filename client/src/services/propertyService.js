@@ -4,12 +4,14 @@ export const projectService = {
   getProjects: (params) => apiClient.get('/projects', { params }),
   getProjectById: (id) => apiClient.get(`/projects/${id}`),
   createProject: (data) => apiClient.post('/projects', data),
-  updateProject: (id, data) => apiClient.patch(`/projects/${id}`, data)
+  updateProject: (id, data) => apiClient.patch(`/projects/${id}`, data),
+  deleteProject: (id) => apiClient.delete(`/projects/${id}`)
 };
 
 export const propertyService = {
   getProperties: (params) => apiClient.get('/properties', { params }),
   getPropertyById: (id) => apiClient.get(`/properties/${id}`),
   createProperty: (data) => apiClient.post('/properties', data),
-  updateProperty: (id, data) => apiClient.patch(`/properties/${id}`, data)
+  updateProperty: (id, data) => apiClient.patch(`/properties/${id}`, data),
+  deleteProperty: (id) => apiClient.delete(`/properties/${id}`)
 };

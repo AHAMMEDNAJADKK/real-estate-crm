@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { telecallerService } from '../../services/telecallerService';
 import { leadService } from '../../services/leadService';
+import { employeeService } from '../../services/dashboardService';
 import DataTable from '../../components/common/DataTable';
 import Card from '../../components/common/Card';
 import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import { useToast } from '../../context/ToastContext';
-import { PhoneCall, Clock, CheckCircle2, Calendar, MessageSquare, PhoneForwarded } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { PhoneCall, Clock, CheckCircle2, Calendar, MessageSquare, PhoneForwarded, Filter, User } from 'lucide-react';
 
 export const TelecallersPage = () => {
+  const { user, hasRole } = useAuth();
+  const isManagerOrAdmin = hasRole('superadmin', 'super_admin', 'admin', 'sales_manager');
+
   const [callLogs, setCallLogs] = useState([]);
   const [queue, setQueue] = useState({ pendingFollowUps: [], freshLeads: [] });
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
+  const [selectedTelecaller, setSelectedTelecaller] = useState('');
+  const [telecallers, setTelecallers] = useState([]);
 
   // Call Logging Modal
   const [isLogOpen, setIsLogOpen] = useState(false);
@@ -31,9 +38,13 @@ export const TelecallersPage = () => {
   const fetchTelecallerData = async (page = 1) => {
     setLoading(true);
     try {
+      const params = { page, limit: 10 };
+      if (selectedTelecaller) {
+        params.telecallerId = selectedTelecaller;
+      }
       const [logsRes, queueRes] = await Promise.all([
-        telecallerService.getCallLogs({ page, limit: 10 }),
-        telecallerService.getCallingQueue()
+        telecallerService.getCallLogs(params),
+        telecallerService.getCallingQueue(selectedTelecaller ? { telecallerId: selectedTelecaller } : {})
       ]);
       if (logsRes.success) {
         setCallLogs(logsRes.data);
@@ -51,7 +62,18 @@ export const TelecallersPage = () => {
 
   useEffect(() => {
     fetchTelecallerData(1);
-  }, []);
+  }, [selectedTelecaller]);
+
+  useEffect(() => {
+    if (isManagerOrAdmin) {
+      employeeService.getUsers({ limit: 100 }).then(res => {
+        if (res.success && Array.isArray(res.data)) {
+          const callers = res.data.filter(u => ['telecaller', 'sales_executive'].includes(u.role));
+          setTelecallers(callers.length > 0 ? callers : res.data);
+        }
+      }).catch(() => {});
+    }
+  }, [isManagerOrAdmin]);
 
   const handleOpenLogModal = (lead) => {
     setSelectedLead(lead);
@@ -143,6 +165,23 @@ export const TelecallersPage = () => {
           <h1 className="text-2xl font-black text-slate-900 dark:text-[#F8FAFC] tracking-tight">Telecaller Workspace & Calling Desk</h1>
           <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">Dial through assigned leads, log call outcomes, and set next reminders</p>
         </div>
+        {isManagerOrAdmin && (
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 dark:text-[#94A3B8] flex items-center gap-1">
+              <User className="w-3.5 h-3.5" /> Staff Queue:
+            </span>
+            <select
+              value={selectedTelecaller}
+              onChange={(e) => setSelectedTelecaller(e.target.value)}
+              className="text-xs bg-white dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#6D28D9] cursor-pointer"
+            >
+              <option value="">All Telecallers (Global Queue)</option>
+              {telecallers.map(t => (
+                <option key={t._id} value={t._id}>{t.name} ({t.role?.replace('_', ' ')})</option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Calling Queue Highlights */}
@@ -191,7 +230,9 @@ export const TelecallersPage = () => {
                 <div key={ld._id} className="p-3 bg-slate-50 dark:bg-[#243249]/60 border border-purple-200 dark:border-purple-500/30 rounded-xl flex items-center justify-between">
                   <div>
                     <span className="text-xs font-bold text-slate-900 dark:text-[#F8FAFC] block">{ld.leadName}</span>
-                    <span className="text-xs text-slate-500 dark:text-[#94A3B8]">{ld.phone} &bull; {ld.source}</span>
+                    <span className="text-xs text-slate-500 dark:text-[#94A3B8]">
+                      {ld.phone} &bull; {ld.source} {ld.assignedTo?.name ? `(${ld.assignedTo.name})` : ''}
+                    </span>
                   </div>
                   <Button
                     size="sm"

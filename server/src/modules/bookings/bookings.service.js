@@ -57,16 +57,38 @@ export class BookingsService {
       remarks = ''
     } = data;
 
+    if (!customerId || !mongoose.Types.ObjectId.isValid(customerId)) {
+      throw new Error('Valid Customer ID is required');
+    }
+    if (!propertyId || !mongoose.Types.ObjectId.isValid(propertyId)) {
+      throw new Error('Valid Property unit ID is required');
+    }
+
+    const parsedDiscount = Number(discountAmount) || 0;
+    const parsedToken = Number(tokenAmount) || 0;
+    const parsedHours = Number(reservationHours) || 72;
+
+    if (parsedDiscount < 0) {
+      throw new Error('Discount amount cannot be negative');
+    }
+    if (parsedToken < 0) {
+      throw new Error('Token amount cannot be negative');
+    }
+
     // Check discount permission
-    if (discountAmount > 0 && !['super_admin', 'admin', 'sales_manager'].includes(user.role)) {
+    if (parsedDiscount > 0 && !['superadmin', 'super_admin', 'admin', 'sales_manager'].includes(user.role)) {
       throw new Error('Only Sales Managers or Administrators can approve property price discounts.');
     }
 
     const property = await Property.findById(propertyId);
     if (!property) throw new Error('Property unit not found');
 
+    if (parsedDiscount > property.listedPrice) {
+      throw new Error('Discount amount cannot exceed listed property price');
+    }
+
     // ATOMIC RESERVATION LOCK: Only lock if status is currently 'Available'
-    const expiryDate = new Date(Date.now() + reservationHours * 60 * 60 * 1000);
+    const expiryDate = new Date(Date.now() + parsedHours * 60 * 60 * 1000);
     const lockedProperty = await Property.findOneAndUpdate(
       { _id: propertyId, status: 'Available' },
       {
@@ -75,7 +97,7 @@ export class BookingsService {
           reservationExpiresAt: expiryDate
         }
       },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!lockedProperty) {
@@ -90,7 +112,7 @@ export class BookingsService {
     }
 
     const listedPrice = property.listedPrice;
-    const finalPrice = Math.max(0, listedPrice - Number(discountAmount));
+    const finalPrice = Math.max(0, listedPrice - parsedDiscount);
     const bookingNumber = `BK-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const booking = new Booking({
@@ -101,57 +123,82 @@ export class BookingsService {
       bookedBy: user._id,
       status: 'Reserved',
       listedPrice,
-      discountAmount: Number(discountAmount),
+      discountAmount: parsedDiscount,
       finalAgreedPrice: finalPrice,
-      bookingTokenAmount: Number(tokenAmount),
-      totalPaidAmount: Number(tokenAmount),
-      outstandingBalance: finalPrice - Number(tokenAmount),
+      bookingTokenAmount: parsedToken,
+      totalPaidAmount: parsedToken,
+      outstandingBalance: Math.max(0, finalPrice - parsedToken),
       reservationExpiresAt: expiryDate,
       remarks
     });
 
-    await booking.save();
+    try {
+      await booking.save();
 
-    // Link booking to property
-    lockedProperty.currentBooking = booking._id;
-    await lockedProperty.save();
+      // Link booking to property
+      lockedProperty.currentBooking = booking._id;
+      await lockedProperty.save();
 
-    // Update customer status to Booked
-    customer.status = 'Booked';
-    await customer.save();
+      // Update customer status to Booked
+      customer.status = 'Booked';
+      await customer.save();
 
-    await AuditLog.create({
-      user: user._id,
-      action: 'BOOKING_RESERVED',
-      entity: 'Booking',
-      entityId: booking._id.toString(),
-      details: { bookingNumber, unit: property.unitNumber, finalPrice }
-    });
+      await AuditLog.create({
+        user: user._id,
+        action: 'BOOKING_RESERVED',
+        entity: 'Booking',
+        entityId: booking._id.toString(),
+        details: { bookingNumber, unit: property.unitNumber, finalPrice }
+      });
 
-    return booking;
+      return booking;
+    } catch (saveError) {
+      // Revert atomic lock on failure
+      await Property.findByIdAndUpdate(propertyId, {
+        status: 'Available',
+        reservationExpiresAt: null,
+        currentBooking: null
+      });
+      throw saveError;
+    }
   }
 
   static async confirmBooking(bookingId, user) {
-    if (!['super_admin', 'admin', 'sales_manager'].includes(user.role)) {
+    if (!['superadmin', 'super_admin', 'admin', 'sales_manager'].includes(user.role)) {
       throw new Error('Permission denied. Only Admins or Sales Managers can confirm bookings.');
+    }
+
+    if (!bookingId || !mongoose.Types.ObjectId.isValid(bookingId)) {
+      throw new Error('Valid Booking ID is required');
     }
 
     const booking = await Booking.findById(bookingId).populate('property');
     if (!booking) throw new Error('Booking not found');
 
     if (booking.status === 'Confirmed') {
-      throw new Error('This booking is already confirmed.');
+      return booking;
     }
 
     if (booking.status === 'Cancelled' || booking.status === 'Expired') {
       throw new Error(`Cannot confirm booking with status ${booking.status}.`);
     }
 
-    // ATOMIC CONFIRMATION LOCK on property
+    const propId = booking.property?._id || booking.property;
+    if (!propId) {
+      throw new Error('Property unit for this booking not found');
+    }
+
+    // ATOMIC CONFIRMATION LOCK on property: allows confirming if Reserved or already Booked for this booking
     const confirmedProperty = await Property.findOneAndUpdate(
-      { _id: booking.property._id, status: 'Reserved' },
+      {
+        _id: propId,
+        $or: [
+          { status: 'Reserved' },
+          { status: 'Booked', currentBooking: booking._id }
+        ]
+      },
       { $set: { status: 'Booked', currentBooking: booking._id, reservationExpiresAt: null } },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!confirmedProperty) {
@@ -263,7 +310,7 @@ export class BookingsService {
   }
 
   static async cancelBooking(bookingId, cancellationReason, user) {
-    if (!['super_admin', 'admin', 'sales_manager'].includes(user.role)) {
+    if (!['superadmin', 'super_admin', 'admin', 'sales_manager'].includes(user.role)) {
       throw new Error('Permission denied. Only Admins or Sales Managers can cancel bookings.');
     }
 

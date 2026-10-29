@@ -13,6 +13,7 @@ export const MeetingsPage = () => {
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
+  const [sortBy, setSortBy] = useState('scheduledDate');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [leads, setLeads] = useState([]);
@@ -33,7 +34,12 @@ export const MeetingsPage = () => {
   const fetchMeetings = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await meetingService.getMeetings({ page, limit: 10 });
+      const res = await meetingService.getMeetings({
+        page,
+        limit: 10,
+        sortBy,
+        sortOrder: sortBy === 'createdAt' ? 'desc' : 'asc'
+      });
       if (res.success) {
         setMeetings(res.data);
         setPagination(res.meta);
@@ -47,6 +53,9 @@ export const MeetingsPage = () => {
 
   useEffect(() => {
     fetchMeetings(1);
+  }, [sortBy]);
+
+  useEffect(() => {
     employeeService.getUsers({ limit: 100 }).then(r => r.success && setEmployees(r.data)).catch(() => {});
     leadService.getLeads({ limit: 100 }).then(r => r.success && setLeads(r.data)).catch(() => {});
   }, []);
@@ -152,9 +161,19 @@ export const MeetingsPage = () => {
           <h1 className="text-2xl font-black text-slate-900 dark:text-[#F8FAFC] tracking-tight">Client Consultation & Meetings</h1>
           <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">Schedule and record office discussions, zoom calls, and negotiation sessions</p>
         </div>
-        <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
-          Schedule Meeting
-        </Button>
+        <div className="flex items-center gap-2">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="text-xs bg-white dark:bg-[#243249] text-slate-900 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#334155] rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#6D28D9] cursor-pointer"
+          >
+            <option value="scheduledDate">Sort: Scheduled Date</option>
+            <option value="createdAt">Sort: Newest Created</option>
+          </select>
+          <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
+            Schedule Meeting
+          </Button>
+        </div>
       </div>
 
       <DataTable

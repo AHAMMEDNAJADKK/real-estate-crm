@@ -4,6 +4,7 @@ import {
   createLead,
   getLeadById,
   updateLead,
+  deleteLead,
   assignLead,
   updateLeadStatus,
   getLeadHistory,
@@ -20,12 +21,14 @@ router.use(authenticate);
 
 router.get('/', getLeads);
 router.post('/', validateRequest(['leadName', 'phone']), createLead);
-router.post('/import', authorize('super_admin', 'admin', 'sales_manager'), importLeads);
-router.get('/export', authorize('super_admin', 'admin', 'sales_manager'), exportLeads);
+router.post('/import', authorize('superadmin', 'super_admin', 'admin', 'sales_manager'), importLeads);
+router.get('/export', authorize('superadmin', 'super_admin', 'admin', 'sales_manager'), exportLeads);
 
 router.get('/:id', getLeadById);
+router.put('/:id', updateLead);
 router.patch('/:id', updateLead);
-router.patch(['/:id/assignment', '/:id/assign'], authorize('super_admin', 'admin', 'sales_manager'), assignLead);
+router.delete('/:id', authorize('superadmin', 'super_admin', 'admin', 'sales_manager'), deleteLead);
+router.patch(['/:id/assignment', '/:id/assign'], authorize('superadmin', 'super_admin', 'admin', 'sales_manager'), assignLead);
 router.patch('/:id/status', updateLeadStatus);
 router.get('/:id/history', getLeadHistory);
 

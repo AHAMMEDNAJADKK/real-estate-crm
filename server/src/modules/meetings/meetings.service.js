@@ -3,7 +3,7 @@ import Notification from '../../models/Notification.js';
 
 export class MeetingsService {
   static async getMeetings(query = {}, user) {
-    const { page = 1, limit = 20, status, date } = query;
+    const { page = 1, limit = 20, status, date, sortBy = 'scheduledDate', sortOrder = 'asc' } = query;
     const filter = {};
 
     if (['telecaller', 'sales_executive'].includes(user.role)) {
@@ -19,6 +19,13 @@ export class MeetingsService {
       filter.scheduledDate = { $gte: startOfDay, $lte: endOfDay };
     }
 
+    let sort = { scheduledDate: sortOrder === 'desc' ? -1 : 1, createdAt: -1 };
+    if (sortBy === 'createdAt' || sortBy === 'newest') {
+      sort = { createdAt: sortOrder === 'asc' ? 1 : -1 };
+    } else if (sortBy === 'scheduledDate') {
+      sort = { scheduledDate: sortOrder === 'desc' ? -1 : 1, createdAt: -1 };
+    }
+
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const [meetings, total] = await Promise.all([
       Meeting.find(filter)
@@ -27,7 +34,7 @@ export class MeetingsService {
         .populate('customer', 'name phone email')
         .populate('project', 'name code')
         .populate('property', 'unitNumber propertyType')
-        .sort({ scheduledDate: 1 })
+        .sort(sort)
         .skip(skip)
         .limit(parseInt(limit)),
       Meeting.countDocuments(filter)

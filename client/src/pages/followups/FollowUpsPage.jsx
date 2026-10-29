@@ -50,6 +50,7 @@ export const FollowUpsPage = () => {
   const [statusFilter, setStatusFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
   const [employeeFilter, setEmployeeFilter] = useState('');
+  const [sortBy, setSortBy] = useState('');
 
   // Auxiliary data for dropdowns
   const [leads, setLeads] = useState([]);
@@ -116,6 +117,10 @@ export const FollowUpsPage = () => {
           params.search = search.trim();
         }
 
+        if (sortBy) {
+          params.sortBy = sortBy;
+        }
+
         const res = await followUpService.getFollowUps(params);
         if (res.success) {
           setFollowUps(Array.isArray(res.data) ? res.data : []);
@@ -141,7 +146,7 @@ export const FollowUpsPage = () => {
         setRefreshing(false);
       }
     },
-    [activeTab, statusFilter, priorityFilter, employeeFilter, search, isManagerOrAdmin, toast]
+    [activeTab, statusFilter, priorityFilter, employeeFilter, search, sortBy, isManagerOrAdmin, toast]
   );
 
   // Initial load and filter change trigger
@@ -183,6 +188,7 @@ export const FollowUpsPage = () => {
     setStatusFilter('');
     setPriorityFilter('');
     setEmployeeFilter('');
+    setSortBy('');
   };
 
   // Create Follow-up submission
@@ -624,7 +630,21 @@ export const FollowUpsPage = () => {
             </div>
           )}
 
-          {(search || statusFilter || priorityFilter || employeeFilter || activeTab !== 'all') && (
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-bold text-slate-500 dark:text-[#94A3B8] uppercase">Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="text-xs bg-slate-50 dark:bg-[#243249] border border-slate-300 dark:border-[#334155] text-slate-900 dark:text-[#F8FAFC] rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#6D28D9] cursor-pointer"
+            >
+              <option value="">Due Date (Earliest First)</option>
+              <option value="createdAt_desc">Newest Created First</option>
+              <option value="scheduledDate_desc">Due Date (Latest First)</option>
+              <option value="priority_desc">Highest Priority First</option>
+            </select>
+          </div>
+
+          {(search || statusFilter || priorityFilter || employeeFilter || sortBy || activeTab !== 'all') && (
             <button
               onClick={handleResetFilters}
               className="text-xs font-semibold text-[#6D28D9] dark:text-[#A78BFA] hover:underline flex items-center gap-1 cursor-pointer"

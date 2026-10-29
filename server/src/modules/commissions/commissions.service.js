@@ -38,7 +38,7 @@ export class CommissionsService {
   }
 
   static async approveCommission(id, user) {
-    if (!['super_admin', 'admin', 'sales_manager'].includes(user.role)) {
+    if (!['superadmin', 'super_admin', 'admin', 'sales_manager'].includes(user.role)) {
       throw new Error('Permission denied. Only Admins or Sales Managers can approve commissions.');
     }
 
@@ -62,7 +62,7 @@ export class CommissionsService {
   }
 
   static async payoutCommission(id, paymentReference, user) {
-    if (!['super_admin', 'admin', 'accountant'].includes(user.role)) {
+    if (!['superadmin', 'super_admin', 'admin', 'accountant'].includes(user.role)) {
       throw new Error('Permission denied. Only Admins or Accountants can mark commission as paid.');
     }
 

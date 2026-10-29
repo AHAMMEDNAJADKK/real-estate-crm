@@ -1,5 +1,7 @@
+import mongoose from 'mongoose';
 import Project from '../../models/Project.js';
 import Property from '../../models/Property.js';
+import Booking from '../../models/Booking.js';
 import AuditLog from '../../models/AuditLog.js';
 
 export class ProjectsService {
@@ -65,7 +67,20 @@ export class ProjectsService {
   }
 
   static async updateProject(id, data, user) {
-    const project = await Project.findByIdAndUpdate(id, data, { new: true });
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('Valid Project ID is required');
+    }
+
+    // If project code is updated, check for duplicate code
+    if (data.code) {
+      const duplicate = await Project.findOne({ code: data.code.toUpperCase(), _id: { $ne: id } });
+      if (duplicate) {
+        throw new Error(`Project code ${data.code} already exists for project "${duplicate.name}"`);
+      }
+      data.code = data.code.toUpperCase();
+    }
+
+    const project = await Project.findByIdAndUpdate(id, data, { returnDocument: 'after', runValidators: true });
     if (!project) throw new Error('Project not found');
 
     await AuditLog.create({
@@ -73,9 +88,46 @@ export class ProjectsService {
       action: 'PROJECT_UPDATED',
       entity: 'Project',
       entityId: project._id.toString(),
-      details: { changes: Object.keys(data) }
+      details: { changes: Object.keys(data), name: project.name }
     });
 
     return project;
+  }
+
+  static async deleteProject(id, user) {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('Valid Project ID is required');
+    }
+
+    if (!['superadmin', 'super_admin', 'admin', 'property_manager'].includes(user.role)) {
+      throw new Error('Unauthorized: Only administrators and property managers can delete projects');
+    }
+
+    const project = await Project.findById(id);
+    if (!project) throw new Error('Project not found');
+
+    // Referential integrity check: check associated properties and bookings
+    const [propertiesCount, bookingsCount] = await Promise.all([
+      Property.countDocuments({ project: id }),
+      Booking.countDocuments({ project: id })
+    ]);
+
+    if (propertiesCount > 0 || bookingsCount > 0) {
+      throw new Error(
+        `Cannot delete project "${project.name}". It has ${propertiesCount} inventory unit(s) and ${bookingsCount} booking(s) linked to it. Delete or reassign associated units first.`
+      );
+    }
+
+    await Project.findByIdAndDelete(id);
+
+    await AuditLog.create({
+      user: user._id,
+      action: 'PROJECT_DELETED',
+      entity: 'Project',
+      entityId: id.toString(),
+      details: { name: project.name, code: project.code }
+    });
+
+    return { message: 'Project deleted successfully', id };
   }
 }

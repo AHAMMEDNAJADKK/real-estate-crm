@@ -69,7 +69,7 @@ export const deleteFollowUp = async (req, res) => {
 
 export const getCallingQueue = async (req, res) => {
   try {
-    const queue = await TelecallersService.getTelecallerCallingQueue(req.user);
+    const queue = await TelecallersService.getTelecallerCallingQueue(req.user, req.query);
     return sendSuccess(res, 'Calling queue retrieved successfully', queue);
   } catch (error) {
     return sendError(res, error.message, 500);

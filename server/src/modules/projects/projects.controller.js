@@ -36,3 +36,13 @@ export const updateProject = async (req, res) => {
     return sendError(res, error.message, 400);
   }
 };
+
+export const deleteProject = async (req, res) => {
+  try {
+    const result = await ProjectsService.deleteProject(req.params.id, req.user);
+    return sendSuccess(res, 'Project deleted successfully', result);
+  } catch (error) {
+    const status = error.message.includes('Unauthorized') ? 403 : error.message.includes('not found') ? 404 : 400;
+    return sendError(res, error.message, status);
+  }
+};

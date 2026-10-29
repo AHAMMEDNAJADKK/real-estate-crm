@@ -11,5 +11,5 @@ export const telecallerService = {
   rescheduleFollowUp: (id, data) => apiClient.patch(`/follow-ups/${id}`, { ...data, status: 'Rescheduled' }),
   cancelFollowUp: (id, data) => apiClient.patch(`/follow-ups/${id}`, { ...data, status: 'Cancelled' }),
   deleteFollowUp: (id) => apiClient.delete(`/follow-ups/${id}`),
-  getCallingQueue: () => apiClient.get('/telecallers/queue')
+  getCallingQueue: (params) => apiClient.get('/telecallers/queue', { params })
 };

@@ -50,16 +50,29 @@ export const assignLead = async (req, res) => {
 
 export const updateLeadStatus = async (req, res) => {
   try {
-    const { status, temperature, remarks } = req.body;
+    const { status, temperature, remarks, scheduledDate, nextFollowUpDate, priority } = req.body;
     const updateData = {};
     if (status) updateData.status = status;
     if (temperature) updateData.temperature = temperature;
     if (remarks) updateData.remarks = remarks;
+    if (scheduledDate) updateData.scheduledDate = scheduledDate;
+    if (nextFollowUpDate) updateData.nextFollowUpDate = nextFollowUpDate;
+    if (priority) updateData.priority = priority;
 
     const lead = await LeadsService.updateLead(req.params.id, updateData, req.user);
     return sendSuccess(res, 'Lead status updated successfully', lead);
   } catch (error) {
     return sendError(res, error.message, 400);
+  }
+};
+
+export const deleteLead = async (req, res) => {
+  try {
+    const result = await LeadsService.deleteLead(req.params.id, req.user);
+    return sendSuccess(res, 'Lead deleted successfully', result);
+  } catch (error) {
+    const status = error.message.includes('Unauthorized') ? 403 : error.message.includes('not found') ? 404 : 400;
+    return sendError(res, error.message, status);
   }
 };
 

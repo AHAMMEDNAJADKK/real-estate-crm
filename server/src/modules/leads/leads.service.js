@@ -1,9 +1,11 @@
+import mongoose from 'mongoose';
 import Lead from '../../models/Lead.js';
 import CallLog from '../../models/CallLog.js';
 import FollowUp from '../../models/FollowUp.js';
 import Notification from '../../models/Notification.js';
 import AuditLog from '../../models/AuditLog.js';
 import Customer from '../../models/Customer.js';
+import Booking from '../../models/Booking.js';
 
 export class LeadsService {
   static async getLeads(query = {}, user) {
@@ -70,19 +72,44 @@ export class LeadsService {
   }
 
   static async createLead(data, creatorUser) {
+    if (!data.phone) throw new Error('Phone number is required');
+    if (!data.leadName) throw new Error('Lead name is required');
+
     // Duplicate detection by phone number
     const existing = await Lead.findOne({ phone: data.phone.trim() });
     if (existing) {
       throw new Error(`A lead with phone number ${data.phone} already exists (${existing.leadName} - ${existing.status})`);
     }
 
+    const assignedTo = data.assignedTo && mongoose.Types.ObjectId.isValid(data.assignedTo)
+      ? data.assignedTo
+      : creatorUser._id;
+
     const lead = new Lead({
       ...data,
+      phone: data.phone.trim(),
+      leadName: data.leadName.trim(),
       createdBy: creatorUser._id,
-      assignedTo: data.assignedTo || creatorUser._id
+      assignedTo
     });
 
+    if (data.status === 'Follow Up') {
+      const scheduledDate = data.scheduledDate || data.nextFollowUpDate || new Date(Date.now() + 24 * 60 * 60 * 1000);
+      lead.nextFollowUpDate = scheduledDate;
+    }
+
     await lead.save();
+
+    if (data.status === 'Follow Up') {
+      await FollowUp.create({
+        lead: lead._id,
+        assignedTo: lead.assignedTo,
+        scheduledDate: lead.nextFollowUpDate,
+        priority: lead.priority || 'Medium',
+        notes: data.remarks || 'Follow-up created with new lead',
+        status: 'Pending'
+      });
+    }
 
     await AuditLog.create({
       user: creatorUser._id,
@@ -107,6 +134,9 @@ export class LeadsService {
   }
 
   static async getLeadById(id) {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('Valid Lead ID is required');
+    }
     const lead = await Lead.findById(id)
       .populate('assignedTo', 'name email phone role')
       .populate('createdBy', 'name email')
@@ -119,13 +149,53 @@ export class LeadsService {
   }
 
   static async updateLead(id, data, user) {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('Valid Lead ID is required');
+    }
     const lead = await Lead.findById(id);
     if (!lead) throw new Error('Lead not found');
 
     const previousStatus = lead.status;
     const previousAssignedTo = lead.assignedTo;
 
+    // Check duplicate phone if phone is being changed
+    if (data.phone && data.phone.trim() !== lead.phone) {
+      const duplicate = await Lead.findOne({ phone: data.phone.trim(), _id: { $ne: lead._id } });
+      if (duplicate) {
+        throw new Error(`A lead with phone number ${data.phone} already exists (${duplicate.leadName})`);
+      }
+    }
+
     Object.assign(lead, data);
+
+    // If marked Follow Up, synchronize FollowUp record and scheduled date
+    if (data.status === 'Follow Up') {
+      const scheduledDate = data.scheduledDate || data.nextFollowUpDate || lead.nextFollowUpDate || new Date(Date.now() + 24 * 60 * 60 * 1000);
+      lead.nextFollowUpDate = scheduledDate;
+
+      const existingFollowUp = await FollowUp.findOne({
+        lead: lead._id,
+        status: { $in: ['Pending', 'Rescheduled', 'Overdue'] }
+      });
+
+      if (existingFollowUp) {
+        existingFollowUp.scheduledDate = scheduledDate;
+        if (data.remarks) existingFollowUp.notes = data.remarks;
+        if (data.assignedTo && mongoose.Types.ObjectId.isValid(data.assignedTo)) {
+          existingFollowUp.assignedTo = data.assignedTo;
+        }
+        await existingFollowUp.save();
+      } else {
+        await FollowUp.create({
+          lead: lead._id,
+          assignedTo: lead.assignedTo || user._id,
+          scheduledDate,
+          priority: data.priority || lead.priority || 'Medium',
+          notes: data.remarks || 'Follow-up created from lead status update',
+          status: 'Pending'
+        });
+      }
+    }
 
     // If marked converted, update convertedAt timestamp and link/create customer
     if (data.status === 'Converted' && previousStatus !== 'Converted') {
@@ -153,6 +223,20 @@ export class LeadsService {
         }
         lead.customer = cust._id;
       }
+      // Complete any pending follow-ups
+      await FollowUp.updateMany(
+        { lead: lead._id, status: { $in: ['Pending', 'Rescheduled', 'Overdue'] } },
+        { $set: { status: 'Completed', outcome: 'Lead Converted to Customer' } }
+      );
+      lead.nextFollowUpDate = null;
+    }
+
+    // Sync assignee on existing followups if assignedTo changed
+    if (data.assignedTo && previousAssignedTo && data.assignedTo.toString() !== previousAssignedTo.toString()) {
+      await FollowUp.updateMany(
+        { lead: lead._id, status: { $in: ['Pending', 'Rescheduled', 'Overdue'] } },
+        { $set: { assignedTo: data.assignedTo } }
+      );
     }
 
     await lead.save();
@@ -166,6 +250,46 @@ export class LeadsService {
     });
 
     return lead;
+  }
+
+  static async deleteLead(id, user) {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('Valid Lead ID is required');
+    }
+
+    if (!['superadmin', 'super_admin', 'admin', 'sales_manager'].includes(user.role)) {
+      throw new Error('Unauthorized: Only administrators and sales managers can delete leads');
+    }
+
+    const lead = await Lead.findById(id);
+    if (!lead) throw new Error('Lead not found');
+
+    // Referential integrity check: check if lead or its linked customer has active bookings
+    if (lead.customer) {
+      const activeBooking = await Booking.findOne({ customer: lead.customer, status: { $ne: 'Cancelled' } });
+      if (activeBooking) {
+        throw new Error(
+          `Cannot delete lead "${lead.leadName}". Associated customer has active booking ${activeBooking.bookingNumber}. Cancel booking first.`
+        );
+      }
+    }
+
+    // Delete associated followups, call logs, and the lead document
+    await Promise.all([
+      FollowUp.deleteMany({ lead: lead._id }),
+      CallLog.deleteMany({ lead: lead._id }),
+      Lead.findByIdAndDelete(id)
+    ]);
+
+    await AuditLog.create({
+      user: user._id,
+      action: 'LEAD_DELETED',
+      entity: 'Lead',
+      entityId: id.toString(),
+      details: { leadName: lead.leadName, phone: lead.phone }
+    });
+
+    return { message: 'Lead deleted successfully', id };
   }
 
   static async assignLead(id, newAssignedToId, managerUser) {

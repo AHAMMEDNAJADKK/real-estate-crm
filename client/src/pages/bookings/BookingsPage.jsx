@@ -7,6 +7,7 @@ import DataTable from '../../components/common/DataTable';
 import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
+import ConfirmDialog from '../../components/common/ConfirmDialog';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
 import { FileCheck, Plus, CheckCircle2, XCircle, Calendar, IndianRupee } from 'lucide-react';
@@ -18,6 +19,9 @@ export const BookingsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [schedule, setSchedule] = useState(null);
+  const [confirmBookingId, setConfirmBookingId] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   const [customers, setCustomers] = useState([]);
   const [properties, setProperties] = useState([]);
@@ -57,25 +61,47 @@ export const BookingsPage = () => {
 
   const handleCreateReservation = async (e) => {
     e.preventDefault();
+    setActionLoading(true);
     try {
       await bookingService.createReservation(form);
       toast.success('Property reservation created and locked');
       setIsModalOpen(false);
+      setForm({
+        customerId: '',
+        propertyId: '',
+        discountAmount: 0,
+        tokenAmount: 200000,
+        reservationHours: 72,
+        remarks: ''
+      });
       fetchBookings(1);
       propertyService.getProperties({ status: 'Available', limit: 100 }).then(r => r.success && setProperties(r.data)).catch(() => {});
     } catch (err) {
       toast.error(err.message || 'Failed to create reservation');
+    } finally {
+      setActionLoading(false);
     }
   };
 
-  const handleConfirm = async (id) => {
-    if (!window.confirm('Confirm this property booking and generate milestone schedule?')) return;
+  const handleOpenConfirm = (id) => {
+    setConfirmBookingId(id);
+    setIsConfirmOpen(true);
+  };
+
+  const executeConfirm = async () => {
+    if (!confirmBookingId) return;
+    setActionLoading(true);
     try {
-      await bookingService.confirmBooking(id);
+      await bookingService.confirmBooking(confirmBookingId);
       toast.success('Booking confirmed! Milestone schedule initialized.');
+      setIsConfirmOpen(false);
+      setConfirmBookingId(null);
       fetchBookings(pagination.page);
+      propertyService.getProperties({ status: 'Available', limit: 100 }).then(r => r.success && setProperties(r.data)).catch(() => {});
     } catch (err) {
       toast.error(err.message || 'Failed to confirm booking');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -86,6 +112,7 @@ export const BookingsPage = () => {
       await bookingService.cancelBooking(id, reason);
       toast.success('Booking cancelled. Property released back to inventory.');
       fetchBookings(pagination.page);
+      propertyService.getProperties({ status: 'Available', limit: 100 }).then(r => r.success && setProperties(r.data)).catch(() => {});
     } catch (err) {
       toast.error(err.message || 'Failed to cancel booking');
     }
@@ -156,7 +183,7 @@ export const BookingsPage = () => {
       render: (row) => (
         <div className="flex items-center gap-1.5 flex-wrap">
           {row.status === 'Reserved' && hasRole('super_admin', 'admin', 'sales_manager') && (
-            <Button size="sm" variant="accent" icon={CheckCircle2} onClick={() => handleConfirm(row._id)}>
+            <Button size="sm" variant="accent" icon={CheckCircle2} onClick={() => handleOpenConfirm(row._id)}>
               Confirm
             </Button>
           )}
@@ -324,6 +351,21 @@ export const BookingsPage = () => {
           </div>
         </Modal>
       )}
+
+      {/* Booking Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        onClose={() => {
+          setIsConfirmOpen(false);
+          setConfirmBookingId(null);
+        }}
+        onConfirm={executeConfirm}
+        title="Confirm Property Booking"
+        message="Are you sure you want to confirm this booking? This will officially lock the unit as Booked and initialize the milestone payment schedule."
+        confirmText="Confirm Booking"
+        variant="primary"
+        loading={actionLoading}
+      />
     </div>
   );
 };

@@ -163,7 +163,7 @@ export class PaymentsService {
   }
 
   static async verifyPayment(paymentId, user) {
-    if (!['super_admin', 'admin', 'accountant'].includes(user.role)) {
+    if (!['superadmin', 'super_admin', 'admin', 'accountant'].includes(user.role)) {
       throw new Error('Permission denied. Only Accountants or Admins can verify payments.');
     }
 
@@ -179,7 +179,7 @@ export class PaymentsService {
   }
 
   static async refundPayment(paymentId, refundAmount, reason, user) {
-    if (!['super_admin', 'admin', 'accountant'].includes(user.role)) {
+    if (!['superadmin', 'super_admin', 'admin', 'accountant'].includes(user.role)) {
       throw new Error('Permission denied. Only Accountants or Admins can issue refunds.');
     }
 
